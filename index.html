@@ -1,0 +1,1301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maa Gayatri Restaurant — POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Backgrounds — pure neutral greys, no warm tint */
+    --bg:      #141414;
+    --bg2:     #1C1C1C;
+    --bg3:     #242424;
+    --card:    #1C1C1C;
+    --card2:   #282828;
+
+    /* Borders */
+    --border:  #333333;
+    --border2: #2A2A2A;
+
+    /* Text — high contrast whites and greys */
+    --text:    #F0F0F0;
+    --text2:   #BBBBBB;
+    --text3:   #777777;
+
+    /* Accent — one calm amber, used sparingly */
+    --amber:      #D4A84B;
+    --amber-dim:  rgba(212,168,75,0.12);
+    --amber-muted:#8A6E2F;
+
+    /* Status colours — desaturated */
+    --green:      #4A9D62;
+    --green-dim:  rgba(74,157,98,0.12);
+    --red:        #C0392B;
+    --red-dim:    rgba(192,57,43,0.12);
+
+    --shadow: 0 4px 20px rgba(0,0,0,0.6);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo { font-size: 24px; opacity: 0.85; }
+  .header-title h1 {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.2px;
+  }
+  .header-title p { font-size: 11px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; }
+
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .header-clock {
+    font-family: 'Noto Sans Mono', monospace;
+    font-size: 15px; color: var(--text2);
+    background: var(--bg3); padding: 4px 10px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+  }
+  .gst-toggle {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 5px 12px; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .gst-toggle:hover { border-color: var(--amber); }
+  .gst-toggle span { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .toggle-pill {
+    width: 36px; height: 18px; border-radius: 100px;
+    background: var(--border); position: relative; transition: background 0.25s;
+  }
+  .toggle-pill.on { background: var(--amber); }
+  .toggle-pill::after {
+    content: ''; position: absolute;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--bg2); top: 3px; left: 3px; transition: left 0.25s;
+  }
+  .toggle-pill.on::after { left: 21px; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { display: flex; min-height: calc(100vh - 60px); }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 210px; flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 16px 10px;
+    display: flex; flex-direction: column; gap: 4px;
+    overflow-y: auto;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--text3);
+    padding: 6px 8px 4px;
+  }
+
+  .table-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    text-align: left; width: 100%;
+  }
+  .table-btn:hover { background: var(--bg3); border-color: var(--border); }
+  .table-btn.has-order { background: var(--bg3); border-color: var(--amber-muted); }
+
+  .table-btn-icon { font-size: 16px; flex-shrink: 0; opacity: 0.7; }
+  .table-btn-info { flex: 1; min-width: 0; }
+  .table-btn-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .table-btn-sub { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .table-btn-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--border); flex-shrink: 0; transition: background 0.2s;
+  }
+  .table-btn.has-order .table-btn-dot { background: var(--amber); }
+
+  .takeaway-btn { background: var(--bg3) !important; border-color: var(--border) !important; }
+  .takeaway-btn .table-btn-name { color: var(--amber); }
+
+  /* ── WORKSPACE ── */
+  .workspace {
+    flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 16px;
+    overflow-y: auto; background: var(--bg);
+  }
+
+  .workspace-empty {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    color: var(--text3);
+  }
+  .workspace-empty .big-icon { font-size: 60px; opacity: 0.2; }
+  .workspace-empty p { font-size: 14px; color: var(--text3); }
+
+  /* ── ORDER WINDOWS ── */
+  .order-windows { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+
+  .order-window {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 420px; min-width: 360px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+    animation: slideIn 0.2s ease;
+    overflow: hidden;
+  }
+  .order-window:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.7); }
+  @keyframes slideIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: none; } }
+  .order-window.minimized { width: 210px; }
+
+  .window-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border2);
+    cursor: pointer; user-select: none;
+  }
+  .window-header-icon { font-size: 15px; opacity: 0.7; }
+  .window-header-title { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+  .window-header-total { font-family: 'Noto Sans Mono', monospace; font-size: 14px; color: var(--amber); font-weight: 600; }
+  .window-controls { display: flex; gap: 5px; }
+  .win-btn {
+    width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border);
+    background: var(--card2); color: var(--text2); cursor: pointer; font-size: 11px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .win-btn:hover { background: var(--border); color: var(--text); }
+  .win-btn-close:hover { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+
+  .window-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .order-window.minimized .window-body { display: none; }
+
+  /* ── MENU SEARCH ── */
+  .menu-search {
+    width: 100%; padding: 8px 11px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Noto Sans', sans-serif; font-size: 13px;
+  }
+  .menu-search:focus { outline: none; border-color: var(--amber-muted); }
+  .menu-search::placeholder { color: var(--text3); }
+  .search-results { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0; }
+
+  /* ── CATEGORY ACCORDION ── */
+  .menu-cat-scroll { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding-right: 2px; }
+  .cat-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border2);
+    cursor: pointer; transition: background 0.15s, border-color 0.15s; user-select: none;
+  }
+  .cat-header:hover { background: var(--card2); border-color: var(--border); }
+  .cat-header.open { border-color: var(--amber-muted); background: var(--card2); }
+  .cat-header-left { display: flex; align-items: center; gap: 7px; }
+  .cat-icon { font-size: 13px; opacity: 0.8; }
+  .cat-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .cat-count { font-size: 11px; color: var(--text3); }
+  .cat-arrow { font-size: 10px; color: var(--text3); transition: transform 0.2s; }
+  .cat-header.open .cat-arrow { transform: rotate(180deg); color: var(--amber); }
+  .cat-items { display: none; flex-wrap: wrap; gap: 5px; padding: 7px 4px 3px; }
+  .cat-items.open { display: flex; }
+
+  /* ── MENU CHIPS ── */
+  .menu-chip {
+    display: flex; align-items: baseline; gap: 5px;
+    padding: 5px 10px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border2);
+    cursor: pointer; transition: background 0.12s, border-color 0.12s;
+  }
+  .menu-chip:hover { background: var(--card2); border-color: var(--border); }
+  .menu-chip-name {
+    font-size: 12px; font-weight: 500; color: var(--text2);
+    font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
+  }
+  .menu-chip-price { font-size: 11px; color: var(--amber); font-family: 'Noto Sans Mono', monospace; }
+
+  /* ── ORDER ITEMS LIST ── */
+  .order-items-list { display: flex; flex-direction: column; gap: 3px; max-height: 190px; overflow-y: auto; }
+  .order-items-list::-webkit-scrollbar { width: 4px; }
+  .order-items-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .order-item-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border2);
+  }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .order-item-name {
+    flex: 1; font-size: 13px; color: var(--text);
+    font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
+  }
+  .qty-controls { display: flex; align-items: center; gap: 5px; }
+  .qty-btn {
+    width: 24px; height: 24px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--card2); color: var(--text); cursor: pointer;
+    font-size: 15px; font-weight: 600; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s;
+  }
+  .qty-btn:hover { background: var(--border); }
+  .qty-num { font-family: 'Noto Sans Mono', monospace; font-size: 13px; font-weight: 600; color: var(--text); min-width: 20px; text-align: center; }
+  .item-total { font-family: 'Noto Sans Mono', monospace; font-size: 13px; color: var(--amber); min-width: 54px; text-align: right; }
+  .remove-item { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 2px; line-height: 1; }
+  .remove-item:hover { color: var(--red); }
+
+  /* ── ORDER SUMMARY ── */
+  .order-summary {
+    border-top: 1px solid var(--border2); padding-top: 10px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; }
+  .summary-label { font-size: 13px; color: var(--text3); }
+  .summary-value { font-family: 'Noto Sans Mono', monospace; font-size: 13px; color: var(--text2); }
+  .summary-total-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .summary-total-value { font-family: 'Noto Sans Mono', monospace; font-size: 16px; font-weight: 700; color: var(--amber); }
+
+  .discount-row { display: flex; align-items: center; gap: 8px; }
+  .discount-label { font-size: 13px; color: var(--text3); white-space: nowrap; }
+  .discount-input {
+    flex: 1; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 6px 9px;
+    color: var(--text); font-size: 13px; font-family: 'Noto Sans Mono', monospace;
+  }
+  .discount-input:focus { outline: none; border-color: var(--amber-muted); }
+
+  /* ── BUTTONS ── */
+  .window-actions { display: flex; gap: 8px; }
+  .btn {
+    flex: 1; padding: 10px; border-radius: var(--radius-sm);
+    border: none; cursor: pointer; font-family: 'Noto Sans', sans-serif;
+    font-size: 14px; font-weight: 600; transition: all 0.15s;
+  }
+  .btn-print { background: var(--amber); color: #111; }
+  .btn-print:hover { filter: brightness(1.1); }
+  .btn-clear { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+  .btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── NOTES FIELD ── */
+  .notes-field {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 7px 10px; font-family: 'Noto Sans', sans-serif; font-size: 13px;
+    color: var(--text2); resize: none; width: 100%; line-height: 1.4;
+  }
+  .notes-field:focus { outline: none; border-color: var(--amber-muted); }
+  .notes-field::placeholder { color: var(--text3); }
+
+  .empty-order { font-size: 13px; color: var(--text3); text-align: center; padding: 18px 8px; }
+
+  /* ── LOG PANEL ── */
+  .log-panel {
+    width: 270px; flex-shrink: 0;
+    background: var(--bg2); border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .log-header {
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .log-header h3 { font-size: 13px; font-weight: 600; color: var(--text2); }
+  .log-count {
+    background: var(--amber-dim); color: var(--amber); font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 100px; border: 1px solid var(--amber-muted);
+  }
+  .log-total-bar {
+    padding: 9px 14px; background: var(--bg3); border-bottom: 1px solid var(--border2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .log-total-label { font-size: 12px; color: var(--text3); }
+  .log-total-val { font-family: 'Noto Sans Mono', monospace; font-size: 15px; font-weight: 700; color: var(--amber); }
+  .log-list { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+  .log-list::-webkit-scrollbar { width: 4px; }
+  .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .log-entry {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 8px 10px;
+  }
+  .log-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .log-entry-id { font-size: 11px; font-family: 'Noto Sans Mono', monospace; color: var(--text3); }
+  .log-entry-total { font-family: 'Noto Sans Mono', monospace; font-size: 13px; font-weight: 600; color: var(--amber); }
+  .log-entry-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 3px; }
+  .log-tag {
+    font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .log-tag-table   { background: var(--amber-dim); color: var(--amber); }
+  .log-tag-takeaway{ background: var(--green-dim); color: var(--green); }
+  .log-tag-time    { background: var(--bg2); color: var(--text3); }
+  .log-tag-gst     { background: var(--bg2); color: var(--text3); }
+  .log-entry-items { font-size: 11px; color: var(--text3); line-height: 1.4; }
+
+  .log-export-btn {
+    margin: 6px 8px 0; padding: 8px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer;
+    text-align: center; transition: all 0.15s;
+  }
+  .log-export-btn:hover { border-color: var(--amber-muted); color: var(--amber); }
+  .log-export-btn:last-child { margin-bottom: 8px; }
+
+  /* ── PRINT RECEIPT OVERLAY ── */
+  .print-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88); z-index: 9999;
+    align-items: center; justify-content: center;
+  }
+  .print-overlay.show { display: flex; }
+  .receipt-wrapper {
+    background: white; width: 300px; padding: 22px 18px;
+    font-family: 'Courier New', monospace; font-size: 12px; color: #111;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    max-height: 90vh; overflow-y: auto; position: relative;
+  }
+  .r-center { text-align: center; }
+  .r-bold { font-weight: 700; }
+  .r-big { font-size: 14px; }
+  .r-line { border: none; border-top: 1px dashed #aaa; margin: 7px 0; }
+  .r-solid { border: none; border-top: 2px solid #333; margin: 7px 0; }
+  .r-row { display: flex; justify-content: space-between; margin: 2px 0; }
+  .r-total { font-size: 14px; font-weight: 700; }
+  .r-small { font-size: 10px; color: #666; }
+
+  .receipt-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .receipt-btn {
+    flex: 1; padding: 10px; border-radius: 6px; border: none; cursor: pointer;
+    font-family: 'Noto Sans', sans-serif; font-size: 13px; font-weight: 600;
+    transition: filter 0.15s;
+  }
+  .receipt-btn-print { background: #2A2A2A; color: white; }
+  .receipt-btn-print:hover { filter: brightness(1.3); }
+  .receipt-btn-close { background: #eee; color: #333; }
+  .receipt-btn-close:hover { background: #ddd; }
+
+  /* ── SCROLLBARS GLOBAL ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes pulse-amber {
+    0%,100% { box-shadow: none; }
+    50% { box-shadow: 0 0 0 3px rgba(212,168,75,0.2); }
+  }
+  .has-order { animation: pulse-amber 2.5s infinite; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="header-logo">🍛</div>
+    <div class="header-title">
+      <h1>Maa Gayatri Restaurant</h1>
+      <p>Point of Sale System</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-clock" id="clock">--:--:--</div>
+    <div class="gst-toggle" onclick="toggleGST()" title="Toggle GST">
+      <span>GST 5%</span>
+      <div class="toggle-pill on" id="gstPill"></div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section-label">🚗 Take Away</div>
+    <button class="table-btn takeaway-btn" onclick="openOrder('takeaway')" id="btn-takeaway">
+      <span class="table-btn-icon">📦</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Take Away</div>
+        <div class="table-btn-sub" id="sub-takeaway">No active order</div>
+      </div>
+      <div class="table-btn-dot" id="dot-takeaway"></div>
+    </button>
+
+    <div class="sidebar-section-label" style="margin-top:8px">🪑 Dine In Tables</div>
+    <button class="table-btn" onclick="openOrder('table1')" id="btn-table1">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 1</div>
+        <div class="table-btn-sub" id="sub-table1">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table1"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table2')" id="btn-table2">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 2</div>
+        <div class="table-btn-sub" id="sub-table2">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table2"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table3')" id="btn-table3">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 3</div>
+        <div class="table-btn-sub" id="sub-table3">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table3"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table4')" id="btn-table4">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 4</div>
+        <div class="table-btn-sub" id="sub-table4">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table4"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table5')" id="btn-table5">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 5</div>
+        <div class="table-btn-sub" id="sub-table5">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table5"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table6')" id="btn-table6">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 6</div>
+        <div class="table-btn-sub" id="sub-table6">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table6"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table7')" id="btn-table7">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 7</div>
+        <div class="table-btn-sub" id="sub-table7">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table7"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table8')" id="btn-table8">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 8</div>
+        <div class="table-btn-sub" id="sub-table8">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table8"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table9')" id="btn-table9">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 9</div>
+        <div class="table-btn-sub" id="sub-table9">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table9"></div>
+    </button>
+    <button class="table-btn" onclick="openOrder('table10')" id="btn-table10">
+      <span class="table-btn-icon">🪑</span>
+      <div class="table-btn-info">
+        <div class="table-btn-name">Table 10</div>
+        <div class="table-btn-sub" id="sub-table10">Empty</div>
+      </div>
+      <div class="table-btn-dot" id="dot-table10"></div>
+    </button>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="workspace" id="workspace">
+    <div class="workspace-empty" id="emptyState">
+      <div class="big-icon">🍛</div>
+      <p>Select a table or take away to start an order</p>
+    </div>
+    <div class="order-windows" id="orderWindows"></div>
+  </div>
+
+  <!-- LOG PANEL -->
+  <div class="log-panel">
+    <div class="log-header">
+      <h3>📋 Sales Log</h3>
+      <span class="log-count" id="logCount">0</span>
+    </div>
+    <div class="log-total-bar">
+      <span class="log-total-label">Today's Total</span>
+      <span class="log-total-val" id="logTotal">₹0.00</span>
+    </div>
+    <div class="log-list" id="logList">
+      <div style="text-align:center; color:var(--text3); font-size:11px; padding:20px 0;">
+        No bills printed yet
+      </div>
+    </div>
+    <div class="log-export-btn" onclick="exportLog()">⬇ Export Log (CSV)</div>
+    <div class="log-export-btn" onclick="clearLog()" style="color:var(--red);border-color:rgba(192,57,43,0.3)">🗑 Clear Log (End of Day)</div>
+  </div>
+</div>
+
+<!-- PRINT OVERLAY -->
+<div class="print-overlay" id="printOverlay">
+  <div>
+    <div class="receipt-wrapper" id="receiptContent"></div>
+    <div class="receipt-actions">
+      <button class="receipt-btn receipt-btn-print" onclick="doPrint()">🖨️ Print Bill</button>
+      <button class="receipt-btn receipt-btn-close" onclick="closePrint()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STORAGE KEYS ────────────────────────────────────────────────────────────
+const LS_ORDERS     = 'mgpos_orders';
+const LS_SALES_LOG  = 'mgpos_saleslog';
+const LS_COUNTER    = 'mgpos_billcounter';
+const LS_GST        = 'mgpos_gst';
+
+// ─── PERSIST HELPERS ─────────────────────────────────────────────────────────
+function saveState() {
+  try {
+    localStorage.setItem(LS_ORDERS,    JSON.stringify(orders));
+    localStorage.setItem(LS_SALES_LOG, JSON.stringify(salesLog));
+    localStorage.setItem(LS_COUNTER,   billCounter);
+    localStorage.setItem(LS_GST,       gstEnabled ? '1' : '0');
+  } catch(e) { console.warn('localStorage save failed', e); }
+}
+
+function loadState() {
+  try {
+    const g = localStorage.getItem(LS_GST);
+    if (g !== null) gstEnabled = g === '1';
+    const c = localStorage.getItem(LS_COUNTER);
+    if (c) billCounter = parseInt(c) || 1;
+    const sl = localStorage.getItem(LS_SALES_LOG);
+    if (sl) salesLog = JSON.parse(sl);
+    const od = localStorage.getItem(LS_ORDERS);
+    if (od) {
+      const saved = JSON.parse(od);
+      Object.assign(orders, saved);
+    }
+  } catch(e) { console.warn('localStorage load failed', e); }
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let gstEnabled = true;
+const GST_RATE = 5;
+let billCounter = 1;
+let salesLog = [];
+let pendingClearId = null;
+
+const MENU_CATEGORIES = [
+  { id: 'starter', label: '🥢 Starter', icon: '🥢', items: [
+    { id: 'veg_lollipop', name: 'वेज लॉलीपॉप', price: 180 },
+    { id: 'paneer_chilli', name: 'पनिर चिल्ली', price: 210 },
+    { id: 'finger_chips', name: 'फिंगर चिप्स', price: 110 },
+    { id: 'veg_crispy', name: 'वेज क्रिस्पी', price: 170 },
+    { id: 'paneer_65', name: 'पनिर ६५', price: 220 },
+  ]},
+  { id: 'soup', label: '🍲 Soup', icon: '🍲', items: [
+    { id: 'manchow_soup', name: 'मनचाऊ सुप', price: 110 },
+    { id: 'hot_sour_soup', name: 'हॉट ॲन्ड सौर सुप', price: 110 },
+    { id: 'tomato_soup', name: 'टोमॅटो सुप', price: 100 },
+  ]},
+  { id: 'papad', label: '🫓 Papad', icon: '🫓', items: [
+    { id: 'roast_papad', name: 'रोस्ट पापड', price: 20 },
+    { id: 'fry_papad', name: 'फ्राय पापड', price: 25 },
+    { id: 'masala_papad', name: 'मसाला पापड', price: 45 },
+    { id: 'roast_masala_papad', name: 'रोस्ट मसाला पापड', price: 40 },
+  ]},
+  { id: 'salad', label: '🥗 Salad', icon: '🥗', items: [
+    { id: 'green_salad', name: 'ग्रिन सलाद', price: 60 },
+    { id: 'jain_salad', name: 'जैन सलाद', price: 50 },
+  ]},
+  { id: 'paneer', label: '🧀 Paneer', icon: '🧀', items: [
+    { id: 'palak_paneer', name: 'पालक पनिर', price: 220 },
+    { id: 'paneer_matar', name: 'पनिर मटर', price: 210 },
+    { id: 'paneer_kadai', name: 'पनिर कढई', price: 230 },
+    { id: 'paneer_tawa', name: 'पनिर तवा', price: 230 },
+    { id: 'paneer_handi', name: 'पनिर हंडी', price: 250 },
+    { id: 'paneer_bhurji_dry', name: 'पनिर भुर्जी ड्राय', price: 260 },
+    { id: 'paneer_bhurji_curry', name: 'पनिर भुर्जी करी', price: 270 },
+    { id: 'paneer_butter_masala', name: 'पनिर बटर मसाला', price: 240 },
+    { id: 'paneer_tikka_masala', name: 'पनिर टिक्का मसाला', price: 260 },
+    { id: 'paneer_tufani', name: 'पनिर तुफानी', price: 250 },
+    { id: 'paneer_angara', name: 'पनिर अंगारा', price: 260 },
+    { id: 'paneer_masala', name: 'पनिर मसाला', price: 220 },
+    { id: 'shahi_paneer', name: 'शाही पनिर', price: 250 },
+    { id: 'paneer_kolhapuri', name: 'पनिर कोल्हापुरी', price: 240 },
+    { id: 'paneer_saagwala', name: 'पनिर सागवाल', price: 230 },
+    { id: 'paneer_hyderabadi', name: 'पनिर हैद्राबादी', price: 240 },
+    { id: 'paneer_chatpata', name: 'पनिर चटपटा', price: 230 },
+    { id: 'paneer_takatak', name: 'पनिर टकाटक', price: 250 },
+    { id: 'paneer_jaipuri', name: 'पनिर जयपुरी', price: 240 },
+    { id: 'paneer_korma', name: 'पनिर कोरमा', price: 260 },
+    { id: 'cheese_paneer_butter', name: 'चिज पनिर बटर मसाला', price: 280 },
+    { id: 'laccha_paneer', name: 'लच्छा पनिर', price: 250 },
+    { id: 'paneer_mili_juli', name: 'पनिर मिली जुली', price: 240 },
+    { id: 'paneer_lahori', name: 'पनिर लाहोरी', price: 250 },
+    { id: 'paneer_lara', name: 'पनिर लारा', price: 250 },
+    { id: 'paneer_afghani', name: 'पनिर अफगानी', price: 260 },
+    { id: 'paneer_pasandida', name: 'पनिर पसंदीदा', price: 270 },
+    { id: 'paneer_cheese_ball', name: 'पनिर चिज बॉल करी', price: 280 },
+    { id: 'paneer_tiranga', name: 'पनिर तिरंगा', price: 290 },
+    { id: 'paneer_patiala', name: 'पनिर पटियाला', price: 270 },
+    { id: 'kaju_paneer_do_pyaza', name: 'काजु पनिर दो प्याजा', price: 290 },
+    { id: 'kaju_curry', name: 'काजु करी', price: 270 },
+    { id: 'paneer_kaju_curry', name: 'पनिर काजु करी', price: 280 },
+    { id: 'kaju_masala', name: 'काजु मसाला', price: 270 },
+    { id: 'paneer_kaju_masala', name: 'पनिर काजु मसाला', price: 280 },
+    { id: 'kaju_khoya', name: 'काजु खोया', price: 300 },
+    { id: 'kaju_mawa', name: 'काजु मावा', price: 300 },
+  ]},
+  { id: 'sabji', label: '🥘 Sabji', icon: '🥘', items: [
+    { id: 'mix_veg', name: 'मिक्स वेज', price: 180 },
+    { id: 'veg_kolhapuri', name: 'वेज कोल्हापुरी', price: 190 },
+    { id: 'veg_tufani', name: 'वेज तुफानी', price: 210 },
+    { id: 'veg_handi', name: 'वेज हन्डी', price: 220 },
+    { id: 'veg_tawa', name: 'वेज तवा', price: 200 },
+    { id: 'veg_kadai', name: 'वेज कढई', price: 210 },
+    { id: 'stop_capsicum', name: 'स्टॉप कॅप्सीकम', price: 190 },
+    { id: 'stop_tomato', name: 'स्टॉप टोमॅटो', price: 180 },
+    { id: 'methi_matar', name: 'मेथी मटर', price: 190 },
+    { id: 'methi_matar_malai', name: 'मेथी मटर मलाई', price: 210 },
+    { id: 'veg_hyderabadi', name: 'वेज हैद्राबादी', price: 200 },
+    { id: 'veg_kima_kasturi', name: 'वेज किमा कस्तुरी', price: 220 },
+    { id: 'veg_jaipuri', name: 'वेज जयपुरी', price: 200 },
+    { id: 'veg_maratha', name: 'वेज मराठा', price: 210 },
+    { id: 'veg_bhuna', name: 'वेज भुना', price: 210 },
+    { id: 'veg_angara', name: 'वेज अंगारा', price: 220 },
+    { id: 'veg_tiranga', name: 'वेज तिरंगा', price: 240 },
+    { id: 'veg_patiala', name: 'वेज पटियाला', price: 230 },
+    { id: 'veg_andakari', name: 'वेज अंडाकरी', price: 180 },
+    { id: 'patodi', name: 'पाटोडी', price: 160 },
+    { id: 'veg_mili_juli', name: 'वेज मिली जुली', price: 190 },
+  ]},
+  { id: 'mushroom', label: '🍄 Mushroom', icon: '🍄', items: [
+    { id: 'mushroom_masala', name: 'मशरुम मसाला', price: 240 },
+    { id: 'mushroom_curry', name: 'मशरुम करी', price: 230 },
+    { id: 'paneer_mushroom_masala', name: 'पनिर मशरुम मसाला', price: 260 },
+    { id: 'mushroom_paneer_kadai', name: 'मशरुम पनिर कढई', price: 260 },
+  ]},
+  { id: 'kofta', label: '🫕 Kofta', icon: '🫕', items: [
+    { id: 'veg_kofta', name: 'वेज कोफ्ता', price: 200 },
+    { id: 'paneer_kofta', name: 'पनिर कोफ्ता', price: 230 },
+    { id: 'malai_kofta', name: 'मलाई कोफ्ता', price: 250 },
+    { id: 'veg_punjabi_kofta', name: 'वेज पंजाबी कोफ्ता', price: 220 },
+    { id: 'veg_palak_kofta', name: 'वेज पालक कोफ्ता', price: 210 },
+    { id: 'paneer_punjabi_kofta', name: 'पनिर पंजाबी कोफ्ता', price: 240 },
+    { id: 'paneer_palak_kofta', name: 'पनिर पालक कोफ्ता', price: 230 },
+    { id: 'nargis_kofta', name: 'नरगिस कोफ्ता', price: 260 },
+  ]},
+  { id: 'veg_main', label: '🌿 Veg', icon: '🌿', items: [
+    { id: 'jeera_aalu', name: 'जिरा आलु', price: 140 },
+    { id: 'baigan_bharta', name: 'बैगन भरता', price: 150 },
+    { id: 'baigan_masala', name: 'बैगन मसाला', price: 150 },
+    { id: 'bhendi_masala', name: 'भेंडी मसाला', price: 160 },
+    { id: 'green_peas_masala', name: 'ग्रिन पिस मसाला', price: 170 },
+    { id: 'chana_masala', name: 'चना मसाला', price: 170 },
+    { id: 'aalu_matar', name: 'आलु मटर', price: 160 },
+    { id: 'dam_aalu', name: 'दम आलु', price: 190 },
+    { id: 'plain_palak', name: 'प्लेन पालक', price: 150 },
+    { id: 'shev_bhaji', name: 'शेव भाजी', price: 140 },
+    { id: 'aalu_gobi_matar', name: 'आलु गोबी मटर', price: 170 },
+    { id: 'aalu_gobi_masala', name: 'आलु गोबी मसाला', price: 170 },
+    { id: 'aalu_palak', name: 'आलु पालक', price: 160 },
+    { id: 'gobi_masala', name: 'गोबी मसाला', price: 160 },
+    { id: 'gobi_matar', name: 'गोबी मटर', price: 160 },
+  ]},
+  { id: 'dal', label: '🍛 Dal', icon: '🍛', items: [
+    { id: 'dal_fry', name: 'दाल फ्राय', price: 130 },
+    { id: 'dal_tadka', name: 'दाल तडका', price: 150 },
+    { id: 'jeera_dal', name: 'जिरा दाल', price: 120 },
+    { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 140 },
+    { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 160 },
+    { id: 'varhadi_dal', name: 'वऱ्हाडी दाल', price: 160 },
+  ]},
+  { id: 'rice', label: '🍚 Rice', icon: '🍚', items: [
+    { id: 'plain_rice', name: 'प्लेन राईस', price: 100 },
+    { id: 'jeera_rice', name: 'जिरा राईस', price: 130 },
+    { id: 'steam_rice', name: 'स्टीम राईस', price: 110 },
+    { id: 'garlic_rice', name: 'गार्लिक राईस', price: 150 },
+    { id: 'namdev_rice', name: 'नामदेव राईस', price: 160 },
+    { id: 'dal_khichdi', name: 'दाल खिचडी', price: 160 },
+    { id: 'veg_pulao', name: 'वेज पुलाव', price: 180 },
+    { id: 'veg_paneer_pulao', name: 'वेज पनिर पुलाव', price: 210 },
+    { id: 'veg_biryani', name: 'वेज बिर्याणी', price: 200 },
+    { id: 'veg_paneer_biryani', name: 'वेज पनिर बिर्याणी', price: 230 },
+    { id: 'masala_rice', name: 'मशाला राईस', price: 150 },
+    { id: 'veg_hyd_biryani', name: 'वेज हैद्राबादी बिर्याणी', price: 220 },
+    { id: 'veg_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 240 },
+    { id: 'paneer_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 260 },
+  ]},
+  { id: 'bread', label: '🫓 Bread', icon: '🫓', items: [
+    { id: 'tandur', name: 'तंदुर', price: 15 },
+    { id: 'sadi_tandur', name: 'साधी तंदुर', price: 15 },
+    { id: 'butter_tandur', name: 'बटर तंदुर', price: 20 },
+    { id: 'paratha', name: 'पराठा', price: 35 },
+    { id: 'butter_paratha', name: 'बटर पराठा', price: 45 },
+    { id: 'laccha_paratha', name: 'लच्छा पराठा', price: 55 },
+    { id: 'kulcha', name: 'कुलचा', price: 45 },
+    { id: 'butter_kulcha', name: 'बटर कुलचा', price: 55 },
+    { id: 'naan', name: 'नान', price: 40 },
+    { id: 'butter_naan', name: 'बटर नान', price: 50 },
+    { id: 'garlic_naan', name: 'गार्लिक नान', price: 70 },
+    { id: 'masala_paratha', name: 'मसाला पराठा', price: 60 },
+    { id: 'sadi_chapati', name: 'साधी चपाती', price: 12 },
+    { id: 'butter_chapati', name: 'बटर चपाती', price: 15 },
+  ]},
+];
+
+// Flat MENU for lookups
+const MENU = MENU_CATEGORIES.flatMap(cat => cat.items.map(item => ({ ...item, category: cat.id })));
+
+// Orders keyed by tableId
+const orders = {};
+
+const TABLE_LABELS = {
+  takeaway: '📦 Take Away',
+  table1: '🪑 Table 1', table2: '🪑 Table 2', table3: '🪑 Table 3',
+  table4: '🪑 Table 4', table5: '🪑 Table 5', table6: '🪑 Table 6',
+  table7: '🪑 Table 7', table8: '🪑 Table 8', table9: '🪑 Table 9',
+  table10: '🪑 Table 10',
+};
+
+// Track open categories per window
+const openCats = {};
+
+function toggleCat(tableId, catId) {
+  if (!openCats[tableId]) openCats[tableId] = new Set();
+  const s = openCats[tableId];
+  const hdr = document.getElementById(`cathdr-${tableId}-${catId}`);
+  const items = document.getElementById(`catitems-${tableId}-${catId}`);
+  if (!hdr || !items) return;
+  if (s.has(catId)) {
+    s.delete(catId);
+    hdr.classList.remove('open');
+    items.classList.remove('open');
+  } else {
+    s.add(catId);
+    hdr.classList.add('open');
+    items.classList.add('open');
+  }
+}
+
+function searchMenu(tableId, query) {
+  const catDiv = document.getElementById('menu-' + tableId);
+  const resultsDiv = document.getElementById('searchresults-' + tableId);
+  if (!query.trim()) {
+    catDiv.style.display = '';
+    resultsDiv.style.display = 'none';
+    resultsDiv.innerHTML = '';
+    return;
+  }
+  catDiv.style.display = 'none';
+  resultsDiv.style.display = 'flex';
+  const q = query.trim().toLowerCase();
+  const matches = MENU.filter(item => item.name.toLowerCase().includes(q) || item.name.includes(query));
+  if (!matches.length) {
+    resultsDiv.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:6px">No items found</div>';
+    return;
+  }
+  resultsDiv.innerHTML = matches.map(item => `
+    <div class="menu-chip" onclick="addItem('${tableId}','${item.id}')">
+      <span class="menu-chip-name">${item.name}</span>
+      <span class="menu-chip-price">₹${item.price}</span>
+    </div>
+  `).join('');
+}
+
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-IN', { hour12: false });
+}
+setInterval(updateClock, 1000); updateClock();
+
+// ─── GST TOGGLE ──────────────────────────────────────────────────────────────
+function toggleGST() {
+  gstEnabled = !gstEnabled;
+  const pill = document.getElementById('gstPill');
+  pill.className = 'toggle-pill' + (gstEnabled ? ' on' : '');
+  Object.keys(orders).forEach(id => { if (orders[id]) renderOrderWindow(id); });
+  saveState();
+}
+
+// ─── OPEN / FOCUS ORDER ──────────────────────────────────────────────────────
+function openOrder(tableId) {
+  const el = document.getElementById('emptyState');
+  if (el) el.style.display = 'none';
+
+  if (!orders[tableId]) {
+    orders[tableId] = { items: [], notes: '', minimized: false };
+  } else {
+    orders[tableId].minimized = false;
+  }
+  renderOrderWindow(tableId);
+  updateSidebarButton(tableId);
+}
+
+// ─── RENDER ORDER WINDOW ─────────────────────────────────────────────────────
+function renderOrderWindow(tableId) {
+  const order = orders[tableId];
+  const existing = document.getElementById('win-' + tableId);
+  
+  const subtotal = calcSubtotal(order);
+  const gstAmt = gstEnabled ? +(subtotal * GST_RATE / 100).toFixed(2) : 0;
+  const discount = parseFloat(order.discount || 0) || 0;
+  const total = Math.max(0, subtotal + gstAmt - discount);
+
+  const html = `
+    <div class="window-header" onclick="toggleMinimize('${tableId}')">
+      <span class="window-header-icon">${tableId === 'takeaway' ? '📦' : '🪑'}</span>
+      <span class="window-header-title">${TABLE_LABELS[tableId]}</span>
+      <span class="window-header-total">₹${total.toFixed(2)}</span>
+      <div class="window-controls" onclick="event.stopPropagation()">
+        <button class="win-btn win-btn-min" onclick="toggleMinimize('${tableId}')" title="Minimize">─</button>
+        <button class="win-btn win-btn-close" onclick="closeOrder('${tableId}')" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <input class="menu-search" type="text" placeholder="🔍 Search menu items..."
+        oninput="searchMenu('${tableId}', this.value)" id="search-${tableId}">
+      <div id="searchresults-${tableId}" class="search-results" style="display:none"></div>
+      <div class="menu-cat-scroll">
+      <div class="menu-categories" id="menu-${tableId}">
+        ${MENU_CATEGORIES.map(cat => `
+          <div>
+            <div class="cat-header" id="cathdr-${tableId}-${cat.id}" onclick="toggleCat('${tableId}','${cat.id}')">
+              <div class="cat-header-left">
+                <span class="cat-icon">${cat.icon}</span>
+                <span class="cat-name">${cat.label}</span>
+                <span class="cat-count">(${cat.items.length})</span>
+              </div>
+              <span class="cat-arrow">▼</span>
+            </div>
+            <div class="cat-items" id="catitems-${tableId}-${cat.id}">
+              ${cat.items.map(item => `
+                <div class="menu-chip" onclick="addItem('${tableId}','${item.id}')">
+                  <span class="menu-chip-name">${item.name}</span>
+                  <span class="menu-chip-price">₹${item.price}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      </div><!-- end menu-cat-scroll -->
+
+      <div class="order-items-list" id="items-${tableId}">
+        ${renderOrderItems(tableId)}
+      </div>
+
+      <textarea class="notes-field" rows="2" placeholder="Special instructions / notes..."
+        onchange="orders['${tableId}'].notes=this.value; saveState();"
+        id="notes-${tableId}">${order.notes}</textarea>
+
+      <div class="order-summary">
+        <div class="summary-row">
+          <span class="summary-label">Subtotal</span>
+          <span class="summary-value">₹${subtotal.toFixed(2)}</span>
+        </div>
+        ${gstEnabled ? `<div class="summary-row">
+          <span class="summary-label">GST @ ${GST_RATE}%</span>
+          <span class="summary-value">₹${gstAmt.toFixed(2)}</span>
+        </div>` : `<div class="summary-row"><span class="summary-label" style="color:var(--text3);font-style:italic">GST: Not Applied</span></div>`}
+        <div class="discount-row">
+          <span class="discount-label">Discount ₹</span>
+          <input class="discount-input" type="number" min="0" placeholder="0"
+            value="${order.discount || ''}"
+            oninput="setDiscount('${tableId}', this.value)"
+          />
+        </div>
+        <div class="summary-row" style="margin-top:6px; border-top:1px solid var(--border2); padding-top:6px">
+          <span class="summary-total-label">TOTAL</span>
+          <span class="summary-total-value">₹${total.toFixed(2)}</span>
+        </div>
+      </div>
+
+      <div class="window-actions">
+        <button class="btn btn-clear" onclick="clearOrder('${tableId}')">🗑 Clear</button>
+        <button class="btn btn-print" onclick="printBill('${tableId}')">🖨️ Print Bill</button>
+      </div>
+    </div>
+  `;
+
+  if (existing) {
+    existing.innerHTML = html;
+    if (order.minimized) existing.classList.add('minimized');
+    else existing.classList.remove('minimized');
+  } else {
+    const div = document.createElement('div');
+    div.className = 'order-window' + (order.minimized ? ' minimized' : '');
+    div.id = 'win-' + tableId;
+    div.innerHTML = html;
+    document.getElementById('orderWindows').appendChild(div);
+  }
+}
+
+function renderOrderItems(tableId) {
+  const order = orders[tableId];
+  if (!order.items.length) return '<div class="empty-order">No items added yet. Tap a category above.</div>';
+  return order.items.map((it, idx) => {
+    const itemDef = MENU.find(m => m.id === it.id);
+    return `<div class="order-item-row">
+      <span class="order-item-name">${itemDef.name}</span>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="changeQty('${tableId}',${idx},-1)">−</button>
+        <span class="qty-num">${it.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${tableId}',${idx},1)">+</button>
+      </div>
+      <span class="item-total">₹${(itemDef.price * it.qty).toFixed(0)}</span>
+      <button class="remove-item" onclick="removeItem('${tableId}',${idx})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ─── ORDER ACTIONS ────────────────────────────────────────────────────────────
+function addItem(tableId, itemId) {
+  const order = orders[tableId];
+  const existing = order.items.find(it => it.id === itemId);
+  if (existing) existing.qty++;
+  else order.items.push({ id: itemId, qty: 1 });
+  renderOrderWindow(tableId);
+  updateSidebarButton(tableId);
+  saveState();
+}
+
+function changeQty(tableId, idx, delta) {
+  const order = orders[tableId];
+  order.items[idx].qty += delta;
+  if (order.items[idx].qty <= 0) order.items.splice(idx, 1);
+  renderOrderWindow(tableId);
+  updateSidebarButton(tableId);
+  saveState();
+}
+
+function removeItem(tableId, idx) {
+  orders[tableId].items.splice(idx, 1);
+  renderOrderWindow(tableId);
+  updateSidebarButton(tableId);
+  saveState();
+}
+
+function setDiscount(tableId, val) {
+  orders[tableId].discount = parseFloat(val) || 0;
+  renderOrderWindow(tableId);
+  saveState();
+}
+
+function clearOrder(tableId) {
+  if (confirm('Clear all items from ' + TABLE_LABELS[tableId] + '?')) {
+    orders[tableId] = { items: [], notes: '', minimized: false, discount: 0 };
+    renderOrderWindow(tableId);
+    updateSidebarButton(tableId);
+    saveState();
+  }
+}
+
+function closeOrder(tableId) {
+  delete orders[tableId];
+  const el = document.getElementById('win-' + tableId);
+  if (el) el.remove();
+  updateSidebarButton(tableId);
+  if (Object.keys(orders).length === 0) {
+    document.getElementById('emptyState').style.display = '';
+  }
+  saveState();
+}
+
+function toggleMinimize(tableId) {
+  const order = orders[tableId];
+  if (!order) return;
+  order.minimized = !order.minimized;
+  renderOrderWindow(tableId);
+  saveState();
+}
+
+// ─── CALCULATIONS ─────────────────────────────────────────────────────────────
+function calcSubtotal(order) {
+  return order.items.reduce((sum, it) => {
+    const def = MENU.find(m => m.id === it.id);
+    return sum + (def ? def.price * it.qty : 0);
+  }, 0);
+}
+
+// ─── SIDEBAR BUTTON UPDATE ────────────────────────────────────────────────────
+function updateSidebarButton(tableId) {
+  const btn = document.getElementById('btn-' + tableId);
+  const sub = document.getElementById('sub-' + tableId);
+  const dot = document.getElementById('dot-' + tableId);
+  if (!btn) return;
+  const order = orders[tableId];
+  if (order && order.items.length > 0) {
+    const total = calcSubtotal(order);
+    const gst = gstEnabled ? total * GST_RATE / 100 : 0;
+    sub.textContent = `${order.items.length} item(s)  ₹${(total + gst).toFixed(0)}`;
+    btn.classList.add('has-order');
+    dot.style.background = 'var(--amber)';
+  } else {
+    sub.textContent = tableId === 'takeaway' ? 'No active order' : 'Empty';
+    btn.classList.remove('has-order');
+    dot.style.background = 'var(--border)';
+  }
+}
+
+// ─── PRINT BILL ───────────────────────────────────────────────────────────────
+function printBill(tableId) {
+  const order = orders[tableId];
+  if (!order || !order.items.length) {
+    alert('No items in this order!'); return;
+  }
+
+  const subtotal = calcSubtotal(order);
+  const gstAmt = gstEnabled ? +(subtotal * GST_RATE / 100).toFixed(2) : 0;
+  const discount = parseFloat(order.discount || 0) || 0;
+  const total = Math.max(0, subtotal + gstAmt - discount);
+  const now = new Date();
+  const billNo = 'MG' + now.getFullYear().toString().slice(-2) +
+    String(now.getMonth()+1).padStart(2,'0') +
+    String(now.getDate()).padStart(2,'0') + '-' +
+    String(billCounter).padStart(4,'0');
+  const timeStr = now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true});
+  const dateStr = now.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+
+  pendingClearId = tableId;
+
+  const itemRows = order.items.map(it => {
+    const def = MENU.find(m => m.id === it.id);
+    const amt = def.price * it.qty;
+    const nameLine = `${def.name}`;
+    return `<div class="r-row"><span>${nameLine}</span><span></span></div>
+            <div class="r-row" style="padding-left:12px"><span style="font-size:10px;color:#666">${it.qty} × ₹${def.price}</span><span>₹${amt.toFixed(0)}</span></div>`;
+  }).join('');
+
+  const html = `
+    <div class="r-center r-bold" style="font-size:13px">🍛 MAA GAYATRI RESTAURANT 🍛</div>
+    <div class="r-center r-small">Authentic Indian Cuisine</div>
+    <hr class="r-line">
+    <div class="r-row r-small"><span>Bill No:</span><span>${billNo}</span></div>
+    <div class="r-row r-small"><span>Date:</span><span>${dateStr}</span></div>
+    <div class="r-row r-small"><span>Time:</span><span>${timeStr}</span></div>
+    <div class="r-row r-small"><span>Type:</span><span>${TABLE_LABELS[tableId]}</span></div>
+    ${order.notes ? `<div class="r-small" style="margin-top:3px">Note: ${order.notes}</div>` : ''}
+    <hr class="r-line">
+    <div class="r-row r-bold r-small"><span>ITEM</span><span>AMT</span></div>
+    <hr class="r-line">
+    ${itemRows}
+    <hr class="r-line">
+    <div class="r-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+    ${gstEnabled
+      ? `<div class="r-row r-small"><span>GST @ ${GST_RATE}%</span><span>₹${gstAmt.toFixed(2)}</span></div>`
+      : `<div class="r-row r-small"><span>GST</span><span>N/A</span></div>`}
+    ${discount > 0 ? `<div class="r-row r-small"><span>Discount</span><span>-₹${discount.toFixed(2)}</span></div>` : ''}
+    <hr class="r-solid">
+    <div class="r-row r-total"><span>GRAND TOTAL</span><span>₹${total.toFixed(2)}</span></div>
+    <hr class="r-solid">
+    <div class="r-center r-small" style="margin-top:10px">Thank you for visiting!</div>
+    <div class="r-center r-small">Please visit again 🙏</div>
+    <div class="r-center r-small" style="margin-top:6px">— Maa Gayatri Restaurant —</div>
+  `;
+
+  document.getElementById('receiptContent').innerHTML = html;
+  document.getElementById('printOverlay').classList.add('show');
+
+  // Save to log
+  salesLog.push({
+    billNo, tableId, label: TABLE_LABELS[tableId],
+    date: dateStr, time: timeStr,
+    items: order.items.map(it => {
+      const def = MENU.find(m => m.id === it.id);
+      return `${def.name}(${it.qty})`;
+    }),
+    subtotal, gstAmt, discount, total, gstEnabled
+  });
+  billCounter++;
+  renderLog();
+  saveState();
+}
+
+function doPrint() {
+  const content = document.getElementById('receiptContent').innerHTML;
+  const printWin = window.open('', '_blank', 'width=340,height=700');
+  printWin.document.write(`<!DOCTYPE html><html><head>
+    <style>
+      body { font-family: 'Courier New', monospace; font-size: 12px; padding: 10px; width: 280px; }
+      .r-center { text-align: center; } .r-bold { font-weight: 700; }
+      .r-line { border: none; border-top: 1px dashed #999; margin: 6px 0; }
+      .r-solid { border: none; border-top: 2px solid #333; margin: 6px 0; }
+      .r-row { display: flex; justify-content: space-between; margin: 2px 0; }
+      .r-total { font-size: 14px; font-weight: 700; }
+      .r-small { font-size: 10px; color: #555; }
+    </style></head><body>${content}</body></html>`);
+  printWin.document.close();
+  printWin.focus();
+  setTimeout(() => { printWin.print(); printWin.close(); }, 300);
+
+  // Clear after print
+  if (pendingClearId) {
+    orders[pendingClearId] = { items: [], notes: '', minimized: false, discount: 0 };
+    renderOrderWindow(pendingClearId);
+    updateSidebarButton(pendingClearId);
+    pendingClearId = null;
+  }
+  document.getElementById('printOverlay').classList.remove('show');
+}
+
+function closePrint() {
+  document.getElementById('printOverlay').classList.remove('show');
+  // Still clear table even without printing
+  if (pendingClearId) {
+    if (confirm('Mark this order as done and clear the table?')) {
+      orders[pendingClearId] = { items: [], notes: '', minimized: false, discount: 0 };
+      renderOrderWindow(pendingClearId);
+      updateSidebarButton(pendingClearId);
+    }
+    pendingClearId = null;
+  }
+}
+
+// ─── SALES LOG ────────────────────────────────────────────────────────────────
+function renderLog() {
+  const list = document.getElementById('logList');
+  const total = salesLog.reduce((s, e) => s + e.total, 0);
+  document.getElementById('logTotal').textContent = '₹' + total.toFixed(2);
+  document.getElementById('logCount').textContent = salesLog.length;
+
+  if (!salesLog.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:11px;padding:20px 0">No bills printed yet</div>';
+    return;
+  }
+
+  list.innerHTML = [...salesLog].reverse().map(e => `
+    <div class="log-entry">
+      <div class="log-entry-header">
+        <span class="log-entry-id">${e.billNo}</span>
+        <span class="log-entry-total">₹${e.total.toFixed(2)}</span>
+      </div>
+      <div class="log-entry-meta">
+        <span class="log-tag ${e.tableId === 'takeaway' ? 'log-tag-takeaway' : 'log-tag-table'}">${e.label.replace(/[📦🪑]/g,'').trim()}</span>
+        <span class="log-tag log-tag-time">${e.time}</span>
+        ${e.gstEnabled ? `<span class="log-tag log-tag-gst">+GST</span>` : ''}
+      </div>
+      <div class="log-entry-items">${e.items.join(', ')}</div>
+    </div>
+  `).join('');
+}
+
+function exportLog() {
+  if (!salesLog.length) { alert('No sales to export yet.'); return; }
+  const rows = [['Bill No','Table','Date','Time','Subtotal','GST','Discount','Total','Items']];
+  salesLog.forEach(e => {
+    rows.push([e.billNo, e.label.replace(/[^\w\s]/g,'').trim(), e.date, e.time,
+      e.subtotal.toFixed(2), e.gstAmt.toFixed(2), e.discount.toFixed(2),
+      e.total.toFixed(2), e.items.join(' | ')]);
+  });
+  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'maa_gayatri_sales_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// Close print overlay on background click
+document.getElementById('printOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closePrint();
+});
+
+// ─── PREVENT DATA LOSS ON REFRESH / CLOSE ────────────────────────────────────
+window.addEventListener('beforeunload', function(e) {
+  saveState(); // final save
+  const hasActiveOrders = Object.values(orders).some(o => o && o.items && o.items.length > 0);
+  if (hasActiveOrders) {
+    const msg = 'You have active table orders! Are you sure you want to leave?';
+    e.preventDefault();
+    e.returnValue = msg;
+    return msg;
+  }
+});
+
+// Save notes when user types (debounced)
+let notesSaveTimer = null;
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.classList.contains('notes-field')) {
+    clearTimeout(notesSaveTimer);
+    notesSaveTimer = setTimeout(() => saveState(), 600);
+  }
+});
+
+// ─── RESTORE STATE ON PAGE LOAD ──────────────────────────────────────────────
+(function restoreOnLoad() {
+  loadState();
+
+  // Restore GST pill UI
+  const pill = document.getElementById('gstPill');
+  if (pill) pill.className = 'toggle-pill' + (gstEnabled ? ' on' : '');
+
+  // Restore open order windows
+  const activeOrders = Object.keys(orders).filter(id => orders[id] && orders[id].items !== undefined);
+  if (activeOrders.length > 0) {
+    document.getElementById('emptyState').style.display = 'none';
+    activeOrders.forEach(tableId => {
+      renderOrderWindow(tableId);
+      updateSidebarButton(tableId);
+    });
+    // Show restore toast
+    showToast(`✅ Restored ${activeOrders.length} active order(s) from last session`);
+  }
+
+  // Restore sales log
+  if (salesLog.length > 0) renderLog();
+})();
+
+// ─── TOAST NOTIFICATION ───────────────────────────────────────────────────────
+function showToast(msg, duration = 4000) {
+  const existing = document.getElementById('mgToast');
+  if (existing) existing.remove();
+  const t = document.createElement('div');
+  t.id = 'mgToast';
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+    background: '#333333', color: 'white', padding: '10px 20px',
+    borderRadius: '100px', fontSize: '13px', fontWeight: '600',
+    zIndex: '99999', boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+    animation: 'fadeIn 0.3s ease', fontFamily: 'DM Sans, sans-serif',
+    whiteSpace: 'nowrap'
+  });
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => t.remove(), 400); }, duration);
+}
+
+// ─── CLEAR LOG FUNCTION (end of day reset) ───────────────────────────────────
+function clearLog() {
+  if (confirm('Clear entire sales log? This will reset today\'s sales. (Export CSV first if needed)')) {
+    salesLog = [];
+    billCounter = 1;
+    saveState();
+    renderLog();
+    showToast('🗑 Sales log cleared', 2500);
+  }
+}
+</script>
+</body>
+</html>
