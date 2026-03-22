@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -497,7 +498,7 @@
     <div class="header-logo">MGHR</div>
     <div class="header-title">
       <h1>माँ गायत्री होटेल आणि रेस्टोरेंट</h1>
-      <p>POS (V - 2.0)</p>
+      <p>POS (V - 3.1)</p>
     </div>
   </div>
   <div class="header-right">
@@ -508,6 +509,7 @@
     </div>
   </div>
 </header>
+
 
 <!-- MAIN -->
 <div class="main">
@@ -525,6 +527,9 @@
     </button>
 
     <div class="sidebar-section-label" style="margin-top:8px">🪑 Dine In Tables</div>
+    <button onclick="minimiseAllOrders()" title="Minimise all open orders"
+        style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 4px;border-radius:3px;line-height:1;"
+        onmouseover="this.style.color='var(--amber)'" onmouseout="this.style.color='var(--text3)'">─ All</button>
     <button class="table-btn" onclick="openOrder('table1')" id="btn-table1">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
@@ -605,15 +610,15 @@
       </div>
       <div class="table-btn-dot" id="dot-table10"></div>
     </button>
-      <button class="table-btn" onclick="openOrder('table11')" id="btn-table11">
+    <button class="table-btn" onclick="openOrder('table11')" id="btn-table11">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 11</div>
         <div class="table-btn-sub" id="sub-table11">Empty</div>
       </div>
-      <div class="table-btn-dot" id="dot-table11"></div>
+      <div class="table-btn-dot" id="dot-table11"></div>      
     </button>
-        <button class="table-btn" onclick="openOrder('table12')" id="btn-table12">
+    <button class="table-btn" onclick="openOrder('table12')" id="btn-table12">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 12</div>
@@ -621,7 +626,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table12"></div>
     </button>
-        <button class="table-btn" onclick="openOrder('table13')" id="btn-table13">
+    <button class="table-btn" onclick="openOrder('table13')" id="btn-table13">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 13</div>
@@ -686,7 +691,7 @@
     <div class="receipt-wrapper" id="receiptContent"></div>
     <div class="receipt-actions">
       <button class="receipt-btn receipt-btn-print" onclick="doPrint()">🖨️ Print Bill</button>
-      <button class="receipt-btn receipt-btn-close" onclick="closePrint()">✕ Close</button>
+      <button class="receipt-btn receipt-btn-close" onclick="closePrint()">✕ No- Print But Log</button>
     </div>
   </div>
 </div>
@@ -734,161 +739,160 @@ let pendingLogEntry = null;
 
 const MENU_CATEGORIES = [
   { id: 'starter', label: '🥢 Starter', icon: '🥢', items: [
-    { id: 'veg_lollipop', name: 'वेज लॉलीपॉप', price: 180 },
-    { id: 'paneer_chilli', name: 'पनिर चिल्ली', price: 210 },
-    { id: 'finger_chips', name: 'फिंगर चिप्स', price: 110 },
-    { id: 'veg_crispy', name: 'वेज क्रिस्पी', price: 170 },
-    { id: 'paneer_65', name: 'पनिर ६५', price: 220 },
+    { id: 'veg_lollipop', name: 'वेज लॉलीपॉप', price: 150 },
+    { id: 'paneer_chilli', name: 'पनिर चिल्ली', price: 150 },
+    { id: 'finger_chips', name: 'फिंगर चिप्स', price: 150 },
+    { id: 'veg_crispy', name: 'वेज क्रिस्पी', price: 150 },
+    { id: 'paneer_65', name: 'पनिर ६५', price: 170 },
   ]},
   { id: 'soup', label: '🍲 Soup', icon: '🍲', items: [
-    { id: 'manchow_soup', name: 'मनचाऊ सुप', price: 110 },
-    { id: 'hot_sour_soup', name: 'हॉट ॲन्ड सौर सुप', price: 110 },
-    { id: 'tomato_soup', name: 'टोमॅटो सुप', price: 100 },
+    { id: 'manchow_soup', name: 'मनचाऊ सुप', price: 70 },
+    { id: 'hot_sour_soup', name: 'हॉट ॲन्ड सौर सुप', price: 70 },
+    { id: 'tomato_soup', name: 'टोमॅटो सुप', price: 70 },
   ]},
   { id: 'papad', label: '🫓 Papad', icon: '🫓', items: [
-    { id: 'roast_papad', name: 'रोस्ट पापड', price: 20 },
-    { id: 'fry_papad', name: 'फ्राय पापड', price: 25 },
-    { id: 'masala_papad', name: 'मसाला पापड', price: 45 },
-    { id: 'roast_masala_papad', name: 'रोस्ट मसाला पापड', price: 40 },
+    { id: 'roast_papad', name: 'रोस्ट पापड', price: 10 },
+    { id: 'fry_papad', name: 'फ्राय पापड', price: 15 },
+    { id: 'masala_papad', name: 'मसाला पापड', price: 30 },
+    { id: 'roast_masala_papad', name: 'रोस्ट मसाला पापड', price: 30 },
   ]},
   { id: 'salad', label: '🥗 Salad', icon: '🥗', items: [
-    { id: 'green_salad', name: 'ग्रिन सलाद', price: 60 },
+    { id: 'green_salad', name: 'ग्रिन सलाद', price: 40 },
     { id: 'jain_salad', name: 'जैन सलाद', price: 50 },
   ]},
   { id: 'paneer', label: '🧀 Paneer', icon: '🧀', items: [
-    { id: 'palak_paneer', name: 'पालक पनिर', price: 220 },
-    { id: 'paneer_matar', name: 'पनिर मटर', price: 210 },
-    { id: 'paneer_kadai', name: 'पनिर कढई', price: 230 },
-    { id: 'paneer_tawa', name: 'पनिर तवा', price: 230 },
-    { id: 'paneer_handi', name: 'पनिर हंडी', price: 250 },
-    { id: 'paneer_bhurji_dry', name: 'पनिर भुर्जी ड्राय', price: 260 },
-    { id: 'paneer_bhurji_curry', name: 'पनिर भुर्जी करी', price: 270 },
-    { id: 'paneer_butter_masala', name: 'पनिर बटर मसाला', price: 240 },
-    { id: 'paneer_tikka_masala', name: 'पनिर टिक्का मसाला', price: 260 },
-    { id: 'paneer_tufani', name: 'पनिर तुफानी', price: 250 },
-    { id: 'paneer_angara', name: 'पनिर अंगारा', price: 260 },
-    { id: 'paneer_masala', name: 'पनिर मसाला', price: 220 },
-    { id: 'shahi_paneer', name: 'शाही पनिर', price: 250 },
-    { id: 'paneer_kolhapuri', name: 'पनिर कोल्हापुरी', price: 240 },
-    { id: 'paneer_saagwala', name: 'पनिर सागवाल', price: 230 },
-    { id: 'paneer_hyderabadi', name: 'पनिर हैद्राबादी', price: 240 },
-    { id: 'paneer_chatpata', name: 'पनिर चटपटा', price: 230 },
-    { id: 'paneer_takatak', name: 'पनिर टकाटक', price: 250 },
-    { id: 'paneer_jaipuri', name: 'पनिर जयपुरी', price: 240 },
-    { id: 'paneer_korma', name: 'पनिर कोरमा', price: 260 },
-    { id: 'cheese_paneer_butter', name: 'चिज पनिर बटर मसाला', price: 280 },
-    { id: 'laccha_paneer', name: 'लच्छा पनिर', price: 250 },
-    { id: 'paneer_mili_juli', name: 'पनिर मिली जुली', price: 240 },
+    { id: 'palak_paneer', name: 'पालक पनिर', price: 150 },
+    { id: 'paneer_matar', name: 'पनिर मटर', price: 150 },
+    { id: 'paneer_kadai', name: 'पनिर कढई', price: 160 },
+    { id: 'paneer_tawa', name: 'पनिर तवा', price: 170 },
+    { id: 'paneer_handi', name: 'पनिर हंडी', price: 170 },
+    { id: 'paneer_bhurji_dry', name: 'पनिर भुर्जी ड्राय', price: 175 },
+    { id: 'paneer_bhurji_curry', name: 'पनिर भुर्जी करी', price: 175 },
+    { id: 'paneer_butter_masala', name: 'पनिर बटर मसाला', price: 150 },
+    { id: 'paneer_tikka_masala', name: 'पनिर टिक्का मसाला', price: 170 },
+    { id: 'paneer_tufani', name: 'पनिर तुफानी', price: 170 },
+    { id: 'paneer_angara', name: 'पनिर अंगारा', price: 180 },
+    { id: 'paneer_masala', name: 'पनिर मसाला', price: 150 },
+    { id: 'shahi_paneer', name: 'शाही पनिर', price: 150 },
+    { id: 'paneer_kolhapuri', name: 'पनिर कोल्हापुरी', price: 170 },
+    { id: 'paneer_saagwala', name: 'पनिर सागवाल', price: 160 },
+    { id: 'paneer_hyderabadi', name: 'पनिर हैद्राबादी', price: 170 },
+    { id: 'paneer_chatpata', name: 'पनिर चटपटा', price: 160 },
+    { id: 'paneer_takatak', name: 'पनिर टकाटक', price: 170 },
+    { id: 'paneer_jaipuri', name: 'पनिर जयपुरी', price: 180 },
+    { id: 'paneer_korma', name: 'पनिर कोरमा', price: 150 },
+    { id: 'cheese_paneer_butter', name: 'चिज पनिर बटर मसाला', price: 180 },
+    { id: 'laccha_paneer', name: 'लच्छा पनिर', price: 170 },
+    { id: 'paneer_mili_juli', name: 'पनिर मिली जुली', price: 250 },
     { id: 'paneer_lahori', name: 'पनिर लाहोरी', price: 250 },
     { id: 'paneer_lara', name: 'पनिर लारा', price: 250 },
-    { id: 'paneer_afghani', name: 'पनिर अफगानी', price: 260 },
-    { id: 'paneer_pasandida', name: 'पनिर पसंदीदा', price: 270 },
-    { id: 'paneer_cheese_ball', name: 'पनिर चिज बॉल करी', price: 280 },
-    { id: 'paneer_tiranga', name: 'पनिर तिरंगा', price: 290 },
-    { id: 'paneer_patiala', name: 'पनिर पटियाला', price: 270 },
-    { id: 'kaju_paneer_do_pyaza', name: 'काजु पनिर दो प्याजा', price: 290 },
-    { id: 'kaju_curry', name: 'काजु करी', price: 270 },
-    { id: 'paneer_kaju_curry', name: 'पनिर काजु करी', price: 280 },
-    { id: 'kaju_masala', name: 'काजु मसाला', price: 270 },
-    { id: 'paneer_kaju_masala', name: 'पनिर काजु मसाला', price: 280 },
-    { id: 'kaju_khoya', name: 'काजु खोया', price: 300 },
-    { id: 'kaju_mawa', name: 'काजु मावा', price: 300 },
+    { id: 'paneer_afghani', name: 'पनिर अफगानी', price: 250 },
+    { id: 'paneer_pasandida', name: 'पनिर पसंदा', price: 250 },
+    { id: 'paneer_cheese_ball', name: 'पनिर चिज बॉल करी', price: null },
+    { id: 'paneer_tiranga', name: 'पनिर तिरंगा', price: 300 },
+    { id: 'paneer_patiala', name: 'पनिर पटियाला', price: 250 },
+    { id: 'kaju_paneer_do_pyaza', name: 'काजु पनिर दो प्याजा', price: 250 },
+    { id: 'kaju_curry', name: 'काजु करी', price: 180 },
+    { id: 'paneer_kaju_curry', name: 'पनिर काजु करी', price: 180 },
+    { id: 'kaju_masala', name: 'काजु मसाला', price: 180 },
+    { id: 'paneer_kaju_masala', name: 'पनिर काजु मसाला', price: 180 },
+    { id: 'kaju_khoya', name: 'काजु खोया', price: 170 },
+    { id: 'kaju_mawa', name: 'काजु मावा', price: 180 },
   ]},
   { id: 'sabji', label: '🥘 Sabji', icon: '🥘', items: [
-    { id: 'mix_veg', name: 'मिक्स वेज', price: 180 },
-    { id: 'veg_kolhapuri', name: 'वेज कोल्हापुरी', price: 190 },
-    { id: 'veg_tufani', name: 'वेज तुफानी', price: 210 },
-    { id: 'veg_handi', name: 'वेज हन्डी', price: 220 },
-    { id: 'veg_tawa', name: 'वेज तवा', price: 200 },
-    { id: 'veg_kadai', name: 'वेज कढई', price: 210 },
-    { id: 'stop_capsicum', name: 'स्टॉप कॅप्सीकम', price: 190 },
-    { id: 'stop_tomato', name: 'स्टॉप टोमॅटो', price: 180 },
-    { id: 'methi_matar', name: 'मेथी मटर', price: 190 },
-    { id: 'methi_matar_malai', name: 'मेथी मटर मलाई', price: 210 },
-    { id: 'veg_hyderabadi', name: 'वेज हैद्राबादी', price: 200 },
-    { id: 'veg_kima_kasturi', name: 'वेज किमा कस्तुरी', price: 220 },
-    { id: 'veg_jaipuri', name: 'वेज जयपुरी', price: 200 },
-    { id: 'veg_maratha', name: 'वेज मराठा', price: 210 },
-    { id: 'veg_bhuna', name: 'वेज भुना', price: 210 },
-    { id: 'veg_angara', name: 'वेज अंगारा', price: 220 },
-    { id: 'veg_tiranga', name: 'वेज तिरंगा', price: 240 },
-    { id: 'veg_patiala', name: 'वेज पटियाला', price: 230 },
-    { id: 'veg_andakari', name: 'वेज अंडाकरी', price: 180 },
-    { id: 'patodi', name: 'पाटोडी', price: 160 },
-    { id: 'veg_mili_juli', name: 'वेज मिली जुली', price: 190 },
+    { id: 'mix_veg', name: 'मिक्स वेज', price: 140 },
+    { id: 'veg_kolhapuri', name: 'वेज कोल्हापुरी', price: 140 },
+    { id: 'veg_tufani', name: 'वेज तुफानी', price: 150 },
+    { id: 'veg_handi', name: 'वेज हन्डी', price: 150 },
+    { id: 'veg_tawa', name: 'वेज तवा', price: 150 },
+    { id: 'veg_kadai', name: 'वेज कढई', price: 150 },
+    { id: 'stop_capsicum', name: 'स्टॉप कॅप्सीकम', price: 140 },
+    { id: 'stop_tomato', name: 'स्टॉप टोमॅटो', price: 140 },
+    { id: 'methi_matar', name: 'मेथी मटर', price: 140 },
+    { id: 'methi_matar_malai', name: 'मेथी मटर मलाई', price: 170 },
+    { id: 'veg_hyderabadi', name: 'वेज हैद्राबादी', price: 150 },
+    { id: 'veg_kima_kasturi', name: 'वेज किमा कस्तुरी', price: 150 },
+    { id: 'veg_jaipuri', name: 'वेज जयपुरी', price: 150 },
+    { id: 'veg_maratha', name: 'वेज मराठा', price: 150 },
+    { id: 'veg_bhuna', name: 'वेज भुना', price: 150 },
+    { id: 'veg_angara', name: 'वेज अंगारा', price: 160 },
+    { id: 'veg_tiranga', name: 'वेज तिरंगा', price: 180 },
+    { id: 'veg_patiala', name: 'वेज पटियाला', price: 160 },
+    { id: 'veg_andakari', name: 'वेज अंडाकरी', price: 140 },
+    { id: 'patodi', name: 'पाटोडी', price: 150 },
+    { id: 'veg_mili_juli', name: 'वेज मिली जुली', price: 200 },
   ]},
   { id: 'mushroom', label: '🍄 Mushroom', icon: '🍄', items: [
-    { id: 'mushroom_masala', name: 'मशरुम मसाला', price: 240 },
-    { id: 'mushroom_curry', name: 'मशरुम करी', price: 230 },
-    { id: 'paneer_mushroom_masala', name: 'पनिर मशरुम मसाला', price: 260 },
-    { id: 'mushroom_paneer_kadai', name: 'मशरुम पनिर कढई', price: 260 },
+    { id: 'mushroom_masala', name: 'मशरुम मसाला', price: 200 },
+    { id: 'mushroom_curry', name: 'मशरुम करी', price: 180 },
+    { id: 'paneer_mushroom_masala', name: 'पनिर मशरुम मसाला', price: 220 },
+    { id: 'mushroom_paneer_kadai', name: 'मशरुम पनिर कढई', price: 180 },
   ]},
   { id: 'kofta', label: '🫕 Kofta', icon: '🫕', items: [
-    { id: 'veg_kofta', name: 'वेज कोफ्ता', price: 200 },
-    { id: 'paneer_kofta', name: 'पनिर कोफ्ता', price: 230 },
-    { id: 'malai_kofta', name: 'मलाई कोफ्ता', price: 250 },
-    { id: 'veg_punjabi_kofta', name: 'वेज पंजाबी कोफ्ता', price: 220 },
-    { id: 'veg_palak_kofta', name: 'वेज पालक कोफ्ता', price: 210 },
-    { id: 'paneer_punjabi_kofta', name: 'पनिर पंजाबी कोफ्ता', price: 240 },
-    { id: 'paneer_palak_kofta', name: 'पनिर पालक कोफ्ता', price: 230 },
-    { id: 'nargis_kofta', name: 'नरगिस कोफ्ता', price: 260 },
+    { id: 'veg_kofta', name: 'वेज कोफ्ता', price: 140 },
+    { id: 'paneer_kofta', name: 'पनिर कोफ्ता', price: 180 },
+    { id: 'malai_kofta', name: 'मलाई कोफ्ता', price: 140 },
+    { id: 'veg_punjabi_kofta', name: 'वेज पंजाबी कोफ्ता', price: 150 },
+    { id: 'veg_palak_kofta', name: 'वेज पालक कोफ्ता', price: 170 },
+    { id: 'paneer_punjabi_kofta', name: 'पनिर पंजाबी कोफ्ता', price: 170 },
+    { id: 'paneer_palak_kofta', name: 'पनिर पालक कोफ्ता', price: 180 },
+    { id: 'nargis_kofta', name: 'नरगिस कोफ्ता', price: 250 },
   ]},
   { id: 'veg_main', label: '🌿 Veg', icon: '🌿', items: [
-    { id: 'jeera_aalu', name: 'जिरा आलु', price: 140 },
-    { id: 'baigan_bharta', name: 'बैगन भरता', price: 150 },
-    { id: 'baigan_masala', name: 'बैगन मसाला', price: 150 },
-    { id: 'bhendi_masala', name: 'भेंडी मसाला', price: 160 },
-    { id: 'green_peas_masala', name: 'ग्रिन पिस मसाला', price: 170 },
-    { id: 'chana_masala', name: 'चना मसाला', price: 170 },
-    { id: 'aalu_matar', name: 'आलु मटर', price: 160 },
-    { id: 'dam_aalu', name: 'दम आलु', price: 190 },
-    { id: 'plain_palak', name: 'प्लेन पालक', price: 150 },
-    { id: 'shev_bhaji', name: 'शेव भाजी', price: 140 },
-    { id: 'aalu_gobi_matar', name: 'आलु गोबी मटर', price: 170 },
-    { id: 'aalu_gobi_masala', name: 'आलु गोबी मसाला', price: 170 },
-    { id: 'aalu_palak', name: 'आलु पालक', price: 160 },
-    { id: 'gobi_masala', name: 'गोबी मसाला', price: 160 },
-    { id: 'gobi_matar', name: 'गोबी मटर', price: 160 },
+    { id: 'jeera_aalu', name: 'जिरा आलु', price: 90 },
+    { id: 'baigan_bharta', name: 'बैगन भरता', price: 110 },
+    { id: 'baigan_masala', name: 'बैगन मसाला', price: 110 },
+    { id: 'bhendi_masala', name: 'भेंडी मसाला', price: 150 },
+    { id: 'green_peas_masala', name: 'ग्रिन पिस मसाला', price: 135 },
+    { id: 'chana_masala', name: 'चना मसाला', price: 130 },
+    { id: 'aalu_matar', name: 'आलु मटर', price: 125 },
+    { id: 'dam_aalu', name: 'दम आलु', price: 130 },
+    { id: 'plain_palak', name: 'प्लेन पालक', price: 120 },
+    { id: 'shev_bhaji', name: 'शेव भाजी', price: 125 },
+    { id: 'aalu_gobi_matar', name: 'आलु गोबी मटर', price: 135 },
+    { id: 'aalu_gobi_masala', name: 'आलु गोबी मसाला', price: 130 },
+    { id: 'aalu_palak', name: 'आलु पालक', price: 120 },
+    { id: 'gobi_masala', name: 'गोबी मसाला', price: 125 },
+    { id: 'gobi_matar', name: 'गोबी मटर', price: 130 },
   ]},
   { id: 'dal', label: '🍛 Dal', icon: '🍛', items: [
-    { id: 'dal_fry', name: 'दाल फ्राय', price: 130 },
-    { id: 'dal_tadka', name: 'दाल तडका', price: 150 },
+    { id: 'dal_fry', name: 'दाल फ्राय', price: 100 },
+    { id: 'dal_tadka', name: 'दाल तडका', price: 145 },
     { id: 'jeera_dal', name: 'जिरा दाल', price: 120 },
-    { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 140 },
-    { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 160 },
-    { id: 'varhadi_dal', name: 'वऱ्हाडी दाल', price: 160 },
+    { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 145 },
+    { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 145 },
+    { id: 'varhadi_dal', name: 'वऱ्हाडी दाल', price: 150 },
   ]},
   { id: 'rice', label: '🍚 Rice', icon: '🍚', items: [
-    { id: 'plain_rice', name: 'प्लेन राईस', price: 100 },
-    { id: 'jeera_rice', name: 'जिरा राईस', price: 130 },
-    { id: 'steam_rice', name: 'स्टीम राईस', price: 110 },
-    { id: 'garlic_rice', name: 'गार्लिक राईस', price: 150 },
-    { id: 'namdev_rice', name: 'नामदेव राईस', price: 160 },
-    { id: 'dal_khichdi', name: 'दाल खिचडी', price: 160 },
-    { id: 'veg_pulao', name: 'वेज पुलाव', price: 180 },
-    { id: 'veg_paneer_pulao', name: 'वेज पनिर पुलाव', price: 210 },
-    { id: 'veg_biryani', name: 'वेज बिर्याणी', price: 200 },
-    { id: 'veg_paneer_biryani', name: 'वेज पनिर बिर्याणी', price: 230 },
-    { id: 'masala_rice', name: 'मशाला राईस', price: 150 },
-    { id: 'veg_hyd_biryani', name: 'वेज हैद्राबादी बिर्याणी', price: 220 },
-    { id: 'veg_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 240 },
-    { id: 'paneer_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 260 },
+    { id: 'plain_rice', name: 'प्लेन राईस', price: 80 },
+    { id: 'jeera_rice', name: 'जिरा राईस', price: 90 },
+    { id: 'steam_rice', name: 'स्टीम राईस', price: 100 },
+    { id: 'garlic_rice', name: 'गार्लिक राईस', price: 140 },
+    { id: 'namdev_rice', name: 'नामदेव राईस', price: 130 },
+    { id: 'masala_rice', name: 'मसाला राईस', price: 120 },
+    { id: 'dal_khichdi', name: 'दाल खिचडी', price: 120 },
+    { id: 'veg_pulao', name: 'वेज पुलाव', price: 120 },
+    { id: 'veg_paneer_pulao', name: 'वेज पनिर पुलाव', price: 160 },
+    { id: 'veg_biryani', name: 'वेज बिर्याणी', price: 130 },
+    { id: 'veg_paneer_biryani', name: 'वेज पनिर बिर्याणी', price: 160 },
+    { id: 'veg_hyd_biryani', name: 'वेज हैद्राबादी बिर्याणी', price: 160 },
+    { id: 'veg_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 140 },
+    { id: 'paneer_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 160 },
   ]},
-  { id: 'roti', label: '🫓 Roti', icon: '🫓', items: [
-    { id: 'tandur_roti', name: 'तंदुर', price: 15 },
-    { id: 'sadi_tandur_roti', name: 'साधी तंदुर', price: 15 },
-    { id: 'butter_tandur_roti', name: 'बटर तंदुर', price: 20 },
-    { id: 'paratha_roti', name: 'पराठा', price: 35 },
-    { id: 'butter_paratha_roti', name: 'बटर पराठा', price: 45 },
-    { id: 'laccha_paratha_roti', name: 'लच्छा पराठा', price: 55 },
-    { id: 'kulcha_roti', name: 'कुलचा', price: 45 },
-    { id: 'butter_kulcha_roti', name: 'बटर कुलचा', price: 55 },
-    { id: 'naan_roti', name: 'नान', price: 40 },
-    { id: 'butter_naan_roti', name: 'बटर नान', price: 50 },
-    { id: 'garlic_naan_roti', name: 'गार्लिक नान', price: 70 },
-    { id: 'masala_paratha_roti', name: 'मसाला पराठा', price: 60 },
-    { id: 'sadi_chapati_roti', name: 'साधी चपाती', price: 12 },
-    { id: 'butter_chapati_roti', name: 'बटर चपाती', price: 15 },
+  { id: 'bread', label: '🫓 Bread', icon: '🫓', items: [
+    { id: 'sadi_tandur', name: 'साधी तंदुर', price: 15 },
+    { id: 'butter_tandur', name: 'बटर तंदुर', price: 20 },
+    { id: 'kulcha', name: 'कुलचा', price: 35 },
+    { id: 'butter_kulcha', name: 'बटर कुलचा', price: 40 },
+    { id: 'naan', name: 'नान', price: 35 },
+    { id: 'butter_naan', name: 'बटर नान', price: 40 },
+    { id: 'garlic_naan', name: 'गार्लिक नान', price: 50 },
+    { id: 'paratha', name: 'पराठा', price: 20 },
+    { id: 'butter_paratha', name: 'बटर पराठा', price: 30 },
+    { id: 'laccha_paratha', name: 'लच्छा पराठा', price: null },
+    { id: 'masala_paratha', name: 'मसाला पराठा', price: 40 },
+    { id: 'sadi_chapati', name: 'साधी चपाती', price: 12 },
+    { id: 'butter_chapati', name: 'बटर चपाती', price: 15 },
   ]},
 ];
 
@@ -903,7 +907,9 @@ const TABLE_LABELS = {
   table1: '🪑 Table 1', table2: '🪑 Table 2', table3: '🪑 Table 3',
   table4: '🪑 Table 4', table5: '🪑 Table 5', table6: '🪑 Table 6',
   table7: '🪑 Table 7', table8: '🪑 Table 8', table9: '🪑 Table 9',
-  table10: '🪑 Table 10',
+  table10: '🪑 Table 10', table11: '🪑 Table 11', 
+  table12: '🪑 Table 12',table13: '🪑 Table 13',
+  table14: '🪑 Table 14',table15: '🪑 Table 15',
 };
 
 // Track open categories per window
@@ -1173,7 +1179,15 @@ function toggleMinimize(tableId) {
   renderOrderWindow(tableId);
   saveState();
 }
-
+function minimiseAllOrders() {
+  Object.keys(orders).forEach(tableId => {
+    if (orders[tableId] && !orders[tableId].minimized) {
+      orders[tableId].minimized = true;
+      renderOrderWindow(tableId);
+    }
+  });
+  saveState();
+}
 // ─── IFRAME PRINT HELPER (no popup blocker issues) ───────────────────────────
 function printViaIframe(bodyHTML, cssText) {
   const iframe = document.getElementById('printFrame');
@@ -1342,7 +1356,7 @@ function printBill(tableId) {
     <div class="r-row r-total"><span>GRAND TOTAL</span><span>₹${total.toFixed(2)}</span></div>
     <hr class="r-solid">
     <div class="r-center r-small" style="margin-top:6px">धन्यवाद! — पुन्हा भेटूया —</div>
-    <div class="r-center r-small" style="margin-top:6px">माँ गायत्री होटेल आणि रेस्टोरेंट, नाचणगाव रोड, पुलगाव</div>
+    <div class="r-center r-small" style="margin-top:6px">— माँ गायत्री होटेल आणि रेस्टोरेंट, नाचणगाव रोड, पुलगाव —</div>
   `;
 
   document.getElementById('receiptContent').innerHTML = html;
