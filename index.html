@@ -1,8 +1,7 @@
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0031)https://lknraut.github.io/mghr/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>POS - Maa Gayatri Hotel And Restaurant  — </title>
 <style>
@@ -443,7 +442,34 @@
   }
   .log-export-btn:hover { border-color: var(--amber-muted); color: var(--amber); }
   .log-export-btn:last-child { margin-bottom: 8px; }
-
+ /* ── CUSTOM ITEM ROW ── */
+  .custom-item-row {
+    display: flex; gap: 6px; align-items: center;
+    padding: 7px 8px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px dashed var(--border);
+    margin-top: 2px;
+  }
+  .custom-item-name {
+    flex: 1; background: none; border: none;
+    color: var(--text); font-size: 13px; font-family: 'POS Sans', sans-serif;
+    padding: 2px 0; min-width: 0;
+  }
+  .custom-item-name:focus { outline: none; border-bottom: 1px solid var(--amber-muted); }
+  .custom-item-name::placeholder { color: var(--text3); }
+  .custom-item-price {
+    width: 72px; background: none; border: none;
+    color: var(--amber); font-size: 13px; font-family: 'POS Sans Mono', monospace;
+    text-align: right; padding: 2px 0;
+  }
+  .custom-item-price:focus { outline: none; border-bottom: 1px solid var(--amber-muted); }
+  .custom-item-price::placeholder { color: var(--text3); }
+  .custom-item-add {
+    background: var(--amber); color: #111; border: none;
+    border-radius: var(--radius-sm); padding: 4px 10px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    white-space: nowrap; transition: filter 0.15s;
+  }
+  .custom-item-add:hover { filter: brightness(1.1); }
   /* ── PRINT RECEIPT OVERLAY ── */
   .print-overlay {
     display: none; position: fixed; inset: 0;
@@ -498,14 +524,14 @@
     <div class="header-logo">MGHR</div>
     <div class="header-title">
       <h1>माँ गायत्री होटेल आणि रेस्टोरेंट</h1>
-      <p>POS (V - 3.1)</p>
+      <p>POS (V - 3.2)</p>
     </div>
   </div>
   <div class="header-right">
-    <div class="header-clock" id="clock">--:--:--</div>
+    <div class="header-clock" id="clock">18:14:58</div>
     <div class="gst-toggle" onclick="toggleGST()" title="Toggle GST">
       <span>GST 5%</span>
-      <div class="toggle-pill on" id="gstPill"></div>
+      <div class="toggle-pill" id="gstPill"></div>
     </div>
   </div>
 </header>
@@ -516,29 +542,27 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="sidebar-section-label">🚗 Take Away</div>
-    <button class="table-btn takeaway-btn" onclick="openOrder('takeaway')" id="btn-takeaway">
+    <div class="sidebar-section-label">🚗 पार्सल </div>
+    <button class="table-btn takeaway-btn" onclick="openOrder(&#39;takeaway&#39;)" id="btn-takeaway">
       <span class="table-btn-icon">📦</span>
       <div class="table-btn-info">
-        <div class="table-btn-name">Take Away</div>
+        <div class="table-btn-name">पार्सल </div>
         <div class="table-btn-sub" id="sub-takeaway">No active order</div>
       </div>
       <div class="table-btn-dot" id="dot-takeaway"></div>
     </button>
 
     <div class="sidebar-section-label" style="margin-top:8px">🪑 Dine In Tables</div>
-    <button onclick="minimiseAllOrders()" title="Minimise all open orders"
-        style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 4px;border-radius:3px;line-height:1;"
-        onmouseover="this.style.color='var(--amber)'" onmouseout="this.style.color='var(--text3)'">─ All</button>
-    <button class="table-btn" onclick="openOrder('table1')" id="btn-table1">
+    <button onclick="minimiseAllOrders()" title="Minimise all open orders" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 4px;border-radius:3px;line-height:1;" onmouseover="this.style.color=&#39;var(--amber)&#39;" onmouseout="this.style.color=&#39;var(--text3)&#39;">─ All</button>
+    <button class="table-btn" onclick="openOrder(&#39;table1&#39;)" id="btn-table1">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 1</div>
         <div class="table-btn-sub" id="sub-table1">Empty</div>
       </div>
-      <div class="table-btn-dot" id="dot-table1"></div>
+      <div class="table-btn-dot" id="dot-table1" style="background: var(--border);"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table2')" id="btn-table2">
+    <button class="table-btn" onclick="openOrder(&#39;table2&#39;)" id="btn-table2">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 2</div>
@@ -546,15 +570,15 @@
       </div>
       <div class="table-btn-dot" id="dot-table2"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table3')" id="btn-table3">
+    <button class="table-btn" onclick="openOrder(&#39;table3&#39;)" id="btn-table3">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 3</div>
         <div class="table-btn-sub" id="sub-table3">Empty</div>
       </div>
-      <div class="table-btn-dot" id="dot-table3"></div>
+      <div class="table-btn-dot" id="dot-table3" style="background: var(--border);"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table4')" id="btn-table4">
+    <button class="table-btn" onclick="openOrder(&#39;table4&#39;)" id="btn-table4">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 4</div>
@@ -562,7 +586,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table4"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table5')" id="btn-table5">
+    <button class="table-btn" onclick="openOrder(&#39;table5&#39;)" id="btn-table5">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 5</div>
@@ -570,7 +594,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table5"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table6')" id="btn-table6">
+    <button class="table-btn" onclick="openOrder(&#39;table6&#39;)" id="btn-table6">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 6</div>
@@ -578,7 +602,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table6"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table7')" id="btn-table7">
+    <button class="table-btn" onclick="openOrder(&#39;table7&#39;)" id="btn-table7">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 7</div>
@@ -586,7 +610,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table7"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table8')" id="btn-table8">
+    <button class="table-btn" onclick="openOrder(&#39;table8&#39;)" id="btn-table8">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 8</div>
@@ -594,7 +618,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table8"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table9')" id="btn-table9">
+    <button class="table-btn" onclick="openOrder(&#39;table9&#39;)" id="btn-table9">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 9</div>
@@ -602,7 +626,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table9"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table10')" id="btn-table10">
+    <button class="table-btn" onclick="openOrder(&#39;table10&#39;)" id="btn-table10">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 10</div>
@@ -610,7 +634,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table10"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table11')" id="btn-table11">
+    <button class="table-btn" onclick="openOrder(&#39;table11&#39;)" id="btn-table11">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 11</div>
@@ -618,7 +642,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table11"></div>      
     </button>
-    <button class="table-btn" onclick="openOrder('table12')" id="btn-table12">
+    <button class="table-btn" onclick="openOrder(&#39;table12&#39;)" id="btn-table12">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 12</div>
@@ -626,7 +650,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table12"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table13')" id="btn-table13">
+    <button class="table-btn" onclick="openOrder(&#39;table13&#39;)" id="btn-table13">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 13</div>
@@ -634,7 +658,7 @@
       </div>
       <div class="table-btn-dot" id="dot-table13"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table14')" id="btn-table14">
+    <button class="table-btn" onclick="openOrder(&#39;table14&#39;)" id="btn-table14">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 14</div>
@@ -642,19 +666,19 @@
       </div>
       <div class="table-btn-dot" id="dot-table14"></div>
     </button>
-    <button class="table-btn" onclick="openOrder('table15')" id="btn-table15">
+    <button class="table-btn" onclick="openOrder(&#39;table15&#39;)" id="btn-table15">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
         <div class="table-btn-name">Table 15</div>
         <div class="table-btn-sub" id="sub-table15">Empty</div>
       </div>
-      <div class="table-btn-dot" id="dot-table15"></div>
+      <div class="table-btn-dot" id="dot-table15" style="background: var(--border);"></div>
     </button>
   </div>
 
   <!-- WORKSPACE -->
   <div class="workspace" id="workspace">
-    <div class="workspace-empty" id="emptyState">
+    <div class="workspace-empty" id="emptyState" style="">
       <div class="big-icon">🍛</div>
       <p>Select a table or take away to start an order</p>
     </div>
@@ -672,18 +696,14 @@
       <span class="log-total-label">Today's Total</span>
       <span class="log-total-val" id="logTotal">₹0.00</span>
     </div>
-    <div class="log-list" id="logList">
-      <div style="text-align:center; color:var(--text3); font-size:11px; padding:20px 0;">
-        No bills printed yet
-      </div>
-    </div>
+    <div class="log-list" id="logList"><div style="text-align:center;color:var(--text3);font-size:11px;padding:20px 0">No bills printed yet</div></div>
     <div class="log-export-btn" onclick="exportLog()">⬇ Export Log (CSV)</div>
     <div class="log-export-btn" onclick="clearLog()" style="color:var(--red);border-color:rgba(192,57,43,0.3)">🗑 Clear Log (End of Day)</div>
   </div>
 </div>
 
 <!-- HIDDEN PRINT IFRAME — no popup blocker issues -->
-<iframe id="printFrame" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;" title="print"></iframe>
+<iframe id="printFrame" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;" title="print" src="./POS - Maa Gayatri Hotel And Restaurant —_files/saved_resource.html"></iframe>
 
 <!-- PRINT OVERLAY -->
 <div class="print-overlay" id="printOverlay">
@@ -879,20 +899,33 @@ const MENU_CATEGORIES = [
     { id: 'veg_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 140 },
     { id: 'paneer_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 160 },
   ]},
-  { id: 'bread', label: '🫓 Bread', icon: '🫓', items: [
-    { id: 'sadi_tandur', name: 'साधी तंदुर', price: 15 },
-    { id: 'butter_tandur', name: 'बटर तंदुर', price: 20 },
-    { id: 'kulcha', name: 'कुलचा', price: 35 },
-    { id: 'butter_kulcha', name: 'बटर कुलचा', price: 40 },
-    { id: 'naan', name: 'नान', price: 35 },
-    { id: 'butter_naan', name: 'बटर नान', price: 40 },
-    { id: 'garlic_naan', name: 'गार्लिक नान', price: 50 },
-    { id: 'paratha', name: 'पराठा', price: 20 },
-    { id: 'butter_paratha', name: 'बटर पराठा', price: 30 },
-    { id: 'laccha_paratha', name: 'लच्छा पराठा', price: null },
-    { id: 'masala_paratha', name: 'मसाला पराठा', price: 40 },
-    { id: 'sadi_chapati', name: 'साधी चपाती', price: 12 },
-    { id: 'butter_chapati', name: 'बटर चपाती', price: 15 },
+  { id: 'roti', label: '🫓 Roti', icon: '🫓', items: [
+    { id: 'sadi_tandur_roti', name: 'साधी तंदुर', price: 15 },
+    { id: 'butter_tandur_roti', name: 'बटर तंदुर', price: 20 },
+    { id: 'kulcha_roti', name: 'कुलचा', price: 35 },
+    { id: 'butter_kulcha_roti', name: 'बटर कुलचा', price: 40 },
+    { id: 'naan_roti', name: 'नान', price: 35 },
+    { id: 'butter_naan_roti', name: 'बटर नान', price: 40 },
+    { id: 'garlic_naan_roti', name: 'गार्लिक नान', price: 50 },
+    { id: 'paratha_roti', name: 'पराठा', price: 20 },
+    { id: 'butter_paratha_roti', name: 'बटर पराठा', price: 30 },
+    { id: 'laccha_paratha_roti', name: 'लच्छा पराठा', price: null },
+    { id: 'masala_paratha_roti', name: 'मसाला पराठा', price: 40 },
+    { id: 'sadi_chapati_roti', name: 'साधी चपाती', price: 12 },
+    { id: 'butter_chapati_roti', name: 'बटर चपाती', price: 15 },
+  ]},
+  { id: 'Breaverages', label: 'Breavarages', icon: '🍹', items: [
+    { id: 'pani_water_bottel_10', name: 'पाणी बोटल छोटी', price: 10 },
+    { id: 'pani_water_bottel_20', name: 'पाणी बोटल मोठी', price: 20 },
+    { id: 'lassi_20', name: 'लस्सी हाफ', price: 20 },
+    { id: 'lassi_35', name: 'लस्सी फूल', price: 35 },
+    { id: 'tea', name: 'चाय', price: 10 },
+    { id: 'coffei', name: 'कॉफी', price: 25 },
+    { id: 'ice_Creme_10', name: 'आइसक्रीम (₹10)', price: 10 },
+    { id: 'ice_Creme_15', name: 'आइसक्रीम (₹15)', price: 15 },
+    { id: 'ice_Creme_20', name: 'आइसक्रीम (₹20)', price: 20 },
+    { id: 'ice_Creme_25', name: 'आइसक्रीम (₹25)', price: 25 },
+    { id: 'ice_Creme_30', name: 'आइसक्रीम (₹35)', price: 30 },
   ]},
 ];
 
@@ -1041,7 +1074,18 @@ function renderOrderWindow(tableId) {
         ${renderOrderItems(tableId)}
       </div>
       <div class="kot-hint">☑ Tick items to include in KOT</div>
-
+      <div class="custom-item-row">
+        <input class="custom-item-name" type="text"
+          id="custom-name-${tableId}"
+          placeholder="Custom item name..."
+          onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
+        <span style="color:var(--text3);font-size:13px;">₹</span>
+        <input class="custom-item-price" type="number"
+          id="custom-price-${tableId}"
+          placeholder="0" min="0"
+          onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
+        <button class="custom-item-add" onclick="addCustomItem('${tableId}')">+ Add</button>
+      </div>
       <textarea class="notes-field" rows="2" placeholder="Special instructions / notes..."
         onchange="orders['${tableId}'].notes=this.value; saveState();"
         id="notes-${tableId}">${order.notes}</textarea>
@@ -1092,19 +1136,21 @@ function renderOrderWindow(tableId) {
 function renderOrderItems(tableId) {
   const order = orders[tableId];
   if (!order.items.length) return '<div class="empty-order">No items added yet. Tap a category above.</div>';
-  return order.items.map((it, idx) => {
-    const itemDef = MENU.find(m => m.id === it.id);
+return order.items.map((it, idx) => {
+    const isCustom = it.custom === true;
+    const name  = isCustom ? it.name  : (MENU.find(m => m.id === it.id) || {}).name || it.id;
+    const price = isCustom ? it.price : (MENU.find(m => m.id === it.id) || {}).price || 0;
     const checked = it.kotSelected !== false ? 'checked' : '';
     return `<div class="order-item-row">
       <input type="checkbox" class="kot-check" ${checked}
         onchange="toggleKOT('${tableId}',${idx},this.checked)" title="Include in KOT">
-      <span class="order-item-name">${itemDef.name}</span>
+      <span class="order-item-name">${name}</span>
       <div class="qty-controls">
         <button class="qty-btn" onclick="changeQty('${tableId}',${idx},-1)">−</button>
         <span class="qty-num">${it.qty}</span>
         <button class="qty-btn" onclick="changeQty('${tableId}',${idx},1)">+</button>
       </div>
-      <span class="item-total">₹${(itemDef.price * it.qty).toFixed(0)}</span>
+      <span class="item-total">₹${(price * it.qty).toFixed(0)}</span>
       <button class="remove-item" onclick="removeItem('${tableId}',${idx})">✕</button>
     </div>`;
   }).join('');
@@ -1120,7 +1166,25 @@ function addItem(tableId, itemId) {
   updateSidebarButton(tableId);
   saveState();
 }
-
+function addCustomItem(tableId) {
+  const nameEl  = document.getElementById('custom-name-'  + tableId);
+  const priceEl = document.getElementById('custom-price-' + tableId);
+  const name  = nameEl.value.trim();
+  const price = parseFloat(priceEl.value) || 0;
+  if (!name) { nameEl.focus(); return; }
+  if (price <= 0) { priceEl.focus(); return; }
+  orders[tableId].items.push({
+    id: 'custom_' + Date.now(),
+    name, price, qty: 1,
+    custom: true, kotSelected: true
+  });
+  nameEl.value  = '';
+  priceEl.value = '';
+  nameEl.focus();
+  renderOrderWindow(tableId);
+  updateSidebarButton(tableId);
+  saveState();
+}
 function changeQty(tableId, idx, delta) {
   const order = orders[tableId];
   order.items[idx].qty += delta;
@@ -1223,10 +1287,10 @@ function printKOT(tableId) {
   const kotNo = 'KOT-' + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0');
 
   const itemRows = selected.map(it => {
-    const def = MENU.find(m => m.id === it.id);
+    const name = it.custom ? it.name : (MENU.find(m => m.id === it.id) || {}).name || it.id;
     return `<tr>
       <td style="padding:5px 4px; font-size:15px; font-weight:700; border-bottom:1px solid #eee;">
-        ${def.name}
+        ${name}
       </td>
       <td style="padding:5px 4px; font-size:18px; font-weight:900; text-align:right; border-bottom:1px solid #eee; color:#000;">
         × ${it.qty}
@@ -1279,6 +1343,7 @@ function printKOT(tableId) {
 
 function calcSubtotal(order) {
   return order.items.reduce((sum, it) => {
+    if (it.custom) return sum + (it.price * it.qty);
     const def = MENU.find(m => m.id === it.id);
     return sum + (def ? def.price * it.qty : 0);
   }, 0);
@@ -1326,37 +1391,36 @@ function printBill(tableId) {
   pendingClearId = tableId;
 
   const itemRows = order.items.map(it => {
-    const def = MENU.find(m => m.id === it.id);
-    const amt = def.price * it.qty;
-    const nameLine = `${def.name}`;
-    return `<div class="r-row"><span>${nameLine}</span><span></span></div>
-            <div class="r-row" style="padding-left:12px"><span style="font-size:10px;color:#666">${it.qty} × ₹${def.price}</span><span>₹${amt.toFixed(0)}</span></div>`;
+    const name  = it.custom ? it.name  : (MENU.find(m => m.id === it.id) || {}).name  || it.id;
+    const price = it.custom ? it.price : (MENU.find(m => m.id === it.id) || {}).price || 0;
+    const amt = price * it.qty;
+    return `<div class="r-row r-bold"><span>${name}</span><span></span></div>
+            <div class="r-row r-bold" style="padding-left:12px"><span style="font-size:14px;color:#00000">${it.qty} × ₹${price}</span><span>₹${amt.toFixed(0)}</span></div>`;
   }).join('');
 
   const html = `
     <div class="r-center r-bold" style="font-size:13px">MAA GAYATRI HOTEL & RESTAURANT</div>
-    <div class="r-center r-small"> आपले आपूलकीचे ठिकाण</div>
+    <div class="r-center r-bold"> आपले आपूलकीचे ठिकाण</div>
     <hr class="r-line">
-    <div class="r-row r-small"><span>Bill No:</span><span>${billNo}</span></div>
-    <div class="r-row r-small"><span>Date:</span><span>${dateStr}</span></div>
-    <div class="r-row r-small"><span>Time:</span><span>${timeStr}</span></div>
-    <div class="r-row r-small"><span>Type:</span><span>${TABLE_LABELS[tableId]}</span></div>
-    ${order.notes ? `<div class="r-small" style="margin-top:3px">Note: ${order.notes}</div>` : ''}
+    <div class="r-row r-bold"><span>Bill No:</span><span>${billNo}</span></div>
+    <div class="r-row r-bold"><span>Date:</span><span>${dateStr} ${timeStr}</span></div>
+    <div class="r-row r-bold"><span>Type:</span><span>${TABLE_LABELS[tableId]}</span></div>
+    ${order.notes ? `<div class="r-bold" style="margin-top:3px">Note: ${order.notes}</div>` : ''}
     <hr class="r-line">
-    <div class="r-row r-bold r-small"><span>ITEM</span><span>AMT</span></div>
+    <div class="r-row r-bold"><span>ITEM</span><span>AMT</span></div>
     <hr class="r-line">
     ${itemRows}
     <hr class="r-line">
-    <div class="r-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+    <div class="r-row r-bold"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
     ${gstEnabled
-      ? `<div class="r-row r-small"><span>GST @ ${GST_RATE}%</span><span>₹${gstAmt.toFixed(2)}</span></div>`
+      ? `<div class="r-row r-r-bold><span>GST @ ${GST_RATE}%</span><span>₹${gstAmt.toFixed(2)}</span></div>`
       : ``}
-    ${discount > 0 ? `<div class="r-row r-small"><span>Discount</span><span>-₹${discount.toFixed(2)}</span></div>` : ''}
+    ${discount > 0 ? `<div class="r-row r-bold"><span>Discount</span><span>-₹${discount.toFixed(2)}</span></div>` : ''}
     <hr class="r-solid">
-    <div class="r-row r-total"><span>GRAND TOTAL</span><span>₹${total.toFixed(2)}</span></div>
+    <div class="r-row r-bold r-total"><span>GRAND TOTAL</span><span>₹${total.toFixed(2)}</span></div>
     <hr class="r-solid">
-    <div class="r-center r-small" style="margin-top:6px">धन्यवाद! — पुन्हा भेटूया —</div>
-    <div class="r-center r-small" style="margin-top:6px">— माँ गायत्री होटेल आणि रेस्टोरेंट, नाचणगाव रोड, पुलगाव —</div>
+    <div class="r-center r-bold" style="margin-top:6px">धन्यवाद! — पुन्हा भेटूया —</div>
+    <div class="r-center r-bold" style="margin-top:6px">— माँ गायत्री होटेल आणि रेस्टोरेंट —</div>
   `;
 
   document.getElementById('receiptContent').innerHTML = html;
@@ -1367,8 +1431,8 @@ function printBill(tableId) {
     billNo, tableId, label: TABLE_LABELS[tableId],
     date: dateStr, time: timeStr,
     items: order.items.map(it => {
-      const def = MENU.find(m => m.id === it.id);
-      return `${def.name}(${it.qty})`;
+      const name = it.custom ? it.name : (MENU.find(m => m.id === it.id) || {}).name || it.id;
+      return `${name}(${it.qty})`;
     }),
     subtotal, gstAmt, discount, total, gstEnabled
   };
@@ -1557,5 +1621,6 @@ function clearLog() {
   }
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
