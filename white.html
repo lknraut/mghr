@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!-- saved from url=(0031)https://lknraut.github.io/mghr/ -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -58,7 +59,7 @@
     --bgsearch1: #33322d;
 
     /* Borders */
-    --border:  #333333;
+    --border:  #6b5656;
     --border2: #2A2A2A;
     --borderoderrow2: #fffb00;
 
@@ -281,7 +282,7 @@
   .menu-chip-price { font-size: 11px; color: var(--amber); font-family: 'POS Sans Mono', monospace; }
 
   /* ── ORDER ITEMS LIST ── */
-  .order-items-list { display: flex; flex-direction: column; gap: 3px; max-height: 190px; overflow-y: auto; }
+  .order-items-list { display: flex; flex-direction: column; gap: 3px; ; overflow-y: auto; }
   .order-items-list::-webkit-scrollbar { width: 4px; }
   .order-items-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
@@ -493,7 +494,7 @@
   .r-line { border: none; border-top: 1px dashed #aaa; margin: 7px 0; }
   .r-solid { border: none; border-top: 2px solid #333; margin: 7px 0; }
   .r-row { display: flex; justify-content: space-between; margin: 2px 0; }
-  .r-total { font-size: 14px; font-weight: 700; }
+  .r-total { font-size: 18px; font-weight: 800; }
   .r-small { font-size: 10px; color: #666; }
 
   .receipt-actions { display: flex; gap: 10px; margin-top: 14px; }
@@ -528,7 +529,7 @@
     <div class="header-logo">MGHR</div>
     <div class="header-title">
       <h1>माँ गायत्री होटेल आणि रेस्टोरेंट</h1>
-      <p>POS (V - 3.2)</p>
+      <p>POS (V - 4.1)</p>
     </div>
   </div>
   <div class="header-right">
@@ -551,13 +552,13 @@
       <span class="table-btn-icon">📦</span>
       <div class="table-btn-info">
         <div class="table-btn-name">पार्सल </div>
-        <div class="table-btn-sub" id="sub-takeaway">No active order</div>
+        <div class="table-btn-sub" id="sub-takeaway">सध्या ऑर्डर नाही </div>
       </div>
       <div class="table-btn-dot" id="dot-takeaway"></div>
     </button>
 
     <div class="sidebar-section-label" style="margin-top:8px">🪑 Dine In Tables</div>
-    <button onclick="minimiseAllOrders()" title="Minimise all open orders" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 4px;border-radius:3px;line-height:1;" onmouseover="this.style.color=&#39;var(--amber)&#39;" onmouseout="this.style.color=&#39;var(--text3)&#39;">─ All</button>
+    <button onclick="minimiseAllOrders()" title="Minimise all open orders" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:2px 4px;border-radius:3px;line-height:1;" onmouseover="this.style.color=&#39;var(--amber)&#39;" onmouseout="this.style.color=&#39;var(--text3)&#39;">─ मिनीमाइस करा ⛔</button>
     <button class="table-btn" onclick="openOrder(&#39;table1&#39;)" id="btn-table1">
       <span class="table-btn-icon">🪑</span>
       <div class="table-btn-info">
@@ -762,29 +763,48 @@ let pendingClearId = null;
 let pendingLogEntry = null;
 
 const MENU_CATEGORIES = [
-  { id: 'starter', label: '🥢 Starter', icon: '🥢', items: [
+  { id: 'starter', label: '🥢 स्टार्टर', icon: '🥢', items: [
     { id: 'veg_lollipop', name: 'वेज लॉलीपॉप', price: 150 },
     { id: 'paneer_chilli', name: 'पनिर चिल्ली', price: 150 },
     { id: 'finger_chips', name: 'फिंगर चिप्स', price: 150 },
     { id: 'veg_crispy', name: 'वेज क्रिस्पी', price: 150 },
     { id: 'paneer_65', name: 'पनिर ६५', price: 170 },
   ]},
-  { id: 'soup', label: '🍲 Soup', icon: '🍲', items: [
+  { id: 'soup', label: '🍲 सूप', icon: '🍲', items: [
     { id: 'manchow_soup', name: 'मनचाऊ सुप', price: 70 },
     { id: 'hot_sour_soup', name: 'हॉट ॲन्ड सौर सुप', price: 70 },
     { id: 'tomato_soup', name: 'टोमॅटो सुप', price: 70 },
   ]},
-  { id: 'papad', label: '🫓 Papad', icon: '🫓', items: [
+  { id: 'papad', label: '🍥 पापड', icon: '🫓', items: [
     { id: 'roast_papad', name: 'रोस्ट पापड', price: 10 },
     { id: 'fry_papad', name: 'फ्राय पापड', price: 15 },
     { id: 'masala_papad', name: 'मसाला पापड', price: 30 },
     { id: 'roast_masala_papad', name: 'रोस्ट मसाला पापड', price: 30 },
   ]},
-  { id: 'salad', label: '🥗 Salad', icon: '🥗', items: [
+  { id: 'salad', label: '🥗 सलाद', icon: '🥗', items: [
     { id: 'green_salad', name: 'ग्रिन सलाद', price: 40 },
     { id: 'jain_salad', name: 'जैन सलाद', price: 50 },
   ]},
-  { id: 'paneer', label: '🧀 Paneer', icon: '🧀', items: [
+
+
+   { id: 'roti', label: '🌕 रोटी', icon: '🫓', items: [
+    { id: 'sadi_tandur_roti', name: 'साधी तंदुर', price: 15 },
+    { id: 'butter_tandur_roti', name: 'बटर तंदुर', price: 20 },
+    { id: 'kulcha_roti', name: 'कुलचा', price: 35 },
+    { id: 'butter_kulcha_roti', name: 'बटर कुलचा', price: 40 },
+    { id: 'naan_roti', name: 'नान', price: 35 },
+    { id: 'butter_naan_roti', name: 'बटर नान', price: 40 },
+    { id: 'garlic_naan_roti', name: 'गार्लिक नान', price: 50 },
+    { id: 'paratha_roti', name: 'पराठा', price: 20 },
+    { id: 'butter_paratha_roti', name: 'बटर पराठा', price: 30 },
+    { id: 'laccha_paratha_roti', name: 'लच्छा पराठा', price: null },
+    { id: 'masala_paratha_roti', name: 'मसाला पराठा', price: 40 },
+    { id: 'sadi_chapati_roti', name: 'साधी चपाती', price: 12 },
+    { id: 'butter_chapati_roti', name: 'बटर चपाती', price: 15 },
+  ]},
+
+
+  { id: 'paneer', label: '🍲 पनीर', icon: '🧀', items: [
     { id: 'palak_paneer', name: 'पालक पनिर', price: 150 },
     { id: 'paneer_matar', name: 'पनिर मटर', price: 150 },
     { id: 'paneer_kadai', name: 'पनिर कढई', price: 160 },
@@ -823,7 +843,7 @@ const MENU_CATEGORIES = [
     { id: 'kaju_khoya', name: 'काजु खोया', price: 170 },
     { id: 'kaju_mawa', name: 'काजु मावा', price: 180 },
   ]},
-  { id: 'sabji', label: '🥘 Sabji', icon: '🥘', items: [
+  { id: 'sabji', label: '🍆 सब्जी', icon: '🍅', items: [
     { id: 'mix_veg', name: 'मिक्स वेज', price: 140 },
     { id: 'veg_kolhapuri', name: 'वेज कोल्हापुरी', price: 140 },
     { id: 'veg_tufani', name: 'वेज तुफानी', price: 150 },
@@ -846,13 +866,13 @@ const MENU_CATEGORIES = [
     { id: 'patodi', name: 'पाटोडी', price: 150 },
     { id: 'veg_mili_juli', name: 'वेज मिली जुली', price: 200 },
   ]},
-  { id: 'mushroom', label: '🍄 Mushroom', icon: '🍄', items: [
+  { id: 'mushroom', label: '🍄 मशरूम', icon: '🍄', items: [
     { id: 'mushroom_masala', name: 'मशरुम मसाला', price: 200 },
     { id: 'mushroom_curry', name: 'मशरुम करी', price: 180 },
     { id: 'paneer_mushroom_masala', name: 'पनिर मशरुम मसाला', price: 220 },
     { id: 'mushroom_paneer_kadai', name: 'मशरुम पनिर कढई', price: 180 },
   ]},
-  { id: 'kofta', label: '🫕 Kofta', icon: '🫕', items: [
+  { id: 'kofta', label: '🫕 कोफ़्ता', icon: '🫕', items: [
     { id: 'veg_kofta', name: 'वेज कोफ्ता', price: 140 },
     { id: 'paneer_kofta', name: 'पनिर कोफ्ता', price: 180 },
     { id: 'malai_kofta', name: 'मलाई कोफ्ता', price: 140 },
@@ -862,7 +882,7 @@ const MENU_CATEGORIES = [
     { id: 'paneer_palak_kofta', name: 'पनिर पालक कोफ्ता', price: 180 },
     { id: 'nargis_kofta', name: 'नरगिस कोफ्ता', price: 250 },
   ]},
-  { id: 'veg_main', label: '🌿 Veg', icon: '🌿', items: [
+  { id: 'veg_main', label: '🥬 वेज', icon: '🌿', items: [
     { id: 'jeera_aalu', name: 'जिरा आलु', price: 90 },
     { id: 'baigan_bharta', name: 'बैगन भरता', price: 110 },
     { id: 'baigan_masala', name: 'बैगन मसाला', price: 110 },
@@ -879,7 +899,7 @@ const MENU_CATEGORIES = [
     { id: 'gobi_masala', name: 'गोबी मसाला', price: 125 },
     { id: 'gobi_matar', name: 'गोबी मटर', price: 130 },
   ]},
-  { id: 'dal', label: '🍛 Dal', icon: '🍛', items: [
+  { id: 'dal', label: '🍛 दाल', icon: '🍛', items: [
     { id: 'dal_fry', name: 'दाल फ्राय', price: 100 },
     { id: 'dal_tadka', name: 'दाल तडका', price: 145 },
     { id: 'jeera_dal', name: 'जिरा दाल', price: 120 },
@@ -887,7 +907,7 @@ const MENU_CATEGORIES = [
     { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 145 },
     { id: 'varhadi_dal', name: 'वऱ्हाडी दाल', price: 150 },
   ]},
-  { id: 'rice', label: '🍚 Rice', icon: '🍚', items: [
+  { id: 'rice', label: '🍙 राइस', icon: '🍚', items: [
     { id: 'plain_rice', name: 'प्लेन राईस', price: 80 },
     { id: 'jeera_rice', name: 'जिरा राईस', price: 90 },
     { id: 'steam_rice', name: 'स्टीम राईस', price: 100 },
@@ -903,22 +923,8 @@ const MENU_CATEGORIES = [
     { id: 'veg_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 140 },
     { id: 'paneer_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 160 },
   ]},
-  { id: 'roti', label: '🫓 Roti', icon: '🫓', items: [
-    { id: 'sadi_tandur_roti', name: 'साधी तंदुर', price: 15 },
-    { id: 'butter_tandur_roti', name: 'बटर तंदुर', price: 20 },
-    { id: 'kulcha_roti', name: 'कुलचा', price: 35 },
-    { id: 'butter_kulcha_roti', name: 'बटर कुलचा', price: 40 },
-    { id: 'naan_roti', name: 'नान', price: 35 },
-    { id: 'butter_naan_roti', name: 'बटर नान', price: 40 },
-    { id: 'garlic_naan_roti', name: 'गार्लिक नान', price: 50 },
-    { id: 'paratha_roti', name: 'पराठा', price: 20 },
-    { id: 'butter_paratha_roti', name: 'बटर पराठा', price: 30 },
-    { id: 'laccha_paratha_roti', name: 'लच्छा पराठा', price: null },
-    { id: 'masala_paratha_roti', name: 'मसाला पराठा', price: 40 },
-    { id: 'sadi_chapati_roti', name: 'साधी चपाती', price: 12 },
-    { id: 'butter_chapati_roti', name: 'बटर चपाती', price: 15 },
-  ]},
-  { id: 'Breaverages', label: 'Breavarages', icon: '🍹', items: [
+ 
+  { id: 'Breaverages', label: '🥛 पेय पदार्थ', icon: '🍹', items: [
     { id: 'pani_water_bottel_10', name: 'पाणी बोटल छोटी', price: 10 },
     { id: 'pani_water_bottel_20', name: 'पाणी बोटल मोठी', price: 20 },
     { id: 'lassi_20', name: 'लस्सी हाफ', price: 20 },
@@ -1046,7 +1052,7 @@ function renderOrderWindow(tableId) {
       </div>
     </div>
     <div class="window-body">
-      <input class="menu-search" type="text" placeholder="🔍 Search menu items..."
+      <input class="menu-search" type="text" placeholder="🔍 मेनू शोधण्यासाठी टाइप करा..."
         oninput="searchMenu('${tableId}', this.value)" id="search-${tableId}">
       <div id="searchresults-${tableId}" class="search-results" style="display:none"></div>
       <div class="menu-cat-scroll">
@@ -1076,12 +1082,12 @@ function renderOrderWindow(tableId) {
     <div class="custom-item-row">
         <input class="custom-item-name" type="text"
           id="custom-name-${tableId}"
-          placeholder="Custom item name..."
+          placeholder="ऑर्डर चे नाव लिहा "
           onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
         <span style="color:var(--text3);font-size:13px;">₹</span>
         <input class="custom-item-price" type="number"
           id="custom-price-${tableId}"
-          placeholder="0" min="0"
+          placeholder="किंमत" min="0"
           onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
         <button class="custom-item-add" onclick="addCustomItem('${tableId}')">+ Add</button>
       </div>
@@ -1424,7 +1430,6 @@ function printBill(tableId) {
     <div class="r-row r-bold r-total"><span>GRAND TOTAL</span><span>₹${total.toFixed(2)}</span></div>
     <hr class="r-solid">
     <div class="r-center r-bold" style="margin-top:6px">धन्यवाद! — पुन्हा भेटूया —</div>
-    <div class="r-center r-bold" style="margin-top:6px">— माँ गायत्री होटेल आणि रेस्टोरेंट —</div>
   `;
 
   document.getElementById('receiptContent').innerHTML = html;
@@ -1445,13 +1450,13 @@ function printBill(tableId) {
 function doPrint() {
   const content = document.getElementById('receiptContent').innerHTML;
   const css = `
-    body { font-family: 'Courier New', monospace; font-size: 12px; padding: 10px; width: 280px; }
-    .r-center { text-align: center; } .r-bold { font-weight: 700; }
+    body { font-family: 'Courier New', monospace; font-size: 15px; padding: 10px; width: 280px; }
+    .r-center { text-align: center; } .r-bold { font-weight: 800; }
     .r-line { border: none; border-top: 1px dashed #999; margin: 6px 0; }
     .r-solid { border: none; border-top: 2px solid #333; margin: 6px 0; }
     .r-row { display: flex; justify-content: space-between; margin: 2px 0; }
-    .r-total { font-size: 14px; font-weight: 700; }
-    .r-small { font-size: 10px; color: #555; }
+    .r-total { font-size: 18px; font-weight: 800; }
+    .r-small { font-size: 10px; color: #00000; }
   `;
   printViaIframe(content, css);
 
@@ -1479,7 +1484,7 @@ function closePrint() {
   // Discard pending log entry — Close means "don't print, don't log"
   pendingLogEntry = null;
   if (pendingClearId) {
-    if (confirm('Mark this order as done and clear the table?')) {
+    if (confirm('सेल्स लॉग मधे समाविष्ट करून टेबल क्लियर करायचे?')) {
       orders[pendingClearId] = { items: [], notes: '', minimized: false, discount: 0 };
       renderOrderWindow(pendingClearId);
       updateSidebarButton(pendingClearId);
@@ -1494,7 +1499,7 @@ function toggleLogPanel() {
   const panel = document.getElementById('logPanel');
   const btn = document.getElementById('logToggleBtn');
   const collapsed = panel.classList.toggle('collapsed');
-  btn.textContent = collapsed ? '▶' : '◀';
+  btn.textContent = collapsed ? '▶ आजचा सेल चेक करा' : '◀';
   btn.title = collapsed ? 'Expand log' : 'Collapse log';
 }
 
