@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <!-- saved from url=(0031)https://lknraut.github.io/mghr/ -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -206,7 +207,7 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    width: 420px; min-width: 360px;
+    width: 400px; min-width: 360px;
     box-shadow: var(--shadow);
     transition: box-shadow 0.2s;
     animation: slideIn 0.2s ease;
@@ -249,7 +250,7 @@
   .search-results { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0; }
 
   /* ── CATEGORY ACCORDION ── */
-  .menu-cat-scroll { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding-right: 2px; }
+   .menu-cat-scroll { max-height: 500px; overflow-y: auto; display: flex; flex-wrap: wrap; flex-direction: row; gap: 5px; padding: px; align-content: flex-start; }
   .cat-header {
     display: flex; align-items: center; justify-content: space-between;
     padding: 8px 10px; border-radius: var(--radius-sm);
@@ -264,7 +265,7 @@
   .cat-count { font-size: 11px; color: var(--text3); }
   .cat-arrow { font-size: 10px; color: var(--text3); transition: transform 0.2s; }
   .cat-header.open .cat-arrow { transform: rotate(180deg); color: var(--amber); }
-  .cat-items { display: none; flex-wrap: wrap; gap: 5px; padding: 7px 4px 3px; }
+  .cat-items { display: none; flex-wrap: wrap; gap: 5px; padding: 7px 4px 3px; width: 100%; border-left: 2px solid var(--amber-muted); margin-bottom: 4px; }
   .cat-items.open { display: flex; }
 
   /* ── MENU CHIPS ── */
@@ -529,7 +530,7 @@
     <div class="header-logo">MGHR</div>
     <div class="header-title">
       <h1>माँ गायत्री होटेल आणि रेस्टोरेंट</h1>
-      <p>POS (V - 4.1)</p>
+      <p>POS (V - 4.5)</p>
     </div>
   </div>
   <div class="header-right">
@@ -763,31 +764,31 @@ let pendingClearId = null;
 let pendingLogEntry = null;
 
 const MENU_CATEGORIES = [
-  { id: 'starter', label: '🥢 स्टार्टर', icon: '🥢', items: [
+  { id: 'starter', label: 'स्टार्टर', icon: '🥢', items: [
     { id: 'veg_lollipop', name: 'वेज लॉलीपॉप', price: 150 },
     { id: 'paneer_chilli', name: 'पनिर चिल्ली', price: 150 },
     { id: 'finger_chips', name: 'फिंगर चिप्स', price: 150 },
     { id: 'veg_crispy', name: 'वेज क्रिस्पी', price: 150 },
     { id: 'paneer_65', name: 'पनिर ६५', price: 170 },
   ]},
-  { id: 'soup', label: '🍲 सूप', icon: '🍲', items: [
+  { id: 'soup', label: 'सूप', icon: '🍲', items: [
     { id: 'manchow_soup', name: 'मनचाऊ सुप', price: 70 },
     { id: 'hot_sour_soup', name: 'हॉट ॲन्ड सौर सुप', price: 70 },
     { id: 'tomato_soup', name: 'टोमॅटो सुप', price: 70 },
   ]},
-  { id: 'papad', label: '🍥 पापड', icon: '🫓', items: [
+  { id: 'papad', label: 'पापड', icon: '🫓', items: [
     { id: 'roast_papad', name: 'रोस्ट पापड', price: 10 },
     { id: 'fry_papad', name: 'फ्राय पापड', price: 15 },
     { id: 'masala_papad', name: 'मसाला पापड', price: 30 },
     { id: 'roast_masala_papad', name: 'रोस्ट मसाला पापड', price: 30 },
   ]},
-  { id: 'salad', label: '🥗 सलाद', icon: '🥗', items: [
+  { id: 'salad', label: 'सलाद', icon: '🥗', items: [
     { id: 'green_salad', name: 'ग्रिन सलाद', price: 40 },
     { id: 'jain_salad', name: 'जैन सलाद', price: 50 },
   ]},
 
 
-   { id: 'roti', label: '🌕 रोटी', icon: '🫓', items: [
+   { id: 'roti', label: 'रोटी', icon: '🫓', items: [
     { id: 'sadi_tandur_roti', name: 'साधी तंदुर', price: 15 },
     { id: 'butter_tandur_roti', name: 'बटर तंदुर', price: 20 },
     { id: 'kulcha_roti', name: 'कुलचा', price: 35 },
@@ -804,7 +805,7 @@ const MENU_CATEGORIES = [
   ]},
 
 
-  { id: 'paneer', label: '🍲 पनीर', icon: '🧀', items: [
+  { id: 'paneer', label: 'पनीर', icon: '🧀', items: [
     { id: 'palak_paneer', name: 'पालक पनिर', price: 150 },
     { id: 'paneer_matar', name: 'पनिर मटर', price: 150 },
     { id: 'paneer_kadai', name: 'पनिर कढई', price: 160 },
@@ -843,7 +844,7 @@ const MENU_CATEGORIES = [
     { id: 'kaju_khoya', name: 'काजु खोया', price: 170 },
     { id: 'kaju_mawa', name: 'काजु मावा', price: 180 },
   ]},
-  { id: 'sabji', label: '🍆 सब्जी', icon: '🍅', items: [
+  { id: 'sabji', label: 'सब्जी', icon: '🍅', items: [
     { id: 'mix_veg', name: 'मिक्स वेज', price: 140 },
     { id: 'veg_kolhapuri', name: 'वेज कोल्हापुरी', price: 140 },
     { id: 'veg_tufani', name: 'वेज तुफानी', price: 150 },
@@ -866,13 +867,13 @@ const MENU_CATEGORIES = [
     { id: 'patodi', name: 'पाटोडी', price: 150 },
     { id: 'veg_mili_juli', name: 'वेज मिली जुली', price: 200 },
   ]},
-  { id: 'mushroom', label: '🍄 मशरूम', icon: '🍄', items: [
+  { id: 'mushroom', label: 'मशरूम', icon: '🍄', items: [
     { id: 'mushroom_masala', name: 'मशरुम मसाला', price: 200 },
     { id: 'mushroom_curry', name: 'मशरुम करी', price: 180 },
     { id: 'paneer_mushroom_masala', name: 'पनिर मशरुम मसाला', price: 220 },
     { id: 'mushroom_paneer_kadai', name: 'मशरुम पनिर कढई', price: 180 },
   ]},
-  { id: 'kofta', label: '🫕 कोफ़्ता', icon: '🫕', items: [
+  { id: 'kofta', label: 'कोफ़्ता', icon: '🫕', items: [
     { id: 'veg_kofta', name: 'वेज कोफ्ता', price: 140 },
     { id: 'paneer_kofta', name: 'पनिर कोफ्ता', price: 180 },
     { id: 'malai_kofta', name: 'मलाई कोफ्ता', price: 140 },
@@ -882,7 +883,7 @@ const MENU_CATEGORIES = [
     { id: 'paneer_palak_kofta', name: 'पनिर पालक कोफ्ता', price: 180 },
     { id: 'nargis_kofta', name: 'नरगिस कोफ्ता', price: 250 },
   ]},
-  { id: 'veg_main', label: '🥬 वेज', icon: '🌿', items: [
+  { id: 'veg_main', label: 'वेज', icon: '🌿', items: [
     { id: 'jeera_aalu', name: 'जिरा आलु', price: 90 },
     { id: 'baigan_bharta', name: 'बैगन भरता', price: 110 },
     { id: 'baigan_masala', name: 'बैगन मसाला', price: 110 },
@@ -899,7 +900,7 @@ const MENU_CATEGORIES = [
     { id: 'gobi_masala', name: 'गोबी मसाला', price: 125 },
     { id: 'gobi_matar', name: 'गोबी मटर', price: 130 },
   ]},
-  { id: 'dal', label: '🍛 दाल', icon: '🍛', items: [
+  { id: 'dal', label: 'दाल', icon: '🍛', items: [
     { id: 'dal_fry', name: 'दाल फ्राय', price: 100 },
     { id: 'dal_tadka', name: 'दाल तडका', price: 145 },
     { id: 'jeera_dal', name: 'जिरा दाल', price: 120 },
@@ -907,7 +908,7 @@ const MENU_CATEGORIES = [
     { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 145 },
     { id: 'varhadi_dal', name: 'वऱ्हाडी दाल', price: 150 },
   ]},
-  { id: 'rice', label: '🍙 राइस', icon: '🍚', items: [
+  { id: 'rice', label: 'राइस', icon: '🍚', items: [
     { id: 'plain_rice', name: 'प्लेन राईस', price: 80 },
     { id: 'jeera_rice', name: 'जिरा राईस', price: 90 },
     { id: 'steam_rice', name: 'स्टीम राईस', price: 100 },
@@ -924,7 +925,7 @@ const MENU_CATEGORIES = [
     { id: 'paneer_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 160 },
   ]},
  
-  { id: 'Breaverages', label: '🥛 पेय पदार्थ', icon: '🍹', items: [
+  { id: 'Breaverages', label: 'पेय पदार्थ', icon: '🍹', items: [
     { id: 'pani_water_bottel_10', name: 'पाणी बोटल छोटी', price: 10 },
     { id: 'pani_water_bottel_20', name: 'पाणी बोटल मोठी', price: 20 },
     { id: 'lassi_20', name: 'लस्सी हाफ', price: 20 },
@@ -1055,17 +1056,14 @@ function renderOrderWindow(tableId) {
       <input class="menu-search" type="text" placeholder="🔍 मेनू शोधण्यासाठी टाइप करा..."
         oninput="searchMenu('${tableId}', this.value)" id="search-${tableId}">
       <div id="searchresults-${tableId}" class="search-results" style="display:none"></div>
-      <div class="menu-cat-scroll">
-      <div class="menu-categories" id="menu-${tableId}">
+<div class="menu-cat-scroll">
         ${MENU_CATEGORIES.map(cat => `
-          <div>
+          <div style="width:100%;display:contents">
             <div class="cat-header" id="cathdr-${tableId}-${cat.id}" onclick="toggleCat('${tableId}','${cat.id}')">
-              <div class="cat-header-left">
-                <span class="cat-icon">${cat.icon}</span>
-                <span class="cat-name">${cat.label}</span>
-                <span class="cat-count">(${cat.items.length})</span>
-              </div>
-              <span class="cat-arrow">▼</span>
+              <span class="cat-icon">${cat.icon}</span>
+              <span class="cat-name">${cat.label}</span>
+              <span class="cat-count">(${cat.items.length})</span>
+              <span class="cat-arrow" style="font-size:9px;color:var(--text3);">▼</span>
             </div>
             <div class="cat-items" id="catitems-${tableId}-${cat.id}">
               ${cat.items.map(item => `
@@ -1078,7 +1076,6 @@ function renderOrderWindow(tableId) {
           </div>
         `).join('')}
       </div>
-      </div><!-- end menu-cat-scroll -->
     <div class="custom-item-row">
         <input class="custom-item-name" type="text"
           id="custom-name-${tableId}"
@@ -1151,10 +1148,15 @@ return order.items.map((it, idx) => {
     const name  = isCustom ? it.name  : (MENU.find(m => m.id === it.id) || {}).name || it.id;
     const price = isCustom ? it.price : (MENU.find(m => m.id === it.id) || {}).price || 0;
     const checked = it.kotSelected !== false ? 'checked' : '';
+    const sentQty = it.kotSentQty || 0;
+    const newQty = it.qty - sentQty;
+    const kotBadge = newQty > 0
+      ? `<span style="font-size:10px;color:var(--amber);margin-left:4px">(+${newQty} new)</span>`
+      : `<span style="font-size:10px;color:var(--text3);margin-left:4px">(sent)</span>`;
     return `<div class="order-item-row">
       <input type="checkbox" class="kot-check" ${checked}
         onchange="toggleKOT('${tableId}',${idx},this.checked)" title="Include in KOT">
-      <span class="order-item-name">${name}</span>
+      <span class="order-item-name">${name}${kotBadge}</span>
       <div class="qty-controls">
         <button class="qty-btn" onclick="changeQty('${tableId}',${idx},-1)">−</button>
         <span class="qty-num">${it.qty}</span>
@@ -1171,7 +1173,7 @@ function addItem(tableId, itemId) {
   const order = orders[tableId];
   const existing = order.items.find(it => it.id === itemId);
   if (existing) existing.qty++;
-  else order.items.push({ id: itemId, qty: 1, kotSelected: true });
+  else order.items.push({ id: itemId, qty: 1, kotSelected: true, kotSentQty: 0 });
   renderOrderWindow(tableId);
   updateSidebarButton(tableId);
   saveState();
@@ -1186,8 +1188,9 @@ function addCustomItem(tableId) {
   orders[tableId].items.push({
     id: 'custom_' + Date.now(),
     name, price, qty: 1,
-    custom: true, kotSelected: true
+    custom: true, kotSelected: true, kotSentQty: 0
   });
+
   nameEl.value  = '';
   priceEl.value = '';
   nameEl.focus();
@@ -1288,22 +1291,28 @@ function printKOT(tableId) {
   const order = orders[tableId];
   if (!order || !order.items.length) { alert('No items in this order!'); return; }
 
-  const selected = order.items.filter(it => it.kotSelected !== false);
+   const selected = order.items.filter(it => it.kotSelected !== false);
   if (!selected.length) { alert('No items selected for KOT.\nPlease tick at least one item.'); return; }
+  // Calculate only NEW qty (not yet sent to kitchen)
+  const kotItems = selected.map(it => ({
+    ...it,
+    kotQty: it.qty - (it.kotSentQty || 0)
+  })).filter(it => it.kotQty > 0);
+  if (!kotItems.length) { alert('No new items to send!\nAll selected items were already sent to kitchen.'); return; }
 
   const now = new Date();
   const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
   const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   const kotNo = 'KOT-' + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0');
 
-  const itemRows = selected.map(it => {
+  const itemRows = kotItems.map(it => {
     const name = it.custom ? it.name : (MENU.find(m => m.id === it.id) || {}).name || it.id;
     return `<tr>
       <td style="padding:5px 4px; font-size:15px; font-weight:700; border-bottom:1px solid #eee;">
         ${name}
       </td>
       <td style="padding:5px 4px; font-size:18px; font-weight:900; text-align:right; border-bottom:1px solid #eee; color:#000;">
-        × ${it.qty}
+        × ${it.kotQty}
       </td>
     </tr>`;
   }).join('');
@@ -1313,18 +1322,18 @@ function printKOT(tableId) {
       <strong>⚠ Note:</strong> ${order.notes}
     </div>` : '';
 
-  const kotCSS = `
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Courier New', monospace; width: 280px; padding: 12px 10px; color: #000; }
+   const kotCSS = `
+    * { box-sizing: border-box; margin: 0; padding: 0; font-weight: 900; }
+    body { font-family: 'Courier New', monospace; width: 280px; padding: 12px 10px; color: #000; font-weight: 900; }
     h1 { font-size: 16px; font-weight: 900; text-align: center; letter-spacing: 1px; }
-    .sub { font-size: 11px; text-align: center; color: #555; margin-bottom: 8px; }
+    .sub { font-size: 11px; text-align: center; color: #000; margin-bottom: 8px; font-weight: 900; }
     .divider { border: none; border-top: 2px solid #000; margin: 8px 0; }
-    .divider-dash { border: none; border-top: 1px dashed #aaa; margin: 6px 0; }
-    .meta { font-size: 11px; color: #333; margin: 3px 0; display:flex; justify-content:space-between; }
+    .divider-dash { border: none; border-top: 1px dashed #000; margin: 6px 0; }
+    .meta { font-size: 11px; color: #000; margin: 3px 0; display:flex; justify-content:space-between; font-weight: 900; }
     .table-label { font-size: 18px; font-weight: 900; text-align: center;
       border: 3px solid #000; padding: 5px; margin: 8px 0; letter-spacing: 1px; }
     table { width: 100%; border-collapse: collapse; }
-    .footer { font-size: 11px; color: #777; text-align: center; margin-top: 12px; }
+    .footer { font-size: 11px; color: #000; text-align: center; margin-top: 12px; font-weight: 900; }
   `;
 
   const kotBody = `
@@ -1345,8 +1354,13 @@ function printKOT(tableId) {
 
   printViaIframe(kotBody, kotCSS);
 
-  // Uncheck all items after KOT sent — next KOT will only print newly added items
-  orders[tableId].items.forEach(it => { it.kotSelected = false; });
+   // Update kotSentQty to current qty — next KOT prints only new additions
+  orders[tableId].items.forEach(it => {
+    if (it.kotSelected !== false) {
+      it.kotSentQty = it.qty;
+      it.kotSelected = false;
+    }
+  });
   renderOrderWindow(tableId);
 }
 
