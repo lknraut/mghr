@@ -1861,5 +1861,165 @@
   }
   </script>
 
+<!-- ── WAITER ORDER RECEIVER ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.5/mqtt.min.js"></script>
+<script>
+(function() {
+  const TOPIC = 'mghr/orders/v1';
+  const _seen = new Set();
 
+  const _client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+    clientId: 'mghr_pos_' + Math.random().toString(36).slice(2,9),
+    clean: true, reconnectPeriod: 4000, connectTimeout: 10000
+  });
+
+  _client.on('connect', () => {
+    _client.subscribe(TOPIC, { qos: 1 });
+    showToast('📡 Waiter orders: Connected', 2000);
+  });
+
+  _client.on('message', (topic, payload) => {
+    try {
+      const order = JSON.parse(payload.toString());
+      if (_seen.has(order.id)) return; // ignore duplicates
+      _seen.add(order.id);
+
+      // Convert table number to tableId used by the app
+      const tableId = order.table === 'Parcel' ? 'takeaway' : 'table' + order.table;
+
+      // Open the table if not already open
+      openOrder(tableId);
+
+      // Add each item as a custom item (with price 0 — can be set manually)
+      order.items.forEach(item => {
+        // Check if item exists in MENU by name match
+        const menuItem = MENU.find(m =>
+          m.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+        );
+
+        if (menuItem) {
+          // Add from menu properly (with correct price)
+          for (let i = 0; i < item.qty; i++) {
+            addItem(tableId, menuItem.id);
+          }
+        } else {
+          // Add as custom item with 0 price
+          for (let i = 0; i < item.qty; i++) {
+            orders[tableId].items.push({
+              id: 'custom_' + Date.now() + '_' + Math.random(),
+              name: item.name,
+              price: 0,
+              qty: 1,
+              custom: true,
+              kotSelected: true,
+              kotSentQty: 0
+            });
+          }
+          renderOrderWindow(tableId);
+          updateSidebarButton(tableId);
+          saveState();
+        }
+      });
+
+      // Bell sound
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [0, 0.12, 0.24].forEach(d => {
+          const osc = ctx.createOscillator(), g = ctx.createGain();
+          osc.connect(g); g.connect(ctx.destination);
+          osc.frequency.value = 880; osc.type = 'sine';
+          g.gain.setValueAtTime(0.3, ctx.currentTime + d);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + d + 0.5);
+          osc.start(ctx.currentTime + d); osc.stop(ctx.currentTime + d + 0.6);
+        });
+      } catch(e) {}
+
+      const label = order.table === 'Parcel' ? 'Parcel' : 'Table ' + order.table;
+      showToast('🔔 New order — ' + label + ' (by ' + order.by + ')', 4000);
+
+    } catch(e) { console.error('MQTT parse error:', e); }
+  });
+})();
+</script>
+<!-- ── WAITER ORDER RECEIVER ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.5/mqtt.min.js"></script>
+<script>
+(function() {
+  const TOPIC = 'mghr/orders/v1';
+  const _seen = new Set();
+
+  const _client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+    clientId: 'mghr_pos_' + Math.random().toString(36).slice(2,9),
+    clean: true, reconnectPeriod: 4000, connectTimeout: 10000
+  });
+
+  _client.on('connect', () => {
+    _client.subscribe(TOPIC, { qos: 1 });
+    showToast('📡 Waiter orders: Connected', 2000);
+  });
+
+  _client.on('message', (topic, payload) => {
+    try {
+      const order = JSON.parse(payload.toString());
+      if (_seen.has(order.id)) return; // ignore duplicates
+      _seen.add(order.id);
+
+      // Convert table number to tableId used by the app
+      const tableId = order.table === 'Parcel' ? 'takeaway' : 'table' + order.table;
+
+      // Open the table if not already open
+      openOrder(tableId);
+
+      // Add each item as a custom item (with price 0 — can be set manually)
+      order.items.forEach(item => {
+        // Check if item exists in MENU by name match
+        const menuItem = MENU.find(m =>
+          m.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+        );
+
+        if (menuItem) {
+          // Add from menu properly (with correct price)
+          for (let i = 0; i < item.qty; i++) {
+            addItem(tableId, menuItem.id);
+          }
+        } else {
+          // Add as custom item with 0 price
+          for (let i = 0; i < item.qty; i++) {
+            orders[tableId].items.push({
+              id: 'custom_' + Date.now() + '_' + Math.random(),
+              name: item.name,
+              price: 0,
+              qty: 1,
+              custom: true,
+              kotSelected: true,
+              kotSentQty: 0
+            });
+          }
+          renderOrderWindow(tableId);
+          updateSidebarButton(tableId);
+          saveState();
+        }
+      });
+
+      // Bell sound
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [0, 0.12, 0.24].forEach(d => {
+          const osc = ctx.createOscillator(), g = ctx.createGain();
+          osc.connect(g); g.connect(ctx.destination);
+          osc.frequency.value = 880; osc.type = 'sine';
+          g.gain.setValueAtTime(0.3, ctx.currentTime + d);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + d + 0.5);
+          osc.start(ctx.currentTime + d); osc.stop(ctx.currentTime + d + 0.6);
+        });
+      } catch(e) {}
+
+      const label = order.table === 'Parcel' ? 'Parcel' : 'Table ' + order.table;
+      showToast('🔔 New order — ' + label + ' (by ' + order.by + ')', 4000);
+
+    } catch(e) { console.error('MQTT parse error:', e); }
+  });
+})();
+</script>
+    
   </body></html>
