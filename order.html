@@ -58,6 +58,8 @@
       --card9: #447c00;
       --bgcustome: #2c2120;
       --bgsearch1: #33322d;
+      --bgsidebar: #011100;
+      --hederbg: #0a6603;
 
       /* Borders */
       --border:  #6b5656;
@@ -101,7 +103,7 @@
     /* ── HEADER ── */
     header {
       position: relative; z-index: 10;
-      background: var(--bg2);
+      background: var(--hederbg);
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
       display: flex; align-items: center; justify-content: space-between;
@@ -112,9 +114,9 @@
     .header-logo { font-size: 24px; opacity: 0.85; }
     .header-title h1 {
       font-family: 'POS Sans', sans-serif;
-      font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.2px;
+      font-size: 17px; font-weight: 700; color: #ffffff; letter-spacing: 0.2px;
     }
-    .header-title p { font-size: 11px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; }
+    .header-title p { font-size: 11px; color:  #d9ff04; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; }
 
     .header-right { display: flex; align-items: center; gap: 14px; }
     .header-clock {
@@ -149,7 +151,7 @@
     /* ── SIDEBAR ── */
     .sidebar {
       width: 210px; flex-shrink: 0;
-      background: var(--bg2);
+      background: var(--bgsidebar);
       border-right: 1px solid var(--border);
       padding: 16px 10px;
       display: flex; flex-direction: column; gap: 4px;
@@ -527,10 +529,10 @@
   <!-- HEADER -->
   <header>
     <div class="header-left">
-      <div class="header-logo">MGHR</div>
+      <div class="header-logo">MGHR Online</div>
       <div class="header-title">
         <h1>माँ गायत्री होटेल आणि रेस्टोरेंट</h1>
-        <p>POS (V - 4.1)</p>
+        <p>Online POS (V - 0.2)</p>
       </div>
     </div>
     <div class="header-right">
@@ -1941,83 +1943,121 @@
   });
 })();
 </script>
-<!-- ── WAITER ORDER RECEIVER ── -->
+<!-- ── WAITER ORDER LOG + RECEIVER ── -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.5/mqtt.min.js"></script>
+<style>
+#waiterLogBtn{position:fixed;bottom:20px;right:20px;z-index:999;background:linear-gradient(135deg,#f0a500,#e07b00);border:none;border-radius:50px;padding:10px 18px;color:#1a1500;font-weight:800;font-size:.85rem;cursor:pointer;box-shadow:0 4px 16px rgba(240,165,0,.35);display:flex;align-items:center;gap:7px;}
+#waiterLogCount{background:#1a1500;color:#f0a500;border-radius:10px;padding:1px 7px;font-size:.75rem;}
+#waiterLogPanel{position:fixed;bottom:70px;right:20px;z-index:998;width:340px;max-height:60vh;background:#1c1b18;border:1px solid #35332d;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden;}
+#waiterLogPanel.open{display:flex;}
+.wlp-header{padding:13px 16px;border-bottom:1px solid #35332d;display:flex;align-items:center;justify-content:space-between;}
+.wlp-title{font-weight:800;font-size:.95rem;color:#f2ede0;}
+.wlp-close{background:none;border:none;color:#6a6455;font-size:1.2rem;cursor:pointer;}
+.wlp-clear{background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.25);color:#e05555;border-radius:6px;padding:4px 10px;font-size:.72rem;font-weight:700;cursor:pointer;}
+.wlp-scroll{overflow-y:auto;flex:1;}
+.wlp-empty{text-align:center;padding:30px;color:#6a6455;font-size:.85rem;}
+.wl-card{padding:12px 16px;border-bottom:1px solid #2c2b27;}
+.wl-card:last-child{border-bottom:none;}
+.wl-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.wl-table{font-weight:800;font-size:.85rem;color:#f0a500;}
+.wl-meta{font-size:.7rem;color:#6a6455;}
+.wl-item{display:flex;justify-content:space-between;font-size:.82rem;padding:2px 0;color:#a09880;}
+.wl-item-qty{color:#e07b00;font-weight:700;}
+</style>
+
+<button id="waiterLogBtn" onclick="toggleWLP()">
+  🧾 Waiter Log <span id="waiterLogCount">0</span>
+</button>
+<div id="waiterLogPanel">
+  <div class="wlp-header">
+    <span class="wlp-title">📋 Waiter Orders</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="wlp-clear" onclick="clearWLP()">🗑 Clear</button>
+      <button class="wlp-close" onclick="toggleWLP()">✕</button>
+    </div>
+  </div>
+  <div class="wlp-scroll" id="wlpScroll">
+    <div class="wlp-empty">No orders received yet</div>
+  </div>
+</div>
+
 <script>
-(function() {
+(function(){
   const TOPIC = 'mghr/orders/v1';
   const _seen = new Set();
+  let _wlog = [];
 
-  const _client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+  function toggleWLP() {
+    document.getElementById('waiterLogPanel').classList.toggle('open');
+  }
+  function clearWLP() {
+    _wlog = []; _seen.clear(); renderWLP();
+    document.getElementById('waiterLogCount').textContent = '0';
+  }
+  function renderWLP() {
+    const scroll = document.getElementById('wlpScroll');
+    if (!_wlog.length) { scroll.innerHTML = '<div class="wlp-empty">No orders received yet</div>'; return; }
+    scroll.innerHTML = [..._wlog].reverse().map(o => `
+      <div class="wl-card">
+        <div class="wl-card-top">
+          <span class="wl-table">${o.table==='Parcel'?'🚗 Parcel':'🪑 Table '+o.table}</span>
+          <span class="wl-meta">${o.time} · ${o.by}</span>
+        </div>
+        ${o.items.map(i=>`<div class="wl-item"><span>${i.name}</span><span class="wl-item-qty">×${i.qty}</span></div>`).join('')}
+      </div>`).join('');
+  }
+
+  const _mc = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
     clientId: 'mghr_pos_' + Math.random().toString(36).slice(2,9),
     clean: true, reconnectPeriod: 4000, connectTimeout: 10000
   });
 
-  _client.on('connect', () => {
-    _client.subscribe(TOPIC, { qos: 1 });
+  _mc.on('connect', () => {
+    _mc.subscribe(TOPIC, {qos:1});
     showToast('📡 Waiter orders: Connected', 2000);
   });
 
-  _client.on('message', (topic, payload) => {
+  _mc.on('message', (topic, payload) => {
     try {
       const order = JSON.parse(payload.toString());
-      if (_seen.has(order.id)) return; // ignore duplicates
+      if (_seen.has(order.id)) return;
       _seen.add(order.id);
 
-      // Convert table number to tableId used by the app
+      // ── Add to waiter log ──
+      _wlog.push(order);
+      document.getElementById('waiterLogCount').textContent = _wlog.length;
+      renderWLP();
+
+      // ── Add to POS table ──
       const tableId = order.table === 'Parcel' ? 'takeaway' : 'table' + order.table;
-
-      // Open the table if not already open
       openOrder(tableId);
-
-      // Add each item as a custom item (with price 0 — can be set manually)
       order.items.forEach(item => {
-        // Check if item exists in MENU by name match
-        const menuItem = MENU.find(m =>
-          m.name.trim().toLowerCase() === item.name.trim().toLowerCase()
-        );
-
+        const menuItem = MENU.find(m => m.name.trim().toLowerCase() === item.name.trim().toLowerCase());
         if (menuItem) {
-          // Add from menu properly (with correct price)
-          for (let i = 0; i < item.qty; i++) {
-            addItem(tableId, menuItem.id);
-          }
+          const existing = orders[tableId].items.find(it => it.id === menuItem.id);
+          if (existing) existing.qty += item.qty;
+          else orders[tableId].items.push({id:menuItem.id, qty:item.qty, kotSelected:true, kotSentQty:0});
         } else {
-          // Add as custom item with 0 price
-          for (let i = 0; i < item.qty; i++) {
-            orders[tableId].items.push({
-              id: 'custom_' + Date.now() + '_' + Math.random(),
-              name: item.name,
-              price: 0,
-              qty: 1,
-              custom: true,
-              kotSelected: true,
-              kotSentQty: 0
-            });
-          }
-          renderOrderWindow(tableId);
-          updateSidebarButton(tableId);
-          saveState();
+          orders[tableId].items.push({
+            id:'custom_'+Date.now()+'_'+Math.random(),
+            name:item.name, price:item.price||0, qty:item.qty,
+            custom:true, kotSelected:true, kotSentQty:0
+          });
         }
+        renderOrderWindow(tableId);
+        updateSidebarButton(tableId);
+        saveState();
       });
 
-      // Bell sound
+      // ── Bell + toast ──
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        [0, 0.12, 0.24].forEach(d => {
-          const osc = ctx.createOscillator(), g = ctx.createGain();
-          osc.connect(g); g.connect(ctx.destination);
-          osc.frequency.value = 880; osc.type = 'sine';
-          g.gain.setValueAtTime(0.3, ctx.currentTime + d);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + d + 0.5);
-          osc.start(ctx.currentTime + d); osc.stop(ctx.currentTime + d + 0.6);
-        });
-      } catch(e) {}
+        const ctx = new(window.AudioContext||window.webkitAudioContext)();
+        [0,.12,.24].forEach(d=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='sine';g.gain.setValueAtTime(.3,ctx.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+d+.5);o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+.6);});
+      } catch(e){}
 
-      const label = order.table === 'Parcel' ? 'Parcel' : 'Table ' + order.table;
-      showToast('🔔 New order — ' + label + ' (by ' + order.by + ')', 4000);
-
-    } catch(e) { console.error('MQTT parse error:', e); }
+      const label = order.table==='Parcel'?'Parcel':'Table '+order.table;
+      showToast('🔔 New order — '+label+' ('+order.by+')', 4000);
+    } catch(e){ console.error(e); }
   });
 })();
 </script>
