@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MGHR Order</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.5/mqtt.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111210;--surface:#1c1b18;--surface2:#242320;--surface3:#2c2b27;
+  --border:#35332d;--border2:#413f38;
+  --gold:#f0a500;--gold2:#e07b00;--goldbg:rgba(240,165,0,.1);--goldborder:rgba(240,165,0,.25);
+  --red:#e05555;--redbg:rgba(224,85,85,.1);
+  --green:#4db87a;--greenbg:rgba(77,184,122,.1);
+  --text:#f2ede0;--text2:#a09880;--text3:#6a6455;
+  --radius:14px;--radius-sm:9px;--radius-xs:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Baloo 2','Noto Sans Devanagari',sans-serif;display:flex;flex-direction:column;}
+
+/* ── HEADER ── */
+.hdr{flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hdr-brand{display:flex;align-items:center;gap:8px;}
+.hdr-logo{font-size:1.35rem;}
+.hdr-name{font-size:1rem;font-weight:800;letter-spacing:.02em;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.conn-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:.72rem;font-weight:600;color:var(--text3);transition:all .3s;}
+.conn-pill.ok{color:var(--green);border-color:rgba(77,184,122,.3);background:var(--greenbg);}
+.conn-pill.err{color:var(--red);}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.conn-pill.ok .conn-dot{animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── NAV TABS ── */
+.nav{flex-shrink:0;display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-tab{flex:1;min-width:70px;padding:11px 6px 9px;text-align:center;font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap;position:relative;}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.nav-badge{position:absolute;top:6px;right:50%;transform:translateX(120%);background:var(--gold);color:#000;border-radius:10px;font-size:.6rem;font-weight:800;padding:1px 5px;min-width:16px;line-height:16px;}
+
+/* ── SCREENS ── */
+.screen{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ── SCREEN 0: Setup ── */
+.setup-wrap{padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
+.field-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.field-sel,.field-inp{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:15px 16px;color:var(--text);font-family:'Baloo 2','Noto Sans Devanagari',sans-serif;font-size:1rem;font-weight:500;outline:none;transition:border .2s;appearance:none;}
+.field-sel:focus,.field-inp:focus{border-color:var(--gold);}
+.field-sel option{background:#1c1b18;}
+.info-chip{background:var(--goldbg);border:1px solid var(--goldborder);border-radius:var(--radius-sm);padding:10px 14px;font-size:.8rem;color:var(--gold);display:none;}
+.info-chip.on{display:block;}
+.go-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:var(--radius);padding:17px;color:#1a1500;font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.04em;cursor:pointer;box-shadow:0 4px 20px rgba(240,165,0,.2);transition:transform .12s,box-shadow .12s;}
+.go-btn:active{transform:scale(.97);box-shadow:none;}
+
+/* ── SCREEN 1: Menu ── */
+.menu-sticky{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 16px 0;}
+.search-box{position:relative;margin-bottom:10px;}
+.search-box input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 36px 11px 40px;color:var(--text);font-family:'Baloo 2','Noto Sans Devanagari',sans-serif;font-size:.92rem;outline:none;transition:border .2s;}
+.search-box input:focus{border-color:var(--gold);}
+.s-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;}
+.s-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:1.1rem;cursor:pointer;display:none;padding:4px;}
+
+.cat-scroller{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:10px;}
+.cat-scroller::-webkit-scrollbar{display:none;}
+.cat-pill{flex-shrink:0;display:flex;align-items:center;gap:5px;background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;padding:7px 13px;font-size:.78rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.cat-pill.active{background:var(--goldbg);border-color:var(--goldborder);color:var(--gold);}
+.cat-pill-count{font-size:.65rem;background:var(--surface3);border-radius:8px;padding:1px 6px;color:var(--text3);}
+.cat-pill.active .cat-pill-count{background:rgba(240,165,0,.15);color:var(--gold);}
+
+.menu-body{padding:0 16px 16px;flex:1;}
+
+/* Chip grid */
+.chips-grid{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0;}
+.m-chip{display:inline-flex;align-items:stretch;background:var(--surface2);border:1.5px solid var(--border);border-radius:22px;overflow:hidden;transition:border .15s,background .15s;max-width:100%;}
+.m-chip.active{border-color:var(--gold);background:var(--goldbg);}
+.chip-body{display:flex;flex-direction:column;padding:8px 10px 8px 13px;cursor:pointer;min-width:0;}
+.chip-body:active{background:rgba(255,255,255,.04);}
+.chip-nm{font-size:.82rem;font-weight:600;line-height:1.3;color:var(--text);}
+.chip-pr{font-size:.68rem;color:var(--text3);margin-top:1px;}
+.chip-active .chip-pr{color:var(--gold2);}
+.chip-ctrl{display:flex;align-items:center;border-left:1.5px solid var(--border);flex-shrink:0;}
+.chip-add-btn{background:none;border:none;color:var(--gold);font-size:1.3rem;font-weight:700;width:36px;height:100%;min-height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.chip-add-btn:active{background:var(--goldbg);}
+.chip-qty-wrap{display:flex;align-items:center;}
+.chip-minus,.chip-plus{background:none;border:none;font-size:1.1rem;font-weight:700;width:32px;height:100%;min-height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.chip-minus{color:var(--red);}
+.chip-minus:active{background:var(--redbg);}
+.chip-plus{color:var(--green);}
+.chip-plus:active{background:var(--greenbg);}
+.chip-qn{font-size:.85rem;font-weight:800;color:var(--gold);min-width:22px;text-align:center;}
+
+/* Search result list */
+.sr-list{display:flex;flex-direction:column;gap:7px;padding:10px 0;}
+.sr-item{display:flex;align-items:center;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;gap:12px;transition:border .15s;}
+.sr-item.active{border-color:var(--gold);background:var(--goldbg);}
+.sr-info{flex:1;min-width:0;}
+.sr-name{font-size:.9rem;font-weight:600;}
+.sr-price{font-size:.75rem;color:var(--text3);margin-top:2px;}
+.sr-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.sr-add{background:var(--goldbg);border:1px solid var(--goldborder);color:var(--gold);border-radius:var(--radius-xs);padding:7px 16px;font-size:.8rem;font-weight:700;cursor:pointer;}
+.sr-qctrl{display:flex;align-items:center;gap:8px;}
+.sr-btn{width:30px;height:30px;border-radius:var(--radius-xs);border:none;font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.sr-btn.m{background:var(--redbg);color:var(--red);}
+.sr-btn.p{background:var(--greenbg);color:var(--green);}
+.sr-qn{font-size:.88rem;font-weight:800;color:var(--gold);min-width:20px;text-align:center;}
+
+/* ── SCREEN 2: Cart ── */
+.cart-top{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between;}
+.cart-ttl{font-size:1rem;font-weight:800;}
+.cart-sub{font-size:.75rem;color:var(--text3);}
+.cart-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text3);padding:40px;}
+.cart-empty-icon{font-size:2.5rem;opacity:.3;}
+.cart-empty-txt{font-size:.88rem;}
+.cart-list{flex:1;overflow-y:auto;}
+.c-item{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--border);gap:10px;animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.c-name{flex:1;font-size:.9rem;font-weight:600;line-height:1.3;}
+.c-unit{font-size:.72rem;color:var(--text3);}
+.c-qty-wrap{display:flex;align-items:center;gap:8px;}
+.c-btn{width:28px;height:28px;border-radius:var(--radius-xs);border:none;font-size:.95rem;font-weight:700;cursor:pointer;}
+.c-btn.m{background:var(--redbg);color:var(--red);}
+.c-btn.p{background:var(--greenbg);color:var(--green);}
+.c-qn{font-size:.88rem;font-weight:800;color:var(--gold);min-width:22px;text-align:center;}
+.c-total{font-size:.82rem;font-weight:700;color:var(--text2);min-width:42px;text-align:right;}
+.cart-footer{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);padding:14px 16px;}
+.cart-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.cs-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);}
+.cs-val{font-size:1.2rem;font-weight:800;color:var(--gold);}
+.send-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:var(--radius);padding:16px;color:#1a1500;font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.04em;cursor:pointer;box-shadow:0 4px 20px rgba(240,165,0,.2);transition:transform .12s;}
+.send-btn:active{transform:scale(.97);}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ── SCREEN 3: History ── */
+.hist-top{padding:16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hist-ttl{font-size:1rem;font-weight:800;}
+.hist-clear{background:var(--redbg);border:1px solid rgba(224,85,85,.3);color:var(--red);border-radius:var(--radius-xs);padding:7px 14px;font-size:.78rem;font-weight:700;cursor:pointer;}
+.hist-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text3);padding:40px;}
+.hist-empty-icon{font-size:2.5rem;opacity:.3;}
+.hist-scroll{flex:1;overflow-y:auto;padding:0 16px 16px;}
+.h-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;animation:fadeUp .25s ease;}
+.h-card-top{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:rgba(240,165,0,.05);border-bottom:1px solid var(--border);}
+.h-table{font-size:.88rem;font-weight:800;color:var(--gold);}
+.h-meta{font-size:.7rem;color:var(--text3);}
+.h-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.84rem;}
+.h-row:last-child{border-bottom:none;}
+.h-item-name{color:var(--text);}
+.h-item-qty{color:var(--text3);font-size:.78rem;}
+.h-item-amt{color:var(--text2);font-size:.8rem;font-weight:600;}
+.h-total{padding:10px 14px;display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;border-top:1px solid var(--border);background:rgba(240,165,0,.04);}
+.h-total-amt{color:var(--gold);}
+
+/* ── BOTTOM SEND BAR (menu screen) ── */
+.send-bar{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 14px;display:none;align-items:center;gap:10px;}
+.sb-count{background:var(--gold);color:#1a1500;border-radius:50%;width:26px;height:26px;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-view{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px;color:var(--text);font-family:'Baloo 2',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;text-align:center;}
+.sb-send{flex:2;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:var(--radius-sm);padding:12px;color:#1a1500;font-family:'Baloo 2',sans-serif;font-size:.88rem;font-weight:800;letter-spacing:.04em;cursor:pointer;}
+.sb-send:disabled{opacity:.4;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--green);color:#fff;padding:10px 22px;border-radius:30px;font-weight:700;font-size:.86rem;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-brand">
+    <span class="hdr-logo">🍛</span>
+    <span class="hdr-name">MGHR</span>
+  </div>
+  <div class="conn-pill" id="connPill">
+    <div class="conn-dot"></div>
+    <span id="connTxt">Connecting…</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-tab active" id="tab0" onclick="goScreen(0)">Setup</div>
+  <div class="nav-tab" id="tab1" onclick="goScreen(1)">Menu</div>
+  <div class="nav-tab" id="tab2" onclick="goScreen(2)">
+    Cart <span class="nav-badge" id="cartBadge" style="display:none">0</span>
+  </div>
+  <div class="nav-tab" id="tab3" onclick="goScreen(3)">History</div>
+</div>
+
+<!-- SCREEN 0: SETUP -->
+<div class="screen active" id="screen0">
+  <div class="setup-wrap">
+    <div>
+      <div class="field-label">Table Number</div>
+      <select class="field-sel" id="tableNum">
+        <option value="">— Select Table —</option>
+        <script>for(let i=1;i<=15;i++)document.write(`<option value="${i}">Table ${i}</option>`)</script>
+        <option value="Parcel">🚗 Parcel / Takeaway</option>
+      </select>
+    </div>
+    <div>
+      <div class="field-label">Waiter Name</div>
+      <input type="text" class="field-inp" id="waiterName" placeholder="Your name…" autocomplete="name">
+    </div>
+    <div class="info-chip" id="infoChip"></div>
+    <button class="go-btn" onclick="goToMenu()">Go to Menu →</button>
+  </div>
+</div>
+
+<!-- SCREEN 1: MENU -->
+<div class="screen" id="screen1">
+  <div class="menu-sticky">
+    <div class="search-box">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="searchInp" placeholder="Search menu items…" oninput="doSearch(this.value)">
+      <button class="s-clear" id="sClear" onclick="clearSearch()">×</button>
+    </div>
+    <div class="cat-scroller" id="catScroller"></div>
+  </div>
+  <div class="menu-body" id="menuBody"></div>
+</div>
+
+<!-- SCREEN 2: CART -->
+<div class="screen" id="screen2">
+  <div class="cart-top">
+    <div class="cart-ttl">Your Order</div>
+    <div class="cart-sub" id="cartSub">0 items</div>
+  </div>
+  <div class="cart-empty" id="cartEmpty">
+    <div class="cart-empty-icon">🛒</div>
+    <div class="cart-empty-txt">No items added yet</div>
+  </div>
+  <div class="cart-list" id="cartList" style="display:none"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-summary">
+      <div class="cs-label">Approx Total</div>
+      <div class="cs-val" id="cartTotal">₹0</div>
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="sendOrder()">SEND ORDER TO KITCHEN →</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: HISTORY -->
+<div class="screen" id="screen3">
+  <div class="hist-top">
+    <div class="hist-ttl">📋 Order History</div>
+    <button class="hist-clear" onclick="clearHistory()">🗑 Clear</button>
+  </div>
+  <div class="hist-empty" id="histEmpty">
+    <div class="hist-empty-icon">📋</div>
+    <div>No orders sent yet</div>
+  </div>
+  <div class="hist-scroll" id="histScroll" style="display:none"></div>
+</div>
+
+<!-- SEND BAR (shown on menu screen) -->
+<div class="send-bar" id="sendBar">
+  <div class="sb-count" id="sbCount">0</div>
+  <button class="sb-view" onclick="goScreen(2)">View Cart</button>
+  <button class="sb-send" id="sbSend" onclick="sendOrder()">SEND ORDER →</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── MENU DATA ────────────────────────────────────────────
+const CATS = [
+  {id:'roti',label:'रोटी',icon:'🫓',items:[
+    {id:'sadi_chapati_roti_12',name:'साधी चपाती',price:12},
+    {id:'butter_chapati_roti_12',name:'बटर चपाती',price:15},
+    {id:'sadi_tandur_roti_12',name:'साधी तंदुर',price:15},
+    {id:'butter_tandur_roti_12',name:'बटर तंदुर',price:20},
+    {id:'kulcha_roti_12',name:'कुलचा',price:35},
+    {id:'butter_kulcha_roti',name:'बटर कुलचा',price:40},
+    {id:'garlic_naan_roti',name:'गार्लिक नान',price:50},
+    {id:'naan_roti',name:'नान',price:35},
+    {id:'butter_naan_roti',name:'बटर नान',price:40},
+    {id:'paratha_roti',name:'पराठा',price:20},
+    {id:'butter_paratha_roti',name:'बटर पराठा',price:30},
+    {id:'laccha_paratha_roti',name:'लच्छा पराठा',price:null},
+    {id:'masala_paratha_roti',name:'मसाला पराठा',price:40},
+  ]},
+  {id:'rice',label:'राइस',icon:'🍚',items:[
+    {id:'plain_rice',name:'प्लेन राईस',price:80},
+    {id:'half_plain_rice',name:'हाफ प्लेन राईस',price:40},
+    {id:'jeera_rice',name:'जिरा राईस',price:90},
+    {id:'half_jeera_rice',name:'हाफ जिरा राईस',price:50},
+    {id:'steam_rice',name:'स्टीम राईस',price:100},
+    {id:'half_steam_rice',name:'हाफ स्टीम राईस',price:50},
+    {id:'garlic_rice',name:'गार्लिक राईस',price:140},
+    {id:'namdev_rice',name:'नामदेव राईस',price:130},
+    {id:'masala_rice',name:'मसाला राईस',price:120},
+    {id:'dal_khichdi',name:'दाल खिचडी',price:120},
+    {id:'veg_pulao',name:'वेज पुलाव',price:120},
+    {id:'veg_paneer_pulao',name:'वेज पनिर पुलाव',price:160},
+    {id:'veg_biryani',name:'वेज बिर्याणी',price:130},
+    {id:'veg_paneer_biryani',name:'वेज पनिर बिर्याणी',price:160},
+    {id:'veg_hyd_biryani',name:'वेज हैद्राबादी बिर्याणी',price:160},
+    {id:'veg_handi_biryani',name:'वेज हंडी बिर्याणी',price:140},
+    {id:'paneer_handi_biryani',name:'पनिर हंडी बिर्याणी',price:160},
+  ]},
+  {id:'beverages',label:'पेय',icon:'🥛',items:[
+    {id:'pani_water_bottel_10',name:'पाणी बोटल छोटी',price:10},
+    {id:'pani_water_bottel_20',name:'पाणी बोटल मोठी',price:20},
+    {id:'lassi_20',name:'लस्सी हाफ',price:20},
+    {id:'lassi_35',name:'लस्सी फूल',price:35},
+    {id:'tea',name:'चाय',price:10},
+    {id:'coffei',name:'कॉफी',price:25},
+    {id:'ice_Creme_10',name:'आइसक्रीम (₹10)',price:10},
+    {id:'ice_Creme_15',name:'आइसक्रीम (₹15)',price:15},
+    {id:'ice_Creme_20',name:'आइसक्रीम (₹20)',price:20},
+    {id:'ice_Creme_22',name:'आइसक्रीम (₹22)',price:22},
+    {id:'ice_Creme_25',name:'आइसक्रीम (₹25)',price:25},
+    {id:'ice_Creme_30',name:'आइसक्रीम (₹30)',price:30},
+    {id:'ice_Creme_35',name:'आइसक्रीम (₹35)',price:35},
+    {id:'ice_Creme_40',name:'आइसक्रीम (₹40)',price:40},
+    {id:'ice_Creme_54',name:'आइसक्रीम (₹54)',price:54},
+  ]},
+  {id:'starter',label:'स्टार्टर',icon:'🥢',items:[
+    {id:'veg_lollipop',name:'वेज लॉलीपॉप',price:150},
+    {id:'paneer_chilli',name:'पनिर चिल्ली',price:150},
+    {id:'finger_chips',name:'फिंगर चिप्स',price:150},
+    {id:'veg_crispy',name:'वेज क्रिस्पी',price:150},
+    {id:'paneer_65',name:'पनिर ६५',price:170},
+  ]},
+  {id:'soup',label:'सूप',icon:'🍲',items:[
+    {id:'manchow_soup',name:'मनचाऊ सुप',price:70},
+    {id:'hot_sour_soup',name:'हॉट ॲन्ड सौर सुप',price:70},
+    {id:'tomato_soup',name:'टोमॅटो सुप',price:70},
+  ]},
+  {id:'papad',label:'पापड',icon:'🫓',items:[
+    {id:'roast_papad',name:'रोस्ट पापड',price:10},
+    {id:'fry_papad',name:'फ्राय पापड',price:15},
+    {id:'masala_papad',name:'मसाला पापड',price:30},
+    {id:'roast_masala_papad',name:'रोस्ट मसाला पापड',price:30},
+  ]},
+  {id:'salad',label:'सलाद',icon:'🥗',items:[
+    {id:'green_salad',name:'ग्रिन सलाद',price:40},
+    {id:'jain_salad',name:'जैन सलाद',price:50},
+  ]},
+  {id:'dal',label:'दाल',icon:'🍛',items:[
+    {id:'dal_fry',name:'दाल फ्राय',price:100},
+    {id:'dal_tadka',name:'दाल तडका',price:145},
+    {id:'jeera_dal',name:'जिरा दाल',price:120},
+    {id:'butter_dal_fry',name:'बटर दाल फ्राय',price:145},
+    {id:'dal_kolhapuri',name:'दाल कोल्हापुरी',price:145},
+    {id:'varhadi_dal',name:'वऱ्हाडी दाल',price:150},
+  ]},
+  {id:'veg_main',label:'वेज',icon:'🥬',items:[
+    {id:'jeera_aalu',name:'जिरा आलु',price:90},
+    {id:'baigan_bharta',name:'बैगन भरता',price:110},
+    {id:'baigan_masala',name:'बैगन मसाला',price:110},
+    {id:'bhendi_masala',name:'भेंडी मसाला',price:150},
+    {id:'green_peas_masala',name:'ग्रिन पिस मसाला',price:135},
+    {id:'chana_masala',name:'चना मसाला',price:130},
+    {id:'aalu_matar',name:'आलु मटर',price:125},
+    {id:'dam_aalu',name:'दम आलु',price:130},
+    {id:'plain_palak',name:'प्लेन पालक',price:120},
+    {id:'shev_bhaji',name:'शेव भाजी',price:125},
+    {id:'aalu_gobi_matar',name:'आलु गोबी मटर',price:135},
+    {id:'aalu_gobi_masala',name:'आलु गोबी मसाला',price:130},
+    {id:'aalu_palak',name:'आलु पालक',price:120},
+    {id:'gobi_masala',name:'गोबी मसाला',price:125},
+    {id:'gobi_matar',name:'गोबी मटर',price:130},
+  ]},
+  {id:'paneer',label:'पनीर',icon:'🧀',items:[
+    {id:'palak_paneer',name:'पालक पनिर',price:150},
+    {id:'paneer_matar',name:'पनिर मटर',price:150},
+    {id:'paneer_kadai',name:'पनिर कढई',price:160},
+    {id:'paneer_tawa',name:'पनिर तवा',price:170},
+    {id:'paneer_handi',name:'पनिर हंडी',price:170},
+    {id:'paneer_bhurji_dry',name:'पनिर भुर्जी ड्राय',price:175},
+    {id:'paneer_bhurji_curry',name:'पनिर भुर्जी करी',price:175},
+    {id:'paneer_butter_masala',name:'पनिर बटर मसाला',price:150},
+    {id:'paneer_tikka_masala',name:'पनिर टिक्का मसाला',price:170},
+    {id:'paneer_tufani',name:'पनिर तुफानी',price:170},
+    {id:'paneer_angara',name:'पनिर अंगारा',price:180},
+    {id:'paneer_masala',name:'पनिर मसाला',price:150},
+    {id:'shahi_paneer',name:'शाही पनिर',price:150},
+    {id:'paneer_kolhapuri',name:'पनिर कोल्हापुरी',price:170},
+    {id:'paneer_saagwala',name:'पनिर सागवाल',price:160},
+    {id:'paneer_hyderabadi',name:'पनिर हैद्राबादी',price:170},
+    {id:'paneer_chatpata',name:'पनिर चटपटा',price:160},
+    {id:'paneer_takatak',name:'पनिर टकाटक',price:170},
+    {id:'paneer_jaipuri',name:'पनिर जयपुरी',price:180},
+    {id:'paneer_korma',name:'पनिर कोरमा',price:150},
+    {id:'cheese_paneer_butter',name:'चिज पनिर बटर मसाला',price:180},
+    {id:'laccha_paneer',name:'लच्छा पनिर',price:170},
+    {id:'paneer_mili_juli',name:'पनिर मिली जुली',price:250},
+    {id:'paneer_lahori',name:'पनिर लाहोरी',price:250},
+    {id:'paneer_lara',name:'पनिर लारा',price:250},
+    {id:'paneer_afghani',name:'पनिर अफगानी',price:250},
+    {id:'paneer_pasandida',name:'पनिर पसंदा',price:250},
+    {id:'paneer_tiranga',name:'पनिर तिरंगा',price:300},
+    {id:'paneer_patiala',name:'पनिर पटियाला',price:250},
+    {id:'kaju_paneer_do_pyaza',name:'काजु पनिर दो प्याजा',price:250},
+    {id:'kaju_curry',name:'काजु करी',price:180},
+    {id:'paneer_kaju_curry',name:'पनिर काजु करी',price:180},
+    {id:'kaju_masala',name:'काजु मसाला',price:180},
+    {id:'paneer_kaju_masala',name:'पनिर काजु मसाला',price:180},
+    {id:'kaju_khoya',name:'काजु खोया',price:170},
+    {id:'kaju_mawa',name:'काजु मावा',price:180},
+  ]},
+  {id:'sabji',label:'सब्जी',icon:'🍅',items:[
+    {id:'mix_veg',name:'मिक्स वेज',price:140},
+    {id:'veg_kolhapuri',name:'वेज कोल्हापुरी',price:140},
+    {id:'veg_tufani',name:'वेज तुफानी',price:150},
+    {id:'veg_handi',name:'वेज हन्डी',price:150},
+    {id:'veg_tawa',name:'वेज तवा',price:150},
+    {id:'veg_kadai',name:'वेज कढई',price:150},
+    {id:'stop_capsicum',name:'स्टॉप कॅप्सीकम',price:140},
+    {id:'stop_tomato',name:'स्टॉप टोमॅटो',price:140},
+    {id:'methi_matar',name:'मेथी मटर',price:140},
+    {id:'methi_matar_malai',name:'मेथी मटर मलाई',price:170},
+    {id:'veg_hyderabadi',name:'वेज हैद्राबादी',price:150},
+    {id:'veg_kima_kasturi',name:'वेज किमा कस्तुरी',price:150},
+    {id:'veg_jaipuri',name:'वेज जयपुरी',price:150},
+    {id:'veg_maratha',name:'वेज मराठा',price:150},
+    {id:'veg_bhuna',name:'वेज भुना',price:150},
+    {id:'veg_angara',name:'वेज अंगारा',price:160},
+    {id:'veg_tiranga',name:'वेज तिरंगा',price:180},
+    {id:'veg_patiala',name:'वेज पटियाला',price:160},
+    {id:'veg_andakari',name:'वेज अंडाकरी',price:140},
+    {id:'patodi',name:'पाटोडी',price:150},
+    {id:'veg_mili_juli',name:'वेज मिली जुली',price:200},
+  ]},
+  {id:'mushroom',label:'मशरूम',icon:'🍄',items:[
+    {id:'mushroom_masala',name:'मशरुम मसाला',price:200},
+    {id:'mushroom_curry',name:'मशरुम करी',price:180},
+    {id:'paneer_mushroom_masala',name:'पनिर मशरुम मसाला',price:220},
+    {id:'mushroom_paneer_kadai',name:'मशरुम पनिर कढई',price:180},
+  ]},
+  {id:'kofta',label:'कोफ़्ता',icon:'🫕',items:[
+    {id:'veg_kofta',name:'वेज कोफ्ता',price:140},
+    {id:'paneer_kofta',name:'पनिर कोफ्ता',price:180},
+    {id:'malai_kofta',name:'मलाई कोफ्ता',price:140},
+    {id:'veg_punjabi_kofta',name:'वेज पंजाबी कोफ्ता',price:150},
+    {id:'veg_palak_kofta',name:'वेज पालक कोफ्ता',price:170},
+    {id:'paneer_punjabi_kofta',name:'पनिर पंजाबी कोफ्ता',price:170},
+    {id:'paneer_palak_kofta',name:'पनिर पालक कोफ्ता',price:180},
+    {id:'nargis_kofta',name:'नरगिस कोफ्ता',price:250},
+  ]},
+  {id:'nasta',label:'नास्ता',icon:'🥪',items:[
+    {id:'nasta_1',name:'समोसा',price:30},
+    {id:'nasta_2',name:'कचोरी',price:30},
+    {id:'nasta_3',name:'आलुबोंडा',price:30},
+    {id:'nasta_4',name:'मुंग वडा',price:30},
+    {id:'nasta_5',name:'दही समोसा',price:35},
+    {id:'nasta_6',name:'दही कचोरी',price:35},
+    {id:'nasta_7',name:'सांभार वडी',price:35},
+    {id:'nasta_8',name:'सांभार वडा',price:35},
+    {id:'nasta_9',name:'मिसळ पाव',price:40},
+    {id:'nasta_10',name:'दही मिसळ पाव',price:50},
+    {id:'nasta_11',name:'मिसळ',price:30},
+    {id:'nasta_12',name:'दही मिसळ',price:40},
+  ]},
+  {id:'pav_bhaji',label:'पाव भाजी',icon:'🍛',items:[
+    {id:'pav_1',name:'पाव भाजी',price:50},
+    {id:'pav_2',name:'बटर पावभाजी',price:60},
+    {id:'pav_3',name:'एक्स्ट्रा पाव',price:15},
+    {id:'pav_4',name:'एक्स्ट्रा बटर पाव',price:20},
+    {id:'pav_5',name:'एक्स्ट्रा भाजी',price:20},
+  ]},
+  {id:'chinese',label:'चायनिज',icon:'🍜',items:[
+    {id:'chin_1',name:'नुडल्स',price:70},
+    {id:'chin_2',name:'नुडल्स मनच्युरियन',price:85},
+    {id:'chin_3',name:'चिली गार्लिक नुडल्स',price:80},
+    {id:'chin_4',name:'मनच्युरियन ग्रेवी',price:70},
+    {id:'chin_5',name:'मनच्युरियन ड्राय',price:70},
+    {id:'chin_6',name:'पनिर मनच्युरियन ड्राय',price:120},
+    {id:'chin_7',name:'पनिर मनच्युरियन ग्रेवी',price:110},
+    {id:'chin_8',name:'गोबी मनच्युरियन',price:90},
+    {id:'chin_9',name:'फ्राईड राईस',price:70},
+    {id:'chin_10',name:'मनच्युरियन राईस',price:80},
+    {id:'chin_11',name:'कॉकटेल राईस',price:90},
+    {id:'chin_12',name:'कॉकटेल राईस ग्रेवी',price:100},
+    {id:'chin_13',name:'सिंगापुरी फ्राईड राईस',price:75},
+    {id:'chin_14',name:'पनिर फ्राईड राईस',price:100},
+    {id:'chin_15',name:'चिली गार्लिक राईस',price:80},
+    {id:'chin_16',name:'चायनिज भेल',price:80},
+    {id:'chin_17',name:'पनिर चिली ड्रॉय',price:130},
+    {id:'chin_18',name:'पनिर चिली ग्रेवी',price:120},
+  ]},
+  {id:'south_indian',label:'साउथ इंडीयन',icon:'🫓',items:[
+    {id:'si_1',name:'सांभार वडा',price:40},
+    {id:'si_2',name:'इडली',price:30},
+    {id:'si_3',name:'मसाला दोसा',price:45},
+    {id:'si_4',name:'कटपिस दोसा',price:50},
+    {id:'si_5',name:'पेपर साधा दोसा',price:80},
+    {id:'si_6',name:'पेपर मसाला दोसा',price:90},
+    {id:'si_7',name:'पेपर बटर मसाला दोसा',price:110},
+    {id:'si_8',name:'बटर पेपर साधा दोसा',price:100},
+    {id:'si_9',name:'प्लेन बटर दोसा',price:50},
+    {id:'si_10',name:'बटर मसाला दोसा',price:55},
+    {id:'si_11',name:'बटर कटपिस दोसा',price:60},
+    {id:'si_12',name:'मैसुर मसाला दोसा',price:70},
+    {id:'si_13',name:'चिज मैसुर दोसा',price:90},
+    {id:'si_14',name:'पनिर मैसुर दोसा',price:95},
+    {id:'si_15',name:'पनिर चिज मैसुर दोसा',price:110},
+    {id:'si_16',name:'हैद्राबादी दोसा',price:80},
+    {id:'si_17',name:'हैद्राबादी स्पेशल चिज दोसा',price:95},
+    {id:'si_18',name:'स्प्रिंग रोल दोसा',price:75},
+    {id:'si_19',name:'पनिर स्प्रिंग रोल दोसा',price:110},
+    {id:'si_20',name:'चायनिज दोसा',price:80},
+    {id:'si_21',name:'पनिर दोसा प्लेन',price:90},
+    {id:'si_22',name:'पनिर मसाला दोसा',price:100},
+    {id:'si_23',name:'चिज दोसा प्लेन',price:70},
+    {id:'si_24',name:'चिज मसाला दोसा',price:80},
+    {id:'si_25',name:'गायत्री स्पेशल दोसा',price:111},
+  ]},
+];
+const FLAT = CATS.flatMap(c => c.items.map(i => ({...i, catId:c.id})));
+
+// ── STATE ─────────────────────────────────────────────────
+let cart = {};
+let activeCat = CATS[0].id;
+let tableNum = '', waiterName = '';
+let history = JSON.parse(localStorage.getItem('mghr_hist') || '[]');
+
+// ── MQTT ──────────────────────────────────────────────────
+const mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+  clientId: 'waiter_' + Math.random().toString(36).slice(2,9),
+  clean: true, reconnectPeriod: 4000, connectTimeout: 10000
+});
+mqttClient.on('connect', () => setConn('ok','Connected'));
+mqttClient.on('reconnect', () => setConn('','Reconnecting…'));
+mqttClient.on('error', () => setConn('err','Error'));
+
+function setConn(cls, txt) {
+  const p = document.getElementById('connPill');
+  p.className = 'conn-pill ' + cls;
+  document.getElementById('connTxt').textContent = txt;
+}
+
+// ── SCREENS ───────────────────────────────────────────────
+let curScreen = 0;
+function goScreen(n) {
+  document.querySelectorAll('.screen').forEach((s,i) => s.classList.toggle('active', i===n));
+  document.querySelectorAll('.nav-tab').forEach((t,i) => t.classList.toggle('active', i===n));
+  curScreen = n;
+  document.getElementById('sendBar').style.display = (n===1 && (tableNum||waiterName)) ? 'flex' : 'none';
+  if (n===2) renderCart();
+  if (n===3) renderHistory();
+}
+
+// ── SETUP ─────────────────────────────────────────────────
+function goToMenu() {
+  tableNum = document.getElementById('tableNum').value;
+  waiterName = document.getElementById('waiterName').value.trim();
+  if (!tableNum) return toast('Select a table!', true);
+  if (!waiterName) return toast('Enter your name!', true);
+  const chip = document.getElementById('infoChip');
+  chip.textContent = `🪑 ${tableNum==='Parcel'?'Parcel':'Table '+tableNum}  ·  👤 ${waiterName}`;
+  chip.classList.add('on');
+  buildCatPills();
+  renderCat(activeCat);
+  document.getElementById('sendBar').style.display = 'flex';
+  goScreen(1);
+}
+
+// ── CATEGORY PILLS ────────────────────────────────────────
+function buildCatPills() {
+  document.getElementById('catScroller').innerHTML = CATS.map(c =>
+    `<div class="cat-pill${c.id===activeCat?' active':''}" id="cp_${c.id}" onclick="selectCat('${c.id}')">
+      ${c.icon} ${c.label}
+      <span class="cat-pill-count">${c.items.length}</span>
+    </div>`
+  ).join('');
+}
+
+function selectCat(id) {
+  activeCat = id;
+  document.getElementById('searchInp').value = '';
+  document.getElementById('sClear').style.display = 'none';
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  const cp = document.getElementById('cp_'+id);
+  if (cp) { cp.classList.add('active'); cp.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); }
+  renderCat(id);
+}
+
+function renderCat(catId) {
+  const cat = CATS.find(c => c.id===catId);
+  document.getElementById('menuBody').innerHTML =
+    `<div class="chips-grid">${(cat ? cat.items : []).map(renderChip).join('')}</div>`;
+}
+
+// ── CHIPS ─────────────────────────────────────────────────
+function renderChip(item) {
+  const q = cart[item.id] || 0;
+  const on = q > 0;
+  return `<div class="m-chip${on?' active':''}" id="chip_${item.id}">
+    <div class="chip-body" onclick="if(!${on}) addOne('${item.id}')">
+      <div class="chip-nm">${item.name}</div>
+      ${item.price ? `<div class="chip-pr">₹${item.price}</div>` : ''}
+    </div>
+    <div class="chip-ctrl">
+      ${on
+        ? `<div class="chip-qty-wrap">
+            <button class="chip-minus" onclick="changeQty('${item.id}',-1)">−</button>
+            <span class="chip-qn">${q}</span>
+            <button class="chip-plus" onclick="changeQty('${item.id}',1)">+</button>
+          </div>`
+        : `<button class="chip-add-btn" onclick="addOne('${item.id}')">＋</button>`
+      }
+    </div>
+  </div>`;
+}
+
+function addOne(id) { changeQty(id, 1); }
+
+function changeQty(id, delta) {
+  cart[id] = (cart[id] || 0) + delta;
+  if (cart[id] <= 0) delete cart[id];
+  updateBadge();
+  refreshItem(id);
+}
+
+function refreshItem(id) {
+  const item = FLAT.find(i => i.id===id);
+  if (!item) return;
+  const chip = document.getElementById('chip_'+id);
+  if (chip) chip.outerHTML = renderChip(item);
+  const sr = document.getElementById('sr_'+id);
+  if (sr) sr.outerHTML = renderSrItem(item);
+}
+
+function updateBadge() {
+  const total = Object.values(cart).reduce((a,b)=>a+b,0);
+  const badge = document.getElementById('cartBadge');
+  const sbCount = document.getElementById('sbCount');
+  badge.textContent = total;
+  sbCount.textContent = total;
+  badge.style.display = total > 0 ? 'inline-flex' : 'none';
+}
+
+// ── SEARCH ────────────────────────────────────────────────
+function doSearch(q) {
+  document.getElementById('sClear').style.display = q ? 'block' : 'none';
+  if (!q.trim()) { renderCat(activeCat); return; }
+  const lower = q.toLowerCase();
+  const res = FLAT.filter(i => i.name.toLowerCase().includes(lower) || i.id.toLowerCase().includes(lower));
+  document.getElementById('menuBody').innerHTML = res.length
+    ? `<div class="sr-list">${res.map(renderSrItem).join('')}</div>`
+    : `<div style="text-align:center;padding:40px 20px;color:var(--text3);font-size:.88rem">No items found</div>`;
+}
+
+function clearSearch() {
+  document.getElementById('searchInp').value = '';
+  document.getElementById('sClear').style.display = 'none';
+  renderCat(activeCat);
+}
+
+function renderSrItem(item) {
+  const q = cart[item.id] || 0;
+  const on = q > 0;
+  return `<div class="sr-item${on?' active':''}" id="sr_${item.id}">
+    <div class="sr-info">
+      <div class="sr-name">${item.name}</div>
+      ${item.price ? `<div class="sr-price">₹${item.price}</div>` : ''}
+    </div>
+    <div class="sr-ctrl">
+      ${on
+        ? `<div class="sr-qctrl">
+            <button class="sr-btn m" onclick="changeQty('${item.id}',-1)">−</button>
+            <span class="sr-qn">${q}</span>
+            <button class="sr-btn p" onclick="changeQty('${item.id}',1)">+</button>
+          </div>`
+        : `<button class="sr-add" onclick="changeQty('${item.id}',1)">+ Add</button>`
+      }
+    </div>
+  </div>`;
+}
+
+// ── CART ──────────────────────────────────────────────────
+function renderCart() {
+  const keys = Object.keys(cart);
+  document.getElementById('cartSub').textContent = keys.length + ' item type' + (keys.length===1?'':'s');
+  if (!keys.length) {
+    document.getElementById('cartEmpty').style.display = 'flex';
+    document.getElementById('cartList').style.display = 'none';
+    document.getElementById('cartFooter').style.display = 'none';
+    return;
+  }
+  document.getElementById('cartEmpty').style.display = 'none';
+  document.getElementById('cartList').style.display = 'block';
+  document.getElementById('cartFooter').style.display = 'block';
+  let total = 0;
+  document.getElementById('cartList').innerHTML = keys.map(id => {
+    const item = FLAT.find(i => i.id===id);
+    const name = item ? item.name : id;
+    const price = item && item.price ? item.price : 0;
+    const line = price * cart[id];
+    total += line;
+    return `<div class="c-item">
+      <div style="flex:1;min-width:0">
+        <div class="c-name">${name}</div>
+        ${price ? `<div class="c-unit">₹${price} each</div>` : ''}
+      </div>
+      <div class="c-qty-wrap">
+        <button class="c-btn m" onclick="changeQty('${id}',-1);renderCart()">−</button>
+        <span class="c-qn">${cart[id]}</span>
+        <button class="c-btn p" onclick="changeQty('${id}',1);renderCart()">+</button>
+      </div>
+      <div class="c-total">${line ? '₹'+line : '—'}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('cartTotal').textContent = total ? '₹'+total : '—';
+}
+
+// ── SEND ──────────────────────────────────────────────────
+function sendOrder() {
+  const keys = Object.keys(cart);
+  if (!keys.length) return toast('Add items first!', true);
+  if (!tableNum) return toast('Set table in Setup tab!', true);
+  if (!mqttClient.connected) return toast('Not connected — wait!', true);
+
+  const items = keys.map(id => {
+    const item = FLAT.find(i => i.id===id);
+    return { id, name: item ? item.name : id, qty: cart[id], price: item ? item.price : 0 };
+  });
+  const orderId = Date.now().toString();
+  const payload = JSON.stringify({
+    table: tableNum, by: waiterName, items,
+    time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+    date: new Date().toLocaleDateString('en-IN'),
+    id: orderId
+  });
+
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('sbSend').disabled = true;
+
+  mqttClient.publish('mghr/orders/v1', payload, {qos:1}, err => {
+    document.getElementById('sendBtn').disabled = false;
+    document.getElementById('sbSend').disabled = false;
+    if (err) return toast('Send failed!', true);
+
+    // Save history
+    history.unshift({id:orderId, table:tableNum, by:waiterName, items,
+      time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+      date: new Date().toLocaleDateString('en-IN')});
+    if (history.length > 100) history.pop();
+    localStorage.setItem('mghr_hist', JSON.stringify(history));
+
+    cart = {};
+    updateBadge();
+    toast('✓ Sent — ' + (tableNum==='Parcel'?'Parcel':'Table '+tableNum));
+    renderCat(activeCat);
+    goScreen(1);
+  });
+}
+
+// ── HISTORY ───────────────────────────────────────────────
+function renderHistory() {
+  if (!history.length) {
+    document.getElementById('histEmpty').style.display = 'flex';
+    document.getElementById('histScroll').style.display = 'none';
+    return;
+  }
+  document.getElementById('histEmpty').style.display = 'none';
+  document.getElementById('histScroll').style.display = 'block';
+  document.getElementById('histScroll').innerHTML = history.map(o => {
+    const total = o.items.reduce((s,i) => s + (i.price||0)*i.qty, 0);
+    return `<div class="h-card">
+      <div class="h-card-top">
+        <span class="h-table">${o.table==='Parcel'?'🚗 Parcel':'🪑 Table '+o.table}</span>
+        <span class="h-meta">${o.date} · ${o.time} · ${o.by}</span>
+      </div>
+      ${o.items.map(i => `
+        <div class="h-row">
+          <span class="h-item-name">${i.name}</span>
+          <span class="h-item-qty">×${i.qty}</span>
+          <span class="h-item-amt">${i.price ? '₹'+(i.price*i.qty) : '—'}</span>
+        </div>`).join('')}
+      ${total ? `<div class="h-total"><span>Total</span><span class="h-total-amt">₹${total}</span></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function clearHistory() {
+  if (!history.length) return toast('History is already empty', true);
+  if (confirm('Clear all order history?')) {
+    history = [];
+    localStorage.removeItem('mghr_hist');
+    renderHistory();
+    toast('History cleared');
+  }
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show'+(err?' err':'');
+  setTimeout(() => t.className='toast', 2800);
+}
+
+// Init cat pills on load for when user navigates back
+buildCatPills();
+</script>
+</body>
+</html>
