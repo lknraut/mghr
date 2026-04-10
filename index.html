@@ -1,11 +1,14 @@
-
-
-  <!DOCTYPE html>
+ <!DOCTYPE html>
   <!-- saved from url=(0031)https://lknraut.github.io/mghr/ -->
   <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POS - Maa Gayatri Hotel And Restaurant  — </title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS - Maa Gayatri Hotel And Restaurant</title>
+<meta name="theme-color" content="#D4A84B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MGHR POS">
+<link rel="manifest" href="/mghr/manifest.json">
   <style>
   @font-face {
     font-family: 'POS Sans';
@@ -58,6 +61,8 @@
       --card9: #447c00;
       --bgcustome: #2c2120;
       --bgsearch1: #33322d;
+      --bgsidebar: #011100;
+      --hederbg: #0a6603;
 
       /* Borders */
       --border:  #6b5656;
@@ -101,7 +106,7 @@
     /* ── HEADER ── */
     header {
       position: relative; z-index: 10;
-      background: var(--bg2);
+      background: var(--hederbg);
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
       display: flex; align-items: center; justify-content: space-between;
@@ -112,9 +117,9 @@
     .header-logo { font-size: 24px; opacity: 0.85; }
     .header-title h1 {
       font-family: 'POS Sans', sans-serif;
-      font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.2px;
+      font-size: 17px; font-weight: 700; color: #ffffff; letter-spacing: 0.2px;
     }
-    .header-title p { font-size: 11px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; }
+    .header-title p { font-size: 11px; color:  #d9ff04; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 1px; }
 
     .header-right { display: flex; align-items: center; gap: 14px; }
     .header-clock {
@@ -149,7 +154,7 @@
     /* ── SIDEBAR ── */
     .sidebar {
       width: 210px; flex-shrink: 0;
-      background: var(--bg2);
+      background: var(--bgsidebar);
       border-right: 1px solid var(--border);
       padding: 16px 10px;
       display: flex; flex-direction: column; gap: 4px;
@@ -448,6 +453,15 @@
     }
     .log-export-btn:hover { border-color: var(--amber-muted); color: var(--amber); }
     .log-export-btn:last-child { margin-bottom: 8px; }
+    .log-action-row { display:flex; gap:5px; margin-top:7px; }
+    .log-action-btn {
+      flex:1; padding:5px 4px; border-radius:4px; font-size:11px; font-weight:600;
+      cursor:pointer; border:1px solid var(--border); background:var(--bg2);
+      color:var(--text3); transition:all 0.15s; text-align:center;
+    }
+    .log-action-btn:hover:not(:disabled) { border-color:var(--amber-muted); color:var(--amber); }
+    .log-action-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .log-action-edit:hover:not(:disabled) { border-color:var(--green); color:var(--green); }
   /* ── CUSTOM ITEM ROW ── */
     .custom-item-row {
       display: flex; gap: 6px; align-items: center;
@@ -527,10 +541,10 @@
   <!-- HEADER -->
   <header>
     <div class="header-left">
-      <div class="header-logo">MGHR</div>
+      <div class="header-logo">MGHR Online</div>
       <div class="header-title">
         <h1>माँ गायत्री होटेल आणि रेस्टोरेंट</h1>
-        <p>POS (V - 4.1)</p>
+        <p>POS (V - 4.8)</p>
       </div>
     </div>
     <div class="header-right">
@@ -559,6 +573,7 @@
       </button>
 
       <div class="sidebar-section-label" style="margin-top:8px">🪑 Dine In Tables</div>
+      <div style="font-size:10px;color:var(--text3);padding:2px 8px 4px;letter-spacing:0.3px;">⌨ 1-9 · 0=T10 · -=T11 · ==T12 · P=Parcel</div>
       <button onclick="minimiseAllOrders()" title="Minimise all open orders" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:2px 4px;border-radius:3px;line-height:1;" onmouseover="this.style.color=&#39;var(--amber)&#39;" onmouseout="this.style.color=&#39;var(--text3)&#39;">─ मिनीमाइस करा ⛔</button>
       <button class="table-btn" onclick="openOrder(&#39;table1&#39;)" id="btn-table1">
         <span class="table-btn-icon">🪑</span>
@@ -709,7 +724,7 @@
   </div>
 
   <!-- HIDDEN PRINT IFRAME — no popup blocker issues -->
-  <iframe id="printFrame" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;" title="print" src="./POS - Maa Gayatri Hotel And Restaurant —_files/saved_resource.html"></iframe>
+  <iframe id="printFrame" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;" title="print" src="about:blank"></iframe>
 
   <!-- PRINT OVERLAY -->
   <div class="print-overlay" id="printOverlay">
@@ -717,7 +732,7 @@
       <div class="receipt-wrapper" id="receiptContent"></div>
       <div class="receipt-actions">
         <button class="receipt-btn receipt-btn-print" onclick="doPrint()">🖨️ Print Bill</button>
-        <button class="receipt-btn receipt-btn-close" onclick="closePrint()">✕ No- Print But Log</button>
+        <button class="receipt-btn receipt-btn-close" onclick="closePrint()">✕ Close (No Print)</button>
       </div>
     </div>
   </div>
@@ -732,7 +747,12 @@
   // ─── PERSIST HELPERS ─────────────────────────────────────────────────────────
   function saveState() {
     try {
-      localStorage.setItem(LS_ORDERS,    JSON.stringify(orders));
+      // Filter out edit_ windows — they are temporary and must never be restored on reload
+      var ordersToSave = {};
+      Object.keys(orders).forEach(function(k) {
+        if (!k.startsWith('edit_')) ordersToSave[k] = orders[k];
+      });
+      localStorage.setItem(LS_ORDERS,    JSON.stringify(ordersToSave));
       localStorage.setItem(LS_SALES_LOG, JSON.stringify(salesLog));
       localStorage.setItem(LS_COUNTER,   billCounter);
       localStorage.setItem(LS_GST,       gstEnabled ? '1' : '0');
@@ -776,7 +796,7 @@
       { id: 'butter_naan_roti', name: 'बटर नान', price: 40 },
       { id: 'paratha_roti', name: 'पराठा', price: 20 },
       { id: 'butter_paratha_roti', name: 'बटर पराठा', price: 30 },
-      { id: 'laccha_paratha_roti', name: 'लच्छा पराठा', price: null },
+      { id: 'laccha_paratha_roti', name: 'लच्छा पराठा', price: 0 },
       { id: 'masala_paratha_roti', name: 'मसाला पराठा', price: 40 },
       
     ]}, 
@@ -842,12 +862,20 @@
     ]},
 
   { id: 'dal', label: 'दाल', icon: '🍛', items: [
-      { id: 'dal_fry', name: 'दाल फ्राय', price: 100 },
-      { id: 'dal_tadka', name: 'दाल तडका', price: 145 },
-      { id: 'jeera_dal', name: 'जिरा दाल', price: 120 },
-      { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 145 },
+      { id: 'dal_fry', name: 'दाल फ्राय', price: 110 },
+   { id: 'half_dal_fry', name: 'हाफ दाल फ्राय', price: 60 },
+      { id: 'dal_tadka', name: 'दाल तडका', price: 140 },
+   { id: 'half_dal_tadka', name: 'हाफ दाल तडका', price: 80 },
+      { id: 'jeera_dal', name: 'जिरा दाल', price: 100 },
+   { id: 'half_jeera_dal', name: 'हाफ जिरा दाल', price: 55 },
+      { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 140 },
+   { id: 'half_butter_dal_fry', name: 'हाफ बटर दाल फ्राय', price: 80 },
       { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 145 },
+   { id: 'half_dal_kolhapuri', name: 'हाफ दाल कोल्हापुरी', price: 75 },
       { id: 'varhadi_dal', name: 'वऱ्हाडी दाल', price: 150 },
+   { id: 'half_varhadi_dal', name: 'हाफ वऱ्हाडी दाल', price: 90 },
+   { id: 'mungalai_dal', name: 'दाल मुंगलाई', price: 170 },
+
     ]},
     
     { id: 'veg_main', label: 'वेज', icon: '🥬', items: [
@@ -896,7 +924,7 @@
       { id: 'paneer_lara', name: 'पनिर लारा', price: 250 },
       { id: 'paneer_afghani', name: 'पनिर अफगानी', price: 250 },
       { id: 'paneer_pasandida', name: 'पनिर पसंदा', price: 250 },
-      { id: 'paneer_cheese_ball', name: 'पनिर चिज बॉल करी', price: null },
+      { id: 'paneer_cheese_ball', name: 'पनिर चिज बॉल करी', price: 0 },
       { id: 'paneer_tiranga', name: 'पनिर तिरंगा', price: 300 },
       { id: 'paneer_patiala', name: 'पनिर पटियाला', price: 250 },
       { id: 'kaju_paneer_do_pyaza', name: 'काजु पनिर दो प्याजा', price: 250 },
@@ -946,96 +974,17 @@
       { id: 'paneer_palak_kofta', name: 'पनिर पालक कोफ्ता', price: 180 },
       { id: 'nargis_kofta', name: 'नरगिस कोफ्ता', price: 250 },
     ]},
-
-
-    {
-      id: 'nasta',
-      label: 'नास्ता',
-      icon: '🥪',
-      items: [
-        { id: 'nasta_1', name: 'समोसा', price: 30 },
-        { id: 'nasta_2', name: 'कचोरी', price: 30 },
-        { id: 'nasta_3', name: 'आलुबोंडा', price: 30 },
-        { id: 'nasta_4', name: 'मुंग वडा', price: 30 },
-        { id: 'nasta_5', name: 'दही समोसा', price: 35 },
-        { id: 'nasta_6', name: 'दही कचोरी', price: 35 },
-        { id: 'nasta_7', name: 'सांभार वडी', price: 35 },
-        { id: 'nasta_8', name: 'सांभार वडा', price: 35 },
-        { id: 'nasta_9', name: 'मिसळ पाव', price: 40 },
-        { id: 'nasta_10', name: 'दही मिसळ पाव', price: 50 },
-        { id: 'nasta_11', name: 'मिसळ', price: 30 },
-        { id: 'nasta_12', name: 'दही मिसळ', price: 40 },
-      ]
-    },
-    {
-      id: 'pav_bhaji',
-      label: 'पाव भाजी',
-      icon: '🍛',
-      items: [
-        { id: 'pav_1', name: 'पाव भाजी', price: 50 },
-        { id: 'pav_2', name: 'बटर पावभाजी', price: 60 },
-        { id: 'pav_3', name: 'एक्स्ट्रा पाव', price: 15 },
-        { id: 'pav_4', name: 'एक्स्ट्रा बटर पाव', price: 20 },
-        { id: 'pav_5', name: 'एक्स्ट्रा भाजी', price: 20 },
-      ]
-    },
-    {
-      id: 'chinese',
-      label: 'चायनिज',
-      icon: '🍜',
-      items: [
-        { id: 'chin_1', name: 'नुडल्स', price: 70 },
-        { id: 'chin_2', name: 'नुडल्स मनच्युरियन', price: 85 },
-        { id: 'chin_3', name: 'चिली गार्लिक नुडल्स', price: 80 },
-        { id: 'chin_4', name: 'मनच्युरियन ग्रेवी', price: 70 },
-        { id: 'chin_5', name: 'मनच्युरियन ड्राय', price: 70 },
-        { id: 'chin_6', name: 'पनिर मनच्युरियन ड्राय', price: 120 },
-        { id: 'chin_7', name: 'पनिर मनच्युरियन ग्रेवी', price: 110 },
-        { id: 'chin_8', name: 'गोबी मनच्युरियन', price: 90 },
-        { id: 'chin_9', name: 'फ्राईड राईस', price: 70 },
-        { id: 'chin_10', name: 'मनच्युरियन राईस', price: 80 },
-        { id: 'chin_11', name: 'कॉकटेल राईस', price: 90 },
-        { id: 'chin_12', name: 'कॉकटेल राईस ग्रेवी', price: 100 },
-        { id: 'chin_13', name: 'सिंगापुरी फ्राईड राईस', price: 75 },
-        { id: 'chin_14', name: 'पनिर फ्राईड राईस', price: 100 },
-        { id: 'chin_15', name: 'चिली गार्लिक राईस', price: 80 },
-        { id: 'chin_16', name: 'चायनिज भेल', price: 80 },
-        { id: 'chin_17', name: 'पनिर चिली ड्रॉय', price: 130 },
-        { id: 'chin_18', name: 'पनिर चिली ग्रेवी', price: 120 },
-      ]
-    },
-    {
-      id: 'south_indian',
-      label: 'साउथ इंडीयन',
-      icon: '🫓',
-      items: [
-        { id: 'si_1', name: 'सांभार वडा', price: 40 },
-        { id: 'si_2', name: 'इडली', price: 30 },
-        { id: 'si_3', name: 'मसाला दोसा', price: 45 },
-        { id: 'si_4', name: 'कटपिस दोसा', price: 50 },
-        { id: 'si_5', name: 'पेपर साधा दोसा', price: 80 },
-        { id: 'si_6', name: 'पेपर मसाला दोसा', price: 90 },
-        { id: 'si_7', name: 'पेपर बटर मसाला दोसा', price: 110 },
-        { id: 'si_8', name: 'बटर पेपर साधा दोसा', price: 100 },
-        { id: 'si_9', name: 'प्लेन बटर दोसा', price: 50 },
-        { id: 'si_10', name: 'बटर मसाला दोसा', price: 55 },
-        { id: 'si_11', name: 'बटर कटपिस दोसा', price: 60 },
-        { id: 'si_12', name: 'मैसुर मसाला दोसा', price: 70 },
-        { id: 'si_13', name: 'चिज मैसुर दोसा', price: 90 },
-        { id: 'si_14', name: 'पनिर मैसुर दोसा', price: 95 },
-        { id: 'si_15', name: 'पनिर चिज मैसुर दोसा', price: 110 },
-        { id: 'si_16', name: 'हैद्राबादी दोसा', price: 80 },
-        { id: 'si_17', name: 'हैद्राबादी स्पेशल चिज दोसा', price: 95 },
-        { id: 'si_18', name: 'स्प्रिंग रोल दोसा', price: 75 },
-        { id: 'si_19', name: 'पनिर स्प्रिंग रोल दोसा', price: 110 },
-        { id: 'si_20', name: 'चायनिज दोसा', price: 80 },
-        { id: 'si_21', name: 'पनिर दोसा प्लेन', price: 90 },
-        { id: 'si_22', name: 'पनिर मसाला दोसा', price: 100 },
-        { id: 'si_23', name: 'चिज दोसा प्लेन', price: 70 },
-        { id: 'si_24', name: 'चिज मसाला दोसा', price: 80 },
-        { id: 'si_25', name: 'गायत्री स्पेशल दोसा', price: 111 },
-      ]
-    },
+{ id: 'sweet', label: 'स्वीट ', icon: '🍄', items: [
+      { id: 'rasgulla', name: 'रसगुल्लाा', price: 10 },
+      { id: 'chamcham', name: 'चमचम', price: 10 },
+      { id: 'gulabjam', name: 'गुलाबजाम', price: 10 },
+      { id: 'kalajam', name: 'कालाजाम', price: 15 },
+ { id: 'rasmalaai', name: 'रसमलाई', price: 20 },
+ { id: 'kalakand', name: 'गिला कलाकंद ', price: 40 },
+ { id: 'dahivatii', name: 'दहिवाटी', price: 20 },
+ { id: 'shrikhand', name: 'श्रीखंड ', price: 60 },
+    ]},
+    
 
     {
       id: 'nasta',
@@ -1125,6 +1074,7 @@
         { id: 'si_25', name: 'गायत्री स्पेशल दोसा', price: 111 },
       ]
     },
+
     {
       id: 'uttapam',
       label: 'उत्तपम',
@@ -1192,6 +1142,16 @@
     }
   }
 
+  function _hl(text, q) {
+    if (!q) return text;
+    var i = text.toLowerCase().indexOf(q.toLowerCase());
+    if (i === -1) return text;
+    return text.slice(0,i)
+      + '<mark style="background:var(--amber);color:#111;border-radius:2px;padding:0 1px;">'
+      + text.slice(i, i+q.length) + '</mark>'
+      + text.slice(i+q.length);
+  }
+
   function searchMenu(tableId, query) {
     const catDiv = document.getElementById('catscroll-' + tableId);
     const resultsDiv = document.getElementById('searchresults-' + tableId);
@@ -1204,17 +1164,16 @@
     catDiv.style.display = 'none';
     resultsDiv.style.display = 'flex';
     const q = query.trim().toLowerCase();
-    const matches = MENU.filter(item => item.id.toLowerCase().includes(q) || item.id.includes(query));
+    const matches = MENU.filter(item => item.name.toLowerCase().includes(q) || item.id.toLowerCase().includes(q));
     if (!matches.length) {
       resultsDiv.innerHTML = '<div style="font-size:11px;color:var(--textsearch3);padding:6px">No items found</div>';
       return;
     }
-    resultsDiv.innerHTML = matches.map(item => `
-      <div class="menu-chip" onclick="addItem('${tableId}','${item.id}')">
-        <span class="menu-chip-name">${item.name}</span>
-        <span class="menu-chip-price">₹${item.price}</span>
-      </div>
-    `).join('');
+    resultsDiv.innerHTML = matches.map(function(item) {
+      return '<div class="menu-chip" onclick="addItem(\'' + tableId + '\',\'' + item.id + '\')">'
+        + '<span class="menu-chip-name">' + _hl(item.name, query.trim()) + '</span>'
+        + '<span class="menu-chip-price">₹' + (item.price || '—') + '</span>'
+        + '</div>';    }).join('');
   }
 
 
@@ -1260,8 +1219,8 @@
 
     const html = `
       <div class="window-header" onclick="toggleMinimize('${tableId}')">
-        <span class="window-header-icon">${tableId === 'takeaway' ? '📦' : '🪑'}</span>
-        <span class="window-header-title">${TABLE_LABELS[tableId]}</span>
+        <span class="window-header-icon">${tableId === 'takeaway' ? '📦' : tableId.startsWith('edit_') ? '✎' : '🪑'}</span>
+        <span class="window-header-title">${tableId.startsWith('edit_') ? (orders[tableId]._editLabel || 'Edit Bill') : TABLE_LABELS[tableId]}</span>
         <span class="window-header-total">₹${total.toFixed(2)}</span>
         <div class="window-controls" onclick="event.stopPropagation()">
           <button class="win-btn win-btn-min" onclick="toggleMinimize('${tableId}')" title="Minimize">─</button>
@@ -1332,14 +1291,14 @@
           </div>
         </div>
         <textarea class="notes-field" rows="2" placeholder="Special instructions / notes..."
-          onchange="orders['${tableId}'].notes=this.value; saveState();"
+          oninput="orders['${tableId}'].notes=this.value;" oninput="orders['${tableId}'].notes=this.value;" onchange="orders['${tableId}'].notes=this.value; saveState();"
           id="notes-${tableId}">${order.notes}</textarea>
 
         <div class="window-actions">
           <button class="btn btn-clear" onclick="clearOrder('${tableId}')">🗑 Clear</button>
-          <button class="btn btn-print" onclick="printBill('${tableId}')">🖨️ Print Bill</button>
+          <button class="btn btn-print" id="printbtn-${tableId}" onclick="">🖨️ Print Bill</button>
         </div>
-        <button class="btn btn-kot" onclick="printKOT('${tableId}')">🧾 Print KOT (Kitchen)</button>
+        <div id="kotbtnwrap-${tableId}"><button class="btn btn-kot" onclick="printKOT('${tableId}')">🧾 Print KOT (Kitchen)</button></div>
       </div>
     `;
 
@@ -1354,6 +1313,21 @@
       div.innerHTML = html;
       document.getElementById('orderWindows').appendChild(div);
     }
+    // Wire print button and KOT button based on whether this is an edit window
+    (function() {
+      var pb = document.getElementById('printbtn-' + tableId);
+      var kb = document.getElementById('kotbtnwrap-' + tableId);
+      if (!pb) return;
+      if (tableId.startsWith('edit_')) {
+        pb.textContent = '🖨 Save & Reprint';
+        pb.onclick = function() { saveAndReprint(tableId); };
+        if (kb) kb.style.display = 'none';
+      } else {
+        pb.textContent = '🖨️ Print Bill';
+        pb.onclick = function() { printBill(tableId); };
+        if (kb) kb.style.display = '';
+      }
+    })();
   }
 
   function renderOrderItems(tableId) {
@@ -1446,12 +1420,23 @@
   }
 
   function closeOrder(tableId) {
+    // edit_ windows: just close silently, no confirm, no sidebar update
+    if (tableId.startsWith('edit_')) {
+      delete orders[tableId];
+      const editWin = document.getElementById('win-' + tableId);
+      if (editWin) editWin.remove();
+      const realKeys = Object.keys(orders).filter(function(k){ return !k.startsWith('edit_'); });
+      if (realKeys.length === 0 && Object.keys(orders).length === 0) {
+        document.getElementById('emptyState').style.display = '';
+      }
+      return; // don't saveState — edit windows are never persisted
+    }
     const order = orders[tableId];
     if (order && order.items && order.items.length > 0) {
       const total = calcSubtotal(order);
       const gst = gstEnabled ? total * GST_RATE / 100 : 0;
       const grand = (total + gst).toFixed(2);
-      if (!confirm(`⚠️ ${TABLE_LABELS[tableId]} has ${order.items.length} item(s) worth ₹${grand}.\n\nAre you sure you want to close this order? It will be lost.`)) {
+      if (!confirm('⚠️ ' + TABLE_LABELS[tableId] + ' has ' + order.items.length + ' item(s) worth ₹' + grand + '.\n\nAre you sure you want to close this order? It will be lost.')) {
         return;
       }
     }
@@ -1483,17 +1468,39 @@
   }
   // ─── IFRAME PRINT HELPER (no popup blocker issues) ───────────────────────────
   function printViaIframe(bodyHTML, cssText) {
-    const iframe = document.getElementById('printFrame');
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    doc.open();
-    doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-      <style>${cssText}</style>
-      </head><body>${bodyHTML}</body></html>`);
-    doc.close();
-    setTimeout(() => {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }, 250);
+    try {
+      const iframe = document.getElementById('printFrame');
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + cssText + '</style></head><body>' + bodyHTML + '</body></html>');
+      doc.close();
+      setTimeout(function() {
+        try {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        } catch(e) {
+          // Fallback: open in new window
+          const w = window.open('', '_blank', 'width=400,height=600');
+          if (w) {
+            w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + cssText + '</style></head><body>' + bodyHTML + '</body></html>');
+            w.document.close();
+            w.focus();
+            w.print();
+            setTimeout(function(){ w.close(); }, 1000);
+          }
+        }
+      }, 300);
+    } catch(e) {
+      // Final fallback: new window
+      const w = window.open('', '_blank', 'width=400,height=600');
+      if (w) {
+        w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + cssText + '</style></head><body>' + bodyHTML + '</body></html>');
+        w.document.close();
+        w.focus();
+        w.print();
+        setTimeout(function(){ w.close(); }, 1000);
+      }
+    }
   }
 
   // ─── KOT ──────────────────────────────────────────────────────────────────────
@@ -1591,6 +1598,7 @@
 
   // ─── SIDEBAR BUTTON UPDATE ────────────────────────────────────────────────────
   function updateSidebarButton(tableId) {
+    if (tableId.startsWith('edit_')) return; // no sidebar button for edit windows
     const btn = document.getElementById('btn-' + tableId);
     const sub = document.getElementById('sub-' + tableId);
     const dot = document.getElementById('dot-' + tableId);
@@ -1603,7 +1611,7 @@
       btn.classList.add('has-order');
       dot.style.background = 'var(--amber)';
     } else {
-      sub.textContent = tableId === 'takeaway' ? 'No active order' : 'Empty';
+      sub.textContent = tableId === 'takeaway' ? 'सध्या ऑर्डर नाही' : 'Empty';
       btn.classList.remove('has-order');
       dot.style.background = 'var(--border)';
     }
@@ -1653,7 +1661,7 @@
       <hr class="r-line">
       <div class="r-row r-bold"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
       ${gstEnabled
-        ? `<div class="r-row r-r-bold><span>GST @ ${GST_RATE}%</span><span>₹${gstAmt.toFixed(2)}</span></div>`
+        ? `<div class="r-row r-bold"><span>GST @ ${GST_RATE}%</span><span>₹${gstAmt.toFixed(2)}</span></div>`
         : ``}
       ${discount > 0 ? `<div class="r-row r-bold"><span>Discount</span><span>-₹${discount.toFixed(2)}</span></div>` : ''}
       <hr class="r-solid">
@@ -1673,12 +1681,15 @@
         const name = it.custom ? it.name : (MENU.find(m => m.id === it.id) || {}).name || it.id;
         return `${name}(${it.qty})`;
       }),
-      subtotal, gstAmt, discount, total, gstEnabled
+      subtotal, gstAmt, discount, total, gstEnabled,
+      snapshot: JSON.parse(JSON.stringify(order.items)),
+      snapDiscount: discount,
+      snapNotes: order.notes || ''
     };
   }
 
   function doPrint() {
-    const content = document.getElementById('receiptContent').innerHTML;
+    const receiptHTML = document.getElementById('receiptContent').innerHTML;
     const css = `
       body { font-family: 'Courier New', monospace; font-size: 15px; padding: 10px; width: 280px; }
       .r-center { text-align: center; } .r-bold { font-weight: 800; }
@@ -1688,21 +1699,33 @@
       .r-total { font-size: 18px; font-weight: 800; }
       .r-small { font-size: 10px; color: #00000; }
     `;
-    printViaIframe(content, css);
+    printViaIframe(receiptHTML, css);
 
     // Commit log entry only now — on actual print
     if (pendingLogEntry) {
+      pendingLogEntry.logIndex = salesLog.length; // store position so edit can find it
       salesLog.push(pendingLogEntry);
       billCounter++;
       pendingLogEntry = null;
       renderLog();
     }
 
-    // Clear table after print
+    // Clear table after print (for edit orders: just remove the temp window)
     if (pendingClearId) {
-      orders[pendingClearId] = { items: [], notes: '', minimized: false, discount: 0 };
-      renderOrderWindow(pendingClearId);
-      updateSidebarButton(pendingClearId);
+      if (pendingClearId.startsWith('edit_')) {
+        const editWin2 = document.getElementById('win-' + pendingClearId);
+        if (editWin2) editWin2.remove();
+        delete orders[pendingClearId];
+        // Show empty state only if no real (non-edit) windows remain
+        var realKeys = Object.keys(orders).filter(function(k){ return !k.startsWith('edit_'); });
+        if (realKeys.length === 0) {
+          document.getElementById('emptyState').style.display = '';
+        }
+      } else {
+        orders[pendingClearId] = { items: [], notes: '', minimized: false, discount: 0 };
+        renderOrderWindow(pendingClearId);
+        updateSidebarButton(pendingClearId);
+      }
       pendingClearId = null;
     }
     saveState();
@@ -1713,15 +1736,8 @@
     document.getElementById('printOverlay').classList.remove('show');
     // Discard pending log entry — Close means "don't print, don't log"
     pendingLogEntry = null;
-    if (pendingClearId) {
-      if (confirm('सेल्स लॉग मधे समाविष्ट करून टेबल क्लियर करायचे?')) {
-        orders[pendingClearId] = { items: [], notes: '', minimized: false, discount: 0 };
-        renderOrderWindow(pendingClearId);
-        updateSidebarButton(pendingClearId);
-        saveState();
-      }
-      pendingClearId = null;
-    }
+    pendingClearId = null;
+    // NOTE: Order is kept active — user can still print later
   }
 
   // ─── LOG PANEL COLLAPSE ───────────────────────────────────────────────────────
@@ -1745,20 +1761,177 @@
       return;
     }
 
-    list.innerHTML = [...salesLog].reverse().map(e => `
-      <div class="log-entry">
-        <div class="log-entry-header">
-          <span class="log-entry-id">${e.billNo}</span>
-          <span class="log-entry-total">₹${e.total.toFixed(2)}</span>
-        </div>
-        <div class="log-entry-meta">
-          <span class="log-tag ${e.tableId === 'takeaway' ? 'log-tag-takeaway' : 'log-tag-table'}">${e.label.replace(/[📦🪑]/g,'').trim()}</span>
-          <span class="log-tag log-tag-time">${e.time}</span>
-          ${e.gstEnabled ? `<span class="log-tag log-tag-gst">+GST</span>` : ''}
-        </div>
-        <div class="log-entry-items">${e.items.join(', ')}</div>
-      </div>
-    `).join('');
+    // Build newest-first, keeping real index for edit operations
+    const rendered = [];
+    for (let i = salesLog.length - 1; i >= 0; i--) {
+      const e = salesLog[i];
+      const tableClass = e.tableId === 'takeaway' ? 'log-tag-takeaway' : 'log-tag-table';
+      const label = e.label.replace(/[📦🪑]/g,'').trim();
+      const gstBadge = e.gstEnabled ? '<span class="log-tag log-tag-gst">+GST</span>' : '';
+      const editedBadge = e.edited
+        ? '<span class="log-tag" style="background:rgba(74,157,98,0.15);color:var(--green);">✎ EDITED</span>' : '';
+      const hasSnap = e.snapshot ? '' : ' disabled title="Old bill — no snapshot"';
+      rendered.push(
+        '<div class="log-entry">'
+        + '<div class="log-entry-header">'
+        +   '<span class="log-entry-id">' + e.billNo + '</span>'
+        +   '<span class="log-entry-total">₹' + e.total.toFixed(2) + '</span>'
+        + '</div>'
+        + '<div class="log-entry-meta">'
+        +   '<span class="log-tag ' + tableClass + '">' + label + '</span>'
+        +   '<span class="log-tag log-tag-time">' + e.time + '</span>'
+        +   gstBadge + editedBadge
+        + '</div>'
+        + '<div class="log-entry-items">' + e.items.join(', ') + '</div>'
+        + '<div class="log-action-row">'
+        +   '<button class="log-action-btn" onclick="reprintFromLog(' + i + ')">🖨 Reprint</button>'
+        +   '<button class="log-action-btn log-action-edit"' + hasSnap + ' onclick="openEditOrder(' + i + ')">✎ Edit &amp; Reprint</button>'
+        + '</div>'
+        + '</div>'
+      );
+    }
+    list.innerHTML = rendered.join('');
+  }
+
+  // ─── BUILD RECEIPT HTML from a salesLog entry ───────────────────────────────
+  function buildReceiptFromEntry(e) {
+    var itemRows = e.snapshot.map(function(it) {
+      var name  = it.custom ? it.name  : ((MENU.find(function(m){return m.id===it.id;})||{}).name||it.id);
+      var price = it.custom ? it.price : ((MENU.find(function(m){return m.id===it.id;})||{}).price||0);
+      var amt   = price * it.qty;
+      return '<div class="r-row r-bold"><span>' + name + '</span><span></span></div>'
+           + '<div class="r-row r-bold" style="padding-left:12px"><span style="font-size:14px;color:#000">'
+           + it.qty + ' × ₹' + price + '</span><span>₹' + amt.toFixed(0) + '</span></div>';
+    }).join('');
+    var gstLine = e.gstEnabled
+      ? '<div class="r-row r-bold"><span>GST @ ' + GST_RATE + '%</span><span>₹' + e.gstAmt.toFixed(2) + '</span></div>' : '';
+    var discLine = (e.discount > 0)
+      ? '<div class="r-row r-bold"><span>Discount</span><span>-₹' + e.discount.toFixed(2) + '</span></div>' : '';
+    var notesLine = e.snapNotes
+      ? '<div class="r-bold" style="margin-top:3px">Note: ' + e.snapNotes + '</div>' : '';
+    return '<div class="r-center r-bold" style="font-size:13px">MAA GAYATRI HOTEL &amp; RESTAURANT</div>'
+         + '<div class="r-center r-bold"> आपले आपूलकीचे ठिकाण</div>'
+         + '<hr class="r-line">'
+         + '<div class="r-row r-bold"><span>Bill No:</span><span>' + e.billNo + '</span></div>'
+         + '<div class="r-row r-bold"><span>Date:</span><span>' + e.date + ' ' + e.time + '</span></div>'
+         + '<div class="r-row r-bold"><span>Type:</span><span>' + e.label + '</span></div>'
+         + notesLine
+         + '<hr class="r-line">'
+         + '<div class="r-row r-bold"><span>ITEM</span><span>AMT</span></div>'
+         + '<hr class="r-line">'
+         + itemRows
+         + '<hr class="r-line">'
+         + '<div class="r-row r-bold"><span>Subtotal</span><span>₹' + e.subtotal.toFixed(2) + '</span></div>'
+         + gstLine + discLine
+         + '<hr class="r-solid">'
+         + '<div class="r-row r-bold r-total"><span>GRAND TOTAL</span><span>₹' + e.total.toFixed(2) + '</span></div>'
+         + '<hr class="r-solid">'
+         + '<div class="r-center r-bold" style="margin-top:6px">धन्यवाद! — पुन्हा भेटूया —</div>';
+  }
+
+  var _receiptCSS = 'body{font-family:"Courier New",monospace;font-size:15px;padding:10px;width:280px;}'
+    + '.r-center{text-align:center}.r-bold{font-weight:800}'
+    + '.r-line{border:none;border-top:1px dashed #999;margin:6px 0}'
+    + '.r-solid{border:none;border-top:2px solid #333;margin:6px 0}'
+    + '.r-row{display:flex;justify-content:space-between;margin:2px 0}'
+    + '.r-total{font-size:18px;font-weight:800}';
+
+  // ─── REPRINT exact bill from log (no changes) ────────────────────────────────
+  function reprintFromLog(logIdx) {
+    var e = salesLog[logIdx];
+    if (!e) return;
+    if (!e.snapshot) { alert('Old bill — no item snapshot available to reprint.'); return; }
+    var html = buildReceiptFromEntry(e);
+    printViaIframe(html, _receiptCSS);
+    showToast('🖨 Reprinting ' + e.billNo, 2000);
+  }
+
+  // ─── OPEN EDIT ORDER — full order window pre-loaded with bill items ──────────
+  function openEditOrder(logIdx) {
+    var e = salesLog[logIdx];
+    if (!e || !e.snapshot) { alert('Old bill — no item snapshot. Cannot edit.'); return; }
+
+    var editId = 'edit_' + logIdx;
+
+    // Build a fake order from the snapshot
+    orders[editId] = {
+      items: JSON.parse(JSON.stringify(e.snapshot)),
+      notes: e.snapNotes || '',
+      discount: e.snapDiscount || 0,
+      minimized: false,
+      _editLogIdx: logIdx,            // which log entry to update on reprint
+      _editLabel: '✎ ' + e.billNo + ' (' + e.label.replace(/[📦🪑]/g,'').trim() + ')'
+    };
+
+    // Strip KOT flags — not relevant for editing
+    orders[editId].items.forEach(function(it) {
+      delete it.kotSelected;
+      delete it.kotSentQty;
+    });
+
+    document.getElementById('emptyState').style.display = 'none';
+
+    renderOrderWindow(editId);
+    // NOTE: updateSidebarButton intentionally NOT called — no sidebar btn for edit_ windows
+
+    // Scroll new edit window into view
+    var win = document.getElementById('win-' + editId);
+    if (win) setTimeout(function(){ win.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
+
+    showToast('✎ Editing ' + e.billNo + ' — change items then tap Save & Reprint', 3500);
+  }
+
+  // ─── SAVE & REPRINT — called from the edit order window ─────────────────────
+  function saveAndReprint(editId) {
+    var order = orders[editId];
+    if (!order || !order.items.length) { alert('No items in this order!'); return; }
+
+    var logIdx = order._editLogIdx;
+    var origEntry = salesLog[logIdx];
+    if (!origEntry) { alert('Original log entry not found.'); return; }
+
+    // Recalculate
+    var subtotal = calcSubtotal(order);
+    var gstAmt   = origEntry.gstEnabled ? +(subtotal * GST_RATE / 100).toFixed(2) : 0;
+    var discount = parseFloat(order.discount || 0) || 0;
+    var total    = Math.max(0, subtotal + gstAmt - discount);
+
+    // Build updated log entry (keep original billNo, date, time, table)
+    var updatedEntry = {
+      billNo:      origEntry.billNo,
+      tableId:     origEntry.tableId,
+      label:       origEntry.label,
+      date:        origEntry.date,
+      time:        origEntry.time,
+      gstEnabled:  origEntry.gstEnabled,
+      logIndex:    logIdx,
+      items: order.items.map(function(it) {
+        var name = it.custom ? it.name : ((MENU.find(function(m){return m.id===it.id;})||{}).name||it.id);
+        return name + '(' + it.qty + ')';
+      }),
+      subtotal: subtotal, gstAmt: gstAmt, discount: discount, total: total,
+      snapshot:    JSON.parse(JSON.stringify(order.items)),
+      snapDiscount: discount,
+      snapNotes:   order.notes || '',
+      edited:      true
+    };
+
+    // Replace in salesLog in-place — today's total auto-corrects
+    salesLog[logIdx] = updatedEntry;
+    saveState();
+    renderLog();
+
+    // Show receipt preview (uses standard print overlay)
+    var now = new Date();
+    var receiptHTML = buildReceiptFromEntry(updatedEntry);
+    document.getElementById('receiptContent').innerHTML = receiptHTML;
+    document.getElementById('printOverlay').classList.add('show');
+
+    // Store enough for doPrint to just print (log already committed)
+    pendingClearId   = editId;   // close edit window after print
+    pendingLogEntry  = null;     // already committed above
+
+    showToast('✅ ' + origEntry.billNo + ' updated — Sales log adjusted', 3000);
   }
 
   function exportLog() {
@@ -1783,6 +1956,30 @@
   // Close print overlay on background click
   document.getElementById('printOverlay').addEventListener('click', function(e) {
     if (e.target === this) closePrint();
+  });
+
+  // ─── KEYBOARD SHORTCUTS ──────────────────────────────────────────────────────
+  var _KEY_MAP = {
+    '1':'table1','2':'table2','3':'table3','4':'table4','5':'table5',
+    '6':'table6','7':'table7','8':'table8','9':'table9','0':'table10',
+    '-':'table11','=':'table12','[':'table13',']':'table14','\\':'table15',
+    'p':'takeaway','q':'takeaway'
+  };
+  document.addEventListener('keydown', function(ev) {
+    var tag = (ev.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || ev.target.isContentEditable) return;
+    if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    if (ev.key === 'Escape') {
+      if (document.getElementById('printOverlay').classList.contains('show')) { closePrint(); return; }
+    }
+    var tId = _KEY_MAP[ev.key] || _KEY_MAP[(ev.key||'').toLowerCase()];
+    if (tId) {
+      ev.preventDefault();
+      openOrder(tId);
+      var btn = document.getElementById('btn-' + tId);
+      if (btn) btn.scrollIntoView({ block: 'nearest' });
+      showToast('⌨ ' + (TABLE_LABELS[tId] || tId), 1200);
+    }
   });
 
   // ─── PREVENT DATA LOSS ON REFRESH / CLOSE ────────────────────────────────────
@@ -1848,7 +2045,14 @@
     document.body.appendChild(t);
     setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => t.remove(), 400); }, duration);
   }
-
+// ─── SERVICE WORKER REGISTRATION ─────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/mghr/sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.warn('SW failed:', err));
+  });
+}
   // ─── CLEAR LOG FUNCTION (end of day reset) ───────────────────────────────────
   function clearLog() {
     if (confirm('Clear entire sales log? This will reset today\'s sales. (Export CSV first if needed)')) {
@@ -1861,5 +2065,84 @@
   }
   </script>
 
+<!-- ── WAITER ORDER RECEIVER ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.5/mqtt.min.js"></script>
+<script>
+(function() {
+  const TOPIC = 'mghr/orders/v1';
+  const _seen = new Set();
 
-  </body></html>
+  const _client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+    clientId: 'mghr_pos_' + Math.random().toString(36).slice(2,9),
+    clean: true, reconnectPeriod: 4000, connectTimeout: 10000
+  });
+
+  _client.on('connect', () => {
+    _client.subscribe(TOPIC, { qos: 1 });
+    showToast('📡 Waiter orders: Connected', 2000);
+  });
+
+  _client.on('message', (topic, payload) => {
+    try {
+      const order = JSON.parse(payload.toString());
+      if (_seen.has(order.id)) return; // ignore duplicates
+      _seen.add(order.id);
+
+      // Convert table number to tableId used by the app
+      const tableId = order.table === 'Parcel' ? 'takeaway' : 'table' + order.table;
+
+      // Open the table if not already open
+      openOrder(tableId);
+
+      // Add each item as a custom item (with price 0 — can be set manually)
+      order.items.forEach(item => {
+        // Check if item exists in MENU by name match
+        const menuItem = MENU.find(m =>
+          m.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+        );
+
+        if (menuItem) {
+          // Add from menu properly (with correct price)
+          for (let i = 0; i < item.qty; i++) {
+            addItem(tableId, menuItem.id);
+          }
+        } else {
+          // Add as custom item with 0 price
+          for (let i = 0; i < item.qty; i++) {
+            orders[tableId].items.push({
+              id: 'custom_' + Date.now() + '_' + Math.random(),
+              name: item.name,
+              price: 0,
+              qty: 1,
+              custom: true,
+              kotSelected: true,
+              kotSentQty: 0
+            });
+          }
+          renderOrderWindow(tableId);
+          updateSidebarButton(tableId);
+          saveState();
+        }
+      });
+
+      // Bell sound
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [0, 0.12, 0.24].forEach(d => {
+          const osc = ctx.createOscillator(), g = ctx.createGain();
+          osc.connect(g); g.connect(ctx.destination);
+          osc.frequency.value = 880; osc.type = 'sine';
+          g.gain.setValueAtTime(0.3, ctx.currentTime + d);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + d + 0.5);
+          osc.start(ctx.currentTime + d); osc.stop(ctx.currentTime + d + 0.6);
+        });
+      } catch(e) {}
+
+      const label = order.table === 'Parcel' ? 'Parcel' : 'Table ' + order.table;
+      showToast('🔔 New order — ' + label + ' (by ' + order.by + ')', 4000);
+
+    } catch(e) { console.error('MQTT parse error:', e); }
+  });
+})();
+</script>
+</body></html>
