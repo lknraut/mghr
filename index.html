@@ -1,6 +1,5 @@
- <!DOCTYPE html>
-  <!-- saved from url=(0031)https://lknraut.github.io/mghr/ -->
-  <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <!DOCTYPE html> 
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>POS - Maa Gayatri Hotel And Restaurant</title>
 <meta name="theme-color" content="#D4A84B">
@@ -191,59 +190,168 @@
     .takeaway-btn { background: var(--bgtakeaway) !important; border-color: var(--border) !important; }
     .takeaway-btn .table-btn-name { color: var(--amber); }
 
-    /* ── WORKSPACE ── */
-    .workspace {
-      flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 16px;
-      overflow-y: auto; background: var(--bg);
-    }
+   /* ── WORKSPACE ── */
+  .workspace {
+    flex: 1; display: flex; flex-direction: column;
+    background: var(--bg); overflow: hidden; min-width: 0;
+  }
 
-    .workspace-empty {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 12px;
-      color: var(--text3);
-    }
-    .workspace-empty .big-icon { font-size: 60px; opacity: 0.2; }
-    .workspace-empty p { font-size: 14px; color: var(--text3); }
+  /* ── MINIMISED STRIP ── */
+  .minimised-strip {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 8px 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    min-height: 0;
+  }
+  .minimised-strip:empty { display: none; }
+  .mini-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 20px;
+    background: var(--bg3); border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.15s;
+    font-size: 12px; font-weight: 600; color: var(--text2);
+  }
+  .mini-chip:hover { border-color: var(--amber); color: var(--amber); }
+  .mini-chip.has-items { border-color: var(--amber-muted); color: var(--amber); }
+  .mini-chip-total { font-family: 'POS Sans Mono', monospace; font-size: 11px; color: var(--text3); }
+  .mini-chip-close {
+    background: none; border: none; color: var(--text3);
+    cursor: pointer; font-size: 13px; padding: 0 0 0 2px; line-height: 1;
+  }
+  .mini-chip-close:hover { color: var(--red); }
 
-    /* ── ORDER WINDOWS ── */
-    .order-windows { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .workspace-empty {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    color: var(--text3);
+  }
+  .workspace-empty .big-icon { font-size: 60px; opacity: 0.2; }
+  .workspace-empty p { font-size: 14px; color: var(--text3); }
 
-    .order-window {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      width: 420px; min-width: 360px;
-      box-shadow: var(--shadow);
-      transition: box-shadow 0.2s;
-      animation: slideIn 0.2s ease;
-      overflow: hidden;
-    }
-    .order-window:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.7); }
-    @keyframes slideIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: none; } }
-    .order-window.minimized { width: 210px; }
+  /* ── ACTIVE ORDER WINDOW (full workspace) ── */
+  .order-windows { flex: 1; display: flex; overflow: hidden; }
 
-    .window-header {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 14px;
-      background: var(--bg3);
-      border-bottom: 1px solid var(--border2);
-      cursor: pointer; user-select: none;
-    }
-    .window-header-icon { font-size: 15px; opacity: 0.7; }
-    .window-header-title { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
-    .window-header-total { font-family: 'POS Sans Mono', monospace; font-size: 14px; color: var(--amber); font-weight: 600; }
-    .window-controls { display: flex; gap: 5px; }
-    .win-btn {
-      width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border);
-      background: var(--card2); color: var(--text2); cursor: pointer; font-size: 11px;
-      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-    }
-    .win-btn:hover { background: var(--border); color: var(--text); }
-    .win-btn-close:hover { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .order-window {
+    display: none;
+    flex: 1; flex-direction: column;
+    background: var(--card);
+    overflow: hidden;
+    animation: slideIn 0.18s ease;
+  }
+  .order-window.active { display: flex; }
+  @keyframes slideIn { from { opacity:0; transform: translateX(10px); } to { opacity:1; transform: none; } }
 
-    .window-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .order-window.minimized .window-body { display: none; }
+  .window-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .window-header-icon { font-size: 18px; opacity: 0.8; }
+  .window-header-title { flex: 1; font-size: 18px; font-weight: 700; color: var(--text); }
+  .window-header-total {
+    font-family: 'POS Sans Mono', monospace;
+    font-size: 20px; color: var(--amber); font-weight: 700;
+  }
+  .window-controls { display: flex; gap: 6px; }
+  .win-btn {
+    width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--card2); color: var(--text2); cursor: pointer; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .win-btn:hover { background: var(--border); color: var(--text); }
+  .win-btn-close:hover { background: var(--red-dim); border-color: var(--red); color: var(--red); }
 
+  /* ── WINDOW BODY — two column layout ── */
+  .window-body {
+    flex: 1; display: flex; overflow: hidden; gap: 0;
+  }
+
+  /* LEFT — menu panel */
+  .menu-panel {
+    width: 45%; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--bg);
+  }
+  .menu-panel-inner {
+    flex: 1; overflow-y: auto; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  /* RIGHT — order panel */
+  .order-panel {
+    flex: 1; display: flex; flex-direction: column;
+    overflow: hidden; background: var(--card);
+  }
+  .order-panel-inner {
+    flex: 1; overflow-y: auto; padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .order-panel-footer {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--bg2); flex-shrink: 0;
+  }
+
+  /* bigger menu chips for full screen */
+  .menu-chip {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border2);
+    cursor: pointer; transition: background 0.12s, border-color 0.12s;
+  }
+  .menu-chip:hover { background: var(--card9); border-color: var(--border); }
+  .menu-chip-name {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    font-family: 'POS Sans', sans-serif;
+  }
+  .menu-chip-price {
+    font-size: 13px; color: var(--amber);
+    font-family: 'POS Sans Mono', monospace;
+  }
+
+  /* bigger order item rows */
+  .order-item-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border2);
+  }
+  .order-item-name {
+    flex: 1; font-size: 15px; color: var(--text);
+    font-family: 'POS Sans', sans-serif;
+  }
+  .qty-btn {
+    width: 30px; height: 30px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--itembox2); color: var(--text); cursor: pointer;
+    font-size: 17px; font-weight: 700; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s;
+  }
+  .qty-num {
+    font-family: 'POS Sans Mono', monospace;
+    font-size: 15px; font-weight: 700; color: var(--text);
+    min-width: 24px; text-align: center;
+  }
+  .item-total {
+    font-family: 'POS Sans Mono', monospace;
+    font-size: 14px; color: var(--amber); min-width: 60px; text-align: right;
+  }
+
+  /* cat-header bigger */
+  .cat-header {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 13px; border-radius: var(--radius-sm);
+    background: var(--bg3); border: 1px solid var(--border2);
+    cursor: pointer; transition: background 0.12s, border-color 0.12s; user-select: none;
+    font-size: 14px;
+    width: auto; margin: 0;
+  }
+  .cat-header:hover { background: var(--card9); border-color: var(--border); }
+  .cat-header.open { border-color: var(--amber-muted); background: var(--card9); }
+  .cat-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .cat-count { font-size: 12px; color: var(--text3); }
     /* ── MENU SEARCH ── */
     .menu-search {
       width: 100%; padding: 8px 11px; border-radius: var(--radius-sm);
@@ -697,14 +805,16 @@
       </button>
     </div>
 
-    <!-- WORKSPACE -->
-    <div class="workspace" id="workspace">
-      <div class="workspace-empty" id="emptyState" style="">
-        <div class="big-icon">🍛</div>
-        <p>Select a table or take away to start an order</p>
-      </div>
-      <div class="order-windows" id="orderWindows"></div>
+
+<!-- WORKSPACE -->
+  <div class="workspace" id="workspace">
+    <div class="minimised-strip" id="miniStrip"></div>
+    <div class="workspace-empty" id="emptyState">
+      <div class="big-icon">🍛</div>
+      <p>Select a table or takeaway to start an order</p>
     </div>
+    <div class="order-windows" id="orderWindows"></div>
+  </div>
 
     <!-- LOG PANEL -->
     <div class="log-panel" id="logPanel">
@@ -900,6 +1010,7 @@
       { id: 'palak_paneer', name: 'पालक पनिर', price: 150 },
       { id: 'paneer_matar', name: 'पनिर मटर', price: 150 },
       { id: 'paneer_kadai', name: 'पनिर कढई', price: 160 },
+      { id: 'paneer_varhadi', name: 'वर्हाडी पनीर', price: 170 },
       { id: 'paneer_tawa', name: 'पनिर तवा', price: 170 },
       { id: 'paneer_handi', name: 'पनिर हंडी', price: 170 },
       { id: 'paneer_bhurji_dry', name: 'पनिर भुर्जी ड्राय', price: 175 },
@@ -1194,141 +1305,184 @@
   }
 
   // ─── OPEN / FOCUS ORDER ──────────────────────────────────────────────────────
-  function openOrder(tableId) {
-    const el = document.getElementById('emptyState');
-    if (el) el.style.display = 'none';
+function openOrder(tableId) {
+  document.getElementById('emptyState').style.display = 'none';
 
-    if (!orders[tableId]) {
-      orders[tableId] = { items: [], notes: '', minimized: false };
-    } else {
-      orders[tableId].minimized = false;
-    }
-    renderOrderWindow(tableId);
-    updateSidebarButton(tableId);
+  if (!orders[tableId]) {
+    orders[tableId] = { items: [], notes: '', minimized: false };
   }
 
-  // ─── RENDER ORDER WINDOW ─────────────────────────────────────────────────────
-  function renderOrderWindow(tableId) {
-    const order = orders[tableId];
-    const existing = document.getElementById('win-' + tableId);
-    
+  // Minimise all other non-edit windows
+  Object.keys(orders).forEach(id => {
+    if (id !== tableId && !id.startsWith('edit_') && orders[id]) {
+      orders[id].minimized = true;
+    }
+  });
+
+  orders[tableId].minimized = false;
+
+  // Re-render all windows and update strip
+  Object.keys(orders).forEach(id => {
+    if (orders[id]) renderOrderWindow(id);
+  });
+
+  setActiveWindow(tableId);
+  updateSidebarButton(tableId);
+  updateMiniStrip();
+  saveState();
+}
+
+function setActiveWindow(tableId) {
+  // Hide all windows
+  document.querySelectorAll('.order-window').forEach(w => w.classList.remove('active'));
+  // Show only the active one
+  const el = document.getElementById('win-' + tableId);
+  if (el) el.classList.add('active');
+}
+
+function updateMiniStrip() {
+  const strip = document.getElementById('miniStrip');
+  const minimised = Object.keys(orders).filter(id =>
+    orders[id] && orders[id].minimized && !id.startsWith('edit_')
+  );
+  if (!minimised.length) { strip.innerHTML = ''; return; }
+
+  strip.innerHTML = minimised.map(id => {
+    const order = orders[id];
     const subtotal = calcSubtotal(order);
-    const gstAmt = gstEnabled ? +(subtotal * GST_RATE / 100).toFixed(2) : 0;
-    const discount = parseFloat(order.discount || 0) || 0;
-    const total = Math.max(0, subtotal + gstAmt - discount);
-
-    const html = `
-      <div class="window-header" onclick="toggleMinimize('${tableId}')">
-        <span class="window-header-icon">${tableId === 'takeaway' ? '📦' : tableId.startsWith('edit_') ? '✎' : '🪑'}</span>
-        <span class="window-header-title">${tableId.startsWith('edit_') ? (orders[tableId]._editLabel || 'Edit Bill') : TABLE_LABELS[tableId]}</span>
-        <span class="window-header-total">₹${total.toFixed(2)}</span>
-        <div class="window-controls" onclick="event.stopPropagation()">
-          <button class="win-btn win-btn-min" onclick="toggleMinimize('${tableId}')" title="Minimize">─</button>
-          <button class="win-btn win-btn-close" onclick="closeOrder('${tableId}')" title="Close">✕</button>
-        </div>
-      </div>
-      <div class="window-body">
-        <input class="menu-search" type="text" placeholder="🔍 मेनू शोधण्यासाठी टाइप करा..."
-          oninput="searchMenu('${tableId}', this.value)" id="search-${tableId}">
-        <div id="searchresults-${tableId}" class="search-results" style="display:none"></div>
-    <div class="menu-cat-scroll" id="catscroll-${tableId}">
-          ${MENU_CATEGORIES.map(cat => `
-            <div style="width:100%;display:contents">
-              <div class="cat-header" id="cathdr-${tableId}-${cat.id}" onclick="toggleCat('${tableId}','${cat.id}')">
-                <span class="cat-icon">${cat.icon}</span>
-                <span class="cat-name">${cat.label}</span>
-                <span class="cat-count">(${cat.items.length})</span>
-                <span class="cat-arrow" style="font-size:9px;color:var(--text3);">▼</span>
-              </div>
-              <div class="cat-items" id="catitems-${tableId}-${cat.id}">
-                ${cat.items.map(item => `
-                  <div class="menu-chip" onclick="addItem('${tableId}','${item.id}')">
-                    <span class="menu-chip-name">${item.name}</span>
-                    <span class="menu-chip-price">₹${item.price}</span>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      <div class="custom-item-row">
-          <input class="custom-item-name" type="text"
-            id="custom-name-${tableId}"
-            placeholder="ऑर्डर चे नाव लिहा "
-            onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
-          <span style="color:var(--text3);font-size:13px;">₹</span>
-          <input class="custom-item-price" type="number"
-            id="custom-price-${tableId}"
-            placeholder="किंमत" min="0"
-            onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
-          <button class="custom-item-add" onclick="addCustomItem('${tableId}')">+ Add</button>
-        </div>
-        <div class="order-items-list" id="items-${tableId}">
-          ${renderOrderItems(tableId)}
-        </div>
-        <div class="kot-hint">☑ Tick items to include in KOT</div>
-        
-        
-        <div class="order-summary">
-          <div class="summary-row">
-            <span class="summary-label">Subtotal</span>
-            <span class="summary-value">₹${subtotal.toFixed(2)}</span>
-          </div>
-          ${gstEnabled ? `<div class="summary-row">
-            <span class="summary-label">GST @ ${GST_RATE}%</span>
-            <span class="summary-value">₹${gstAmt.toFixed(2)}</span>
-          </div>` : ``}
-          <div class="discount-row">
-            <span class="discount-label">Discount ₹</span>
-            <input class="discount-input" type="number" min="0" placeholder="0"
-              value="${order.discount || ''}"
-              oninput="setDiscount('${tableId}', this.value)"
-            />
-          </div>
-          <div class="summary-row" style="margin-top:6px; border-top:1px solid var(--border2); padding-top:6px">
-            <span class="summary-total-label">TOTAL</span>
-            <span class="summary-total-value">₹${total.toFixed(2)}</span>
-          </div>
-        </div>
-        <textarea class="notes-field" rows="2" placeholder="Special instructions / notes..."
-          oninput="orders['${tableId}'].notes=this.value;" oninput="orders['${tableId}'].notes=this.value;" onchange="orders['${tableId}'].notes=this.value; saveState();"
-          id="notes-${tableId}">${order.notes}</textarea>
-
-        <div class="window-actions">
-          <button class="btn btn-clear" onclick="clearOrder('${tableId}')">🗑 Clear</button>
-          <button class="btn btn-print" id="printbtn-${tableId}" onclick="">🖨️ Print Bill</button>
-        </div>
-        <div id="kotbtnwrap-${tableId}"><button class="btn btn-kot" onclick="printKOT('${tableId}')">🧾 Print KOT (Kitchen)</button></div>
+    const gst = gstEnabled ? subtotal * GST_RATE / 100 : 0;
+    const total = Math.max(0, subtotal + gst - (order.discount || 0));
+    const hasItems = order.items.length > 0;
+    return `
+      <div class="mini-chip ${hasItems ? 'has-items' : ''}" onclick="openOrder('${id}')">
+        <span>${TABLE_LABELS[id]}</span>
+        ${hasItems ? `<span class="mini-chip-total">₹${total.toFixed(0)}</span>` : ''}
+        <button class="mini-chip-close" onclick="event.stopPropagation();closeOrder('${id}')" title="Close">✕</button>
       </div>
     `;
+  }).join('');
+}
 
-    if (existing) {
-      existing.innerHTML = html;
-      if (order.minimized) existing.classList.add('minimized');
-      else existing.classList.remove('minimized');
-    } else {
-      const div = document.createElement('div');
-      div.className = 'order-window' + (order.minimized ? ' minimized' : '');
-      div.id = 'win-' + tableId;
-      div.innerHTML = html;
-      document.getElementById('orderWindows').appendChild(div);
-    }
-    // Wire print button and KOT button based on whether this is an edit window
-    (function() {
-      var pb = document.getElementById('printbtn-' + tableId);
-      var kb = document.getElementById('kotbtnwrap-' + tableId);
-      if (!pb) return;
-      if (tableId.startsWith('edit_')) {
-        pb.textContent = '🖨 Save & Reprint';
-        pb.onclick = function() { saveAndReprint(tableId); };
-        if (kb) kb.style.display = 'none';
-      } else {
-        pb.textContent = '🖨️ Print Bill';
-        pb.onclick = function() { printBill(tableId); };
-        if (kb) kb.style.display = '';
-      }
-    })();
+  // ─── RENDER ORDER WINDOW ─────────────────────────────────────────────────────
+function renderOrderWindow(tableId) {
+  const order = orders[tableId];
+  const subtotal = calcSubtotal(order);
+  const gstAmt = gstEnabled ? +(subtotal * GST_RATE / 100).toFixed(2) : 0;
+  const discount = parseFloat(order.discount || 0) || 0;
+  const total = Math.max(0, subtotal + gstAmt - discount);
+  const isEdit = tableId.startsWith('edit_');
+  const label = isEdit
+    ? `✏️ Editing Bill ${order._originalBillNo}`
+    : TABLE_LABELS[tableId];
+
+  const html = `
+    <div class="window-header">
+      <span class="window-header-icon">${tableId === 'takeaway' ? '[TakeAway]' : isEdit ? '✏️' : ''}</span>
+      <span class="window-header-title">${label}</span>
+      <span class="window-header-total">₹${total.toFixed(2)}</span>
+      <div class="window-controls">
+        <button class="win-btn win-btn-close" onclick="closeOrder('${tableId}')" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+
+      <!-- LEFT: MENU PANEL -->
+      <div class="menu-panel">
+        <div style="padding:10px 12px;border-bottom:1px solid var(--border2);flex-shrink:0;">
+          <input class="menu-search" type="text" placeholder="Search menu..."
+            oninput="searchMenu('${tableId}', this.value)" id="search-${tableId}">
+        </div>
+        <div id="searchresults-${tableId}" class="search-results" style="display:none;padding:8px 12px;flex-wrap:wrap;gap:5px;"></div>
+        <div class="menu-panel-inner" id="catscroll-${tableId}">
+          <div style="display:flex;flex-wrap:wrap;gap:4px;padding:2px;">
+            ${MENU_CATEGORIES.map(cat => `
+              <div style="display:contents">
+                <div class="cat-header" id="cathdr-${tableId}-${cat.id}"
+                  onclick="toggleCat('${tableId}','${cat.id}')">
+                  <span class="cat-icon">${cat.icon}</span>
+                  <span class="cat-name">${cat.label}</span>
+                  <span class="cat-count">(${cat.items.length})</span>
+                  <span class="cat-arrow" style="font-size:9px;color:var(--text3);">▼</span>
+                </div>
+                <div class="cat-items" id="catitems-${tableId}-${cat.id}">
+                  ${cat.items.map(item => `
+                    <div class="menu-chip" onclick="addItem('${tableId}','${item.id}')">
+                      <span class="menu-chip-name">${item.name}</span>
+                      <span class="menu-chip-price">₹${item.price}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ORDER PANEL -->
+      <div class="order-panel">
+        <div class="order-panel-inner">
+          <div class="order-items-list" id="items-${tableId}">
+            ${renderOrderItems(tableId)}
+          </div>
+          <div class="kot-hint" style="font-size:12px;">☑ Tick items to include in KOT</div>
+          <div class="custom-item-row">
+            <input class="custom-item-name" type="text"
+              id="custom-name-${tableId}" placeholder="Custom item name..."
+              onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
+            <span style="color:var(--text3);font-size:13px;">₹</span>
+            <input class="custom-item-price" type="number"
+              id="custom-price-${tableId}" placeholder="0" min="0"
+              onkeydown="if(event.key==='Enter') addCustomItem('${tableId}')">
+            <button class="custom-item-add" onclick="addCustomItem('${tableId}')">+ Add</button>
+          </div>
+          <textarea class="notes-field" rows="2" placeholder="Special instructions / notes..."
+            onchange="orders['${tableId}'].notes=this.value; saveState();"
+            id="notes-${tableId}">${order.notes}</textarea>
+        </div>
+
+        <div class="order-panel-footer">
+          <div class="order-summary">
+            <div class="summary-row">
+              <span class="summary-label" style="font-size:14px;">Subtotal</span>
+              <span class="summary-value" style="font-size:14px;">₹${subtotal.toFixed(2)}</span>
+            </div>
+            ${gstEnabled ? `<div class="summary-row">
+              <span class="summary-label" style="font-size:14px;">GST @ ${GST_RATE}%</span>
+              <span class="summary-value" style="font-size:14px;">₹${gstAmt.toFixed(2)}</span>
+            </div>` : ''}
+            <div class="discount-row">
+              <span class="discount-label" style="font-size:14px;">Discount ₹</span>
+              <input class="discount-input" type="number" min="0" placeholder="0"
+                value="${order.discount || ''}"
+                oninput="setDiscount('${tableId}', this.value)">
+            </div>
+            <div class="summary-row" style="margin-top:6px;border-top:1px solid var(--border2);padding-top:8px;">
+              <span class="summary-total-label" style="font-size:18px;">TOTAL</span>
+              <span class="summary-total-value" style="font-size:20px;">₹${total.toFixed(2)}</span>
+            </div>
+          </div>
+          <div class="window-actions">
+            <button class="btn btn-clear" onclick="clearOrder('${tableId}')">🗑 Clear</button>
+            <button class="btn btn-print" onclick="printBill('${tableId}')" style="font-size:15px;">🖨️ Print Bill</button>
+          </div>
+          <button class="btn btn-kot" onclick="printKOT('${tableId}')">🧾 Print KOT (Kitchen)</button>
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  let el = document.getElementById('win-' + tableId);
+  if (el) {
+    el.innerHTML = html;
+  } else {
+    el = document.createElement('div');
+    el.className = 'order-window';
+    el.id = 'win-' + tableId;
+    el.innerHTML = html;
+    document.getElementById('orderWindows').appendChild(el);
   }
+}
 
   function renderOrderItems(tableId) {
     const order = orders[tableId];
@@ -1444,28 +1598,33 @@
     const el = document.getElementById('win-' + tableId);
     if (el) el.remove();
     updateSidebarButton(tableId);
-    if (Object.keys(orders).length === 0) {
+// If closed window was active, show another or show empty
+  const remaining = Object.keys(orders).filter(id => !orders[id].minimized && !id.startsWith('edit_'));
+  if (remaining.length > 0) {
+    setActiveWindow(remaining[0]);
+  } else {
+    document.querySelectorAll('.order-window').forEach(w => w.classList.remove('active'));
+    if (Object.keys(orders).filter(id => !id.startsWith('edit_')).length === 0) {
       document.getElementById('emptyState').style.display = '';
     }
-    saveState();
   }
+  updateMiniStrip();
+  saveState();
+}
 
-  function toggleMinimize(tableId) {
-    const order = orders[tableId];
-    if (!order) return;
-    order.minimized = !order.minimized;
-    renderOrderWindow(tableId);
-    saveState();
-  }
-  function minimiseAllOrders() {
-    Object.keys(orders).forEach(tableId => {
-      if (orders[tableId] && !orders[tableId].minimized) {
-        orders[tableId].minimized = true;
-        renderOrderWindow(tableId);
-      }
-    });
-    saveState();
-  }
+function toggleMinimize(tableId) {
+  // No longer needed — openOrder handles focus
+}
+function minimiseAllOrders() {
+  Object.keys(orders).forEach(id => {
+    if (orders[id]) orders[id].minimized = true;
+  });
+  document.querySelectorAll('.order-window').forEach(w => w.classList.remove('active'));
+  document.getElementById('emptyState').style.display = '';
+  updateMiniStrip();
+  saveState();
+}
+
   // ─── IFRAME PRINT HELPER (no popup blocker issues) ───────────────────────────
   function printViaIframe(bodyHTML, cssText) {
     try {
@@ -1854,32 +2013,44 @@
     var editId = 'edit_' + logIdx;
 
     // Build a fake order from the snapshot
-    orders[editId] = {
-      items: JSON.parse(JSON.stringify(e.snapshot)),
-      notes: e.snapNotes || '',
-      discount: e.snapDiscount || 0,
-      minimized: false,
-      _editLogIdx: logIdx,            // which log entry to update on reprint
-      _editLabel: '✎ ' + e.billNo + ' (' + e.label.replace(/[📦🪑]/g,'').trim() + ')'
-    };
+orders[editId] = {
+    items: e.itemsSnapshot.map(it => ({
+      id: it.id,
+      name: it.name,
+      price: it.price,
+      qty: it.qty,
+      custom: it.custom || false,
+      kotSelected: false,
+      kotSentQty: it.qty
+    })),
+    notes: '',
+    discount: e.discount || 0,
+    minimized: false,
+    _editIdx: idx,
+    _originalBillNo: e.billNo
+  };
 
-    // Strip KOT flags — not relevant for editing
-    orders[editId].items.forEach(function(it) {
-      delete it.kotSelected;
-      delete it.kotSentQty;
-    });
+  document.getElementById('emptyState').style.display = 'none';
 
-    document.getElementById('emptyState').style.display = 'none';
+  // Minimise all real table windows
+  Object.keys(orders).forEach(id => {
+    if (!id.startsWith('edit_') && orders[id]) {
+      orders[id].minimized = true;
+      renderOrderWindow(id);
+    }
+  });
 
-    renderOrderWindow(editId);
-    // NOTE: updateSidebarButton intentionally NOT called — no sidebar btn for edit_ windows
-
-    // Scroll new edit window into view
-    var win = document.getElementById('win-' + editId);
+renderOrderWindow(editId);
+ var win = document.getElementById('win-' + editId);
     if (win) setTimeout(function(){ win.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
 
-    showToast('✎ Editing ' + e.billNo + ' — change items then tap Save & Reprint', 3500);
-  }
+  setActiveWindow(editId);
+  document.getElementById('emptyState').style.display = 'none';
+  showToast(`✏️ Editing bill ${e.billNo} — make changes then Print Bill to update log`);
+}
+    // Scroll new edit window into view
+   
+
 
   // ─── SAVE & REPRINT — called from the edit order window ─────────────────────
   function saveAndReprint(editId) {
@@ -2013,15 +2184,19 @@
 
     // Restore open order windows
     const activeOrders = Object.keys(orders).filter(id => orders[id] && orders[id].items !== undefined);
-    if (activeOrders.length > 0) {
-      document.getElementById('emptyState').style.display = 'none';
-      activeOrders.forEach(tableId => {
-        renderOrderWindow(tableId);
-        updateSidebarButton(tableId);
-      });
-      // Show restore toast
-      showToast(`✅ Restored ${activeOrders.length} active order(s) from last session`);
-    }
+if (activeOrders.length > 0) {
+    document.getElementById('emptyState').style.display = 'none';
+    // Minimise all except last one
+    activeOrders.forEach((tableId, i) => {
+      orders[tableId].minimized = i < activeOrders.length - 1;
+      renderOrderWindow(tableId);
+      updateSidebarButton(tableId);
+    });
+    const lastActive = activeOrders[activeOrders.length - 1];
+    setActiveWindow(lastActive);
+    updateMiniStrip();
+    showToast(`✅ Restored ${activeOrders.length} active order(s) from last session`);
+  }
 
     // Restore sales log
     if (salesLog.length > 0) renderLog();
