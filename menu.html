@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>माँ गायत्री होटल - आज क्या खाएं?</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B00;
+    --deep-red: #C0392B;
+    --gold: #F0C040;
+    --cream: #FFF8F0;
+    --dark: #1A0A00;
+    --card-bg: #FFF3E5;
+    --shadow: rgba(192,57,43,0.25);
+  }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+  /* Updated Category Tabs - No Scroll, All Visible */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;      /* This makes buttons move to the next line */
+    gap: 10px;            /* Space between buttons */
+    padding-bottom: 15px;
+    justify-content: center; /* Centers the tabs so they look neat on screen */
+}
+
+/* We can remove the overflow and scrollbar hiding code because 
+   the buttons will no longer slide off the screen. */
+
+.tab-btn {
+    background: var(--card-bg);
+    border: 2px solid transparent;
+    padding: 8px 16px;    /* Slightly reduced padding to help fit more on one line */
+    border-radius: 25px;
+    cursor: pointer;
+    white-space: nowrap;  /* Ensures the text inside the button doesn't break */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;      /* Standard size for better fitting */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.tab-btn.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: #fff4e6;
+}
+
+        /* Menu Items List */
+        .menu-container {
+            margin-top: 10px;
+        }
+
+        .menu-item {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .item-info .name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: block;
+        }
+
+        .price-tag {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.1rem;
+        }
+
+        .price-null {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', 'Tiro Devanagari Hindi', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--deep-red) 0%, #8B0000 100%);
+    padding: 20px 16px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 20px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .header-mandala {
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 130px; height: 130px;
+    opacity: 0.08;
+    font-size: 130px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .header-mandala2 {
+    position: absolute;
+    bottom: 10px; left: -20px;
+    width: 80px; height: 80px;
+    opacity: 0.07;
+    font-size: 80px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .logo-text {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 4px;
+  }
+  .hotel-name {
+    font-family: 'Tiro Devanagari Hindi', serif;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1.2;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  }
+  .hotel-sub {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-top: 2px;
+    opacity: 0.85;
+  }
+  .tagline {
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    font-style: italic;
+  }
+
+  /* Main container */
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px 100px;
+  }
+
+  /* Section title */
+  .section-title {
+    text-align: center;
+    margin: 28px 0 16px;
+  }
+  .section-title h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--deep-red);
+    font-family: 'Tiro Devanagari Hindi', serif;
+  }
+  .section-title p {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px auto 0;
+    width: fit-content;
+  }
+  .divider span { color: var(--gold); font-size: 16px; }
+  .divider-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+
+  /* Select cards */
+  .select-group {
+    margin-bottom: 14px;
+  }
+  .select-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .select-label .lbl-icon { font-size: 14px; }
+
+  select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid #FFDAB5;
+    border-radius: 14px;
+    background: white;
+    font-size: 15px;
+    font-family: 'Tiro Devanagari Hindi', sans-serif;
+    color: var(--dark);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FF6B00' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(255,107,0,0.08);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  select:focus {
+    outline: none;
+    border-color: var(--saffron);
+    box-shadow: 0 0 0 3px rgba(255,107,0,0.15);
+  }
+
+  /* Spin button */
+  .spin-btn-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0 0;
+  }
+  .spin-btn {
+    position: relative;
+    background: linear-gradient(135deg, var(--saffron) 0%, var(--deep-red) 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: 'Tiro Devanagari Hindi', serif;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(192,57,43,0.45), 0 2px 6px rgba(0,0,0,0.1);
+    letter-spacing: 0.5px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    overflow: hidden;
+  }
+  .spin-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: rgba(255,255,255,0.15);
+    transform: skewX(-20deg);
+    transition: left 0.4s;
+  }
+  .spin-btn:hover::before { left: 160%; }
+  .spin-btn:active { transform: scale(0.96); box-shadow: 0 3px 12px rgba(192,57,43,0.4); }
+  .spin-btn.spinning { pointer-events: none; opacity: 0.8; }
+  .spin-btn-icon { margin-right: 8px; display: inline-block; }
+  .spin-btn.spinning .spin-btn-icon { animation: spin 0.5s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Wheel section */
+  .wheel-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 24px 0 0;
+  }
+  .wheel-container {
+    position: relative;
+    width: 260px;
+    height: 260px;
+  }
+  .wheel-pointer {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 26px solid var(--deep-red);
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  canvas#wheel {
+    border-radius: 50%;
+    box-shadow: 0 8px 32px rgba(192,57,43,0.3), 0 0 0 6px white, 0 0 0 8px var(--gold);
+  }
+  .wheel-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px;
+    background: white;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 5;
+  }
+
+  /* Result card */
+  .result-section {
+    margin-top: 28px;
+  }
+  .result-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px 20px;
+    box-shadow: 0 8px 32px var(--shadow);
+    border: 2px solid #FFE4C8;
+    position: relative;
+    overflow: hidden;
+    display: none;
+    animation: resultAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .result-card.visible { display: block; }
+  @keyframes resultAppear {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1)  translateY(0); }
+  }
+  .result-card::before {
+    content: '🎉';
+    position: absolute;
+    top: -10px; right: -10px;
+    font-size: 60px;
+    opacity: 0.07;
+    transform: rotate(20deg);
+  }
+  .result-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .result-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFF0E0;
+    border: 1px solid #FFDAB5;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: var(--saffron);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .result-dish-name {
+    font-family: 'Tiro Devanagari Hindi', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .result-price {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--deep-red);
+  }
+  .result-price span {
+    font-size: 13px;
+    font-weight: 400;
+    color: #aaa;
+    margin-left: 4px;
+  }
+  .result-mood-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, var(--deep-red), var(--saffron));
+    color: white;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 12px;
+  }
+  .result-desc {
+    font-size: 13px;
+    color: #888;
+    margin-top: 10px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .spin-again-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 13px;
+    border: 2px dashed var(--saffron);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--saffron);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Tiro Devanagari Hindi', serif;
+    transition: background 0.2s, color 0.2s;
+  }
+  .spin-again-btn:hover { background: var(--saffron); color: white; }
+
+  /* Confetti */
+  .confetti-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px; height: 10px;
+    top: -20px;
+    animation: confettiFall linear forwards;
+    border-radius: 2px;
+  }
+  @keyframes confettiFall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Bottom nav suggestion */
+  .footer-note {
+    text-align: center;
+    padding: 20px 16px 30px;
+    font-size: 12px;
+    color: #bbb;
+  }
+  .footer-note strong { color: var(--saffron); }
+
+  /* Mood badge chips for display */
+  .mood-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 30px 16px;
+    color: #ccc;
+    font-size: 32px;
+  }
+  .empty-state p { font-size: 14px; color: #bbb; margin-top: 8px; }
+
+  /* Pulse animation for spin button */
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 6px 24px rgba(192,57,43,0.45), 0 0 0 0 rgba(255,107,0,0.4); }
+    70%  { box-shadow: 0 6px 24px rgba(192,57,43,0.45), 0 0 0 12px rgba(255,107,0,0); }
+    100% { box-shadow: 0 6px 24px rgba(192,57,43,0.45), 0 0 0 0 rgba(255,107,0,0); }
+  }
+  .spin-btn:not(.spinning) { animation: pulse-ring 2s infinite; }
+
+  .card-top-strip {
+    height: 4px;
+    background: linear-gradient(90deg, var(--saffron), var(--gold), var(--deep-red));
+    border-radius: 2px 2px 0 0;
+    margin: -24px -20px 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="confetti-container" id="confetti"></div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-mandala">✿</div>
+  <div class="header-mandala2">❋</div>
+  <p class="logo-p">🙏</p>
+  <div class="logo-text">Welcome to</div>
+  <div class="hotel-name">माँ गायत्री होटल<br>& रेस्टोरेंट</div>
+  <div class="hotel-sub">📍 पुलगाँव</div>
+  <div class="tagline">आज क्या खाएं? हम बताएंगे! 😄</div>
+</div>
+
+<div class="container">
+
+  <!-- Intro -->
+  <div class="section-title">
+    <h1 >🫣 Confuse ? </h1>
+    <h1 >🤔 आज क्या खाएं? </h1>
+    <h2>Ai बताएगा !</h2>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>✦</span>
+      <div class="divider-line"></div>
+    </div>
+
+  </div>
+
+
+  <!-- Spin Button -->
+  <div class="spin-btn-wrap">
+    <button class="spin-btn" id="spinBtn" onclick="spinTheWheel()">
+      <span class="spin-btn-icon">🎡</span> Suggest Me
+    </button>
+  </div>
+
+  <!-- Wheel -->
+  <div class="wheel-section" id="wheelSection" style="display:none">
+    <div class="wheel-container">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheel" width="260" height="260"></canvas>
+      <div class="wheel-center">🍽</div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-section">
+    <div class="result-card" id="resultCard">
+      <div class="card-top-strip"></div>
+      <div class="result-label">🎯 आज आपको यह खाना चाहिए</div>
+      <div class="result-category" id="resultCategory"></div>
+      <div class="result-dish-name" id="resultDish"></div>
+      <div class="result-price" id="resultPrice"></div>
+      <div class="result-mood-tag" id="resultMoodTag"></div>
+      <div class="result-desc" id="resultDesc"></div>
+      <button class="spin-again-btn" onclick="spinAgain()">🔄 फिर से घुमाओ!</button>
+    </div>
+    <div class="empty-state" id="emptyState">
+      <div>🎡</div>
+      <p>मूड चुनें और व्हील घुमाएं!</p>
+    </div>
+  </div>
+  <!-- Filters -->
+  <div class="select-group">
+    <div class="select-label"><span class="lbl-icon">😌</span> आपका मूड क्या है?</div>
+    <select id="moodSelect">
+      <option value="">-- मूड चुनें --</option>
+      <optgroup label="🌅 भूख का मूड">
+        <option value="very_hungry">😤 बहुत भूख लगी है — कुछ भारी चाहिए!</option>
+        <option value="light_hungry">🌿 हल्की भूख — हल्का-फुल्का कुछ</option>
+        <option value="just_snack">🍟 बस कुछ चटपटा चाहिए</option>
+        <option value="street_food">🛺 स्ट्रीट फूड वाला मज़ा</option>
+      </optgroup>
+      <optgroup label="🌤 दिन का मूड">
+        <option value="lazy_day">😴 आलसी दिन — जो भी मिले</option>
+        <option value="productive">💪 एनर्जेटिक दिन — हेल्दी चाहिए</option>
+        <option value="celebration">🥳 जश्न का मौका है!</option>
+        <option value="family">👨‍👩‍👧 पूरा परिवार साथ है</option>
+        <option value="date">💑 स्पेशल डेट पर हूँ</option>
+        <option value="friends">🎉 दोस्तों के साथ मस्ती</option>
+        <option value="office">💼 ऑफिस से थका हुआ हूँ</option>
+      </optgroup>
+      <optgroup label="🌧 भावनाओं का मूड">
+        <option value="sad">😢 उदास हूँ — comfort food चाहिए</option>
+        <option value="happy">😄 खुश हूँ — कुछ मज़ेदार चाहिए</option>
+        <option value="stressed">😰 टेंशन में हूँ — कुछ मीठा चाहिए</option>
+        <option value="bored">🥱 बोर हो रहा हूँ — कुछ नया ट्राय करूँ</option>
+        <option value="nostalgic">🏡 घर की याद आ रही है</option>
+        <option value="adventurous">🌍 कुछ नया एडवेंचर!</option>
+      </optgroup>
+      <optgroup label="🌶️ स्वाद का मूड">
+        <option value="spicy">🌶️ तीखा-मसालेदार चाहिए</option>
+        <option value="mild">😇 कम मसाले — हल्का चाहिए</option>
+        <option value="sweet">🍬 मीठे का मन है</option>
+        <option value="tangy">🍋 खट्टा-तीखा चाहिए</option>
+        <option value="rich_gravy">🍛 गाढ़ी ग्रेवी चाहिए</option>
+        <option value="dry">🥘 सूखी सब्जी का मन है</option>
+        <option value="creamy">🥛 क्रीमी-मक्खन वाला</option>
+      </optgroup>
+      <optgroup label="🍽 खाने के तरीके का मूड">
+        <option value="full_meal">🍽 पूरा खाना — रोटी-सब्जी-दाल</option>
+        <option value="quick_bite">⚡ जल्दी में हूँ — फटाफट कुछ</option>
+        <option value="big_feast">🤤 भरपेट दावत करनी है</option>
+        <option value="south_special">🇮🇳 साउथ इंडियन ट्राय करूँ आज</option>
+        <option value="chinese_mood">🍜 Chinese का मन है</option>
+        <option value="desi_vibes">🪔 देसी खाना — दाल-रोटी</option>
+        <option value="biryani_mood">🍚 बिरयानी-पुलाव का मन है</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="select-group">
+    <div class="select-label"><span class="lbl-icon">🕐</span> कब खाना है?</div>
+    <select id="mealSelect">
+      <option value="">-- समय चुनें --</option>
+      <option value="breakfast">🌅 नाश्ता (Breakfast)</option>
+      <option value="lunch">☀️ दोपहर का खाना (Lunch)</option>
+      <option value="dinner">🌙 रात का खाना (Dinner)</option>
+      <option value="snack">🍿 हल्का नाश्ता / Snack</option>
+      <option value="anytime">⏰ कभी भी चलेगा</option>
+    </select>
+  </div>
+
+  <div class="select-group">
+    <div class="select-label"><span class="lbl-icon">🍽</span> किस चीज़ का मन है? (Optional)</div>
+    <select id="categorySelect">
+      <option value="all">🎲 कुछ भी — सरप्राइज़ करो!</option>
+      <option value="roti">🫓 रोटी / नान / पराठा</option>
+      <option value="rice">🍚 राइस / बिर्याणी / पुलाव</option>
+      <option value="dal">🍛 दाल</option>
+      <option value="veg_main">🥬 वेज सब्जी</option>
+      <option value="paneer">🧀 पनीर डिश</option>
+      <option value="sabji">🍅 मिक्स सब्जी</option>
+      <option value="mushroom">🍄 मशरूम</option>
+      <option value="kofta">🫕 कोफ्ता</option>
+      <option value="starter">🥢 स्टार्टर</option>
+      <option value="soup">🍲 सूप</option>
+      <option value="chinese">🍜 चायनीज़</option>
+      <option value="south_indian">🫓 साउथ इंडियन / डोसा</option>
+      <option value="uttapam">🥞 उत्तपम</option>
+      <option value="nasta">🥪 नाश्ता (स्नैक्स)</option>
+      <option value="pav_bhaji">🍛 पाव भाजी</option>
+      <option value="Breaverages">🥛 पेय / ड्रिंक्स</option>
+      <option value="papad">🫓 पापड</option>
+      <option value="salad">🥗 सलाद</option>
+    </select>
+  </div>
+
+  <div class="spin-btn-wrap">
+    <button class="spin-btn" id="spinBtn" onclick="spinTheWheel()">
+      <span class="spin-btn-icon">🎡</span> व्हील घुमाओ!
+    </button>
+  </div>
+
+</div>
+
+<div class="container">
+    <header>
+        <h1>आमचा मेनू 🍴</h1>
+        <p>ताजे आणि चविष्ट पदार्थ</p>
+    </header>
+
+    <div class="tabs" id="category-tabs">
+        </div>
+
+    <div class="menu-container" id="menu-display">
+        </div>
+</div>
+
+<script>
+    // Your Data Structure
+    const MENU =[
+  { id: 'roti', label: 'रोटी', icon: '🫓', items: [
+    { name: 'साधी चपाती', price: 12 },
+    { name: 'बटर चपाती', price: 15 },
+    { name: 'साधी तंदुर', price: 15 },
+    { name: 'बटर तंदुर', price: 20 },
+    { name: 'कुलचा', price: 35 },
+    { name: 'बटर कुलचा', price: 40 },
+    { name: 'गार्लिक नान', price: 50 },
+    { name: 'नान', price: 35 },
+    { name: 'बटर नान', price: 40 },
+    { name: 'पराठा', price: 20 },
+    { name: 'बटर पराठा', price: 30 },
+    { name: 'मसाला पराठा', price: 40 },
+    { name: 'लच्छा पराठा', price: null },
+  ]},
+  { id: 'rice', label: 'राइस', icon: '🍚', items: [
+    { name: 'प्लेन राईस', price: 80 },
+    { name: 'जिरा राईस', price: 90 },
+    { name: 'स्टीम राईस', price: 100 },
+    { name: 'गार्लिक राईस', price: 140 },
+    { name: 'नामदेव राईस', price: 130 },
+    { name: 'मसाला राईस', price: 120 },
+    { name: 'दाल खिचडी', price: 120 },
+    { name: 'वेज पुलाव', price: 120 },
+    { name: 'वेज पनिर पुलाव', price: 160 },
+    { name: 'वेज बिर्याणी', price: 130 },
+    { name: 'वेज पनिर बिर्याणी', price: 160 },
+    { name: 'वेज हैद्राबादी बिर्याणी', price: 160 },
+    { name: 'वेज हंडी बिर्याणी', price: 140 },
+    { name: 'पनिर हंडी बिर्याणी', price: 160 },
+  ]},
+  { id: 'Breaverages', label: 'पेय', icon: '🥛', items: [
+    { name: 'लस्सी हाफ', price: 20 },
+    { name: 'लस्सी फूल', price: 35 },
+    { name: 'चाय', price: 10 },
+    { name: 'कॉफी', price: 25 },
+    { name: 'पाणी बोटल छोटी', price: 10 },
+    { name: 'पाणी बोटल मोठी', price: 20 },
+  ]},
+  { id: 'starter', label: 'स्टार्टर', icon: '🥢', items: [
+    { name: 'वेज लॉलीपॉप', price: 150 },
+    { name: 'पनिर चिल्ली', price: 150 },
+    { name: 'फिंगर चिप्स', price: 150 },
+    { name: 'वेज क्रिस्पी', price: 150 },
+    { name: 'पनिर ६५', price: 170 },
+  ]},
+  { id: 'soup', label: 'सूप', icon: '🍲', items: [
+    { name: 'मनचाऊ सुप', price: 70 },
+    { name: 'हॉट ॲन्ड सौर सुप', price: 70 },
+    { name: 'टोमॅटो सुप', price: 70 },
+  ]},
+  { id: 'papad', label: 'पापड', icon: '🫓', items: [
+    { name: 'रोस्ट पापड', price: 10 },
+    { name: 'फ्राय पापड', price: 15 },
+    { name: 'मसाला पापड', price: 30 },
+    { name: 'रोस्ट मसाला पापड', price: 30 },
+  ]},
+  { id: 'salad', label: 'सलाद', icon: '🥗', items: [
+    { name: 'ग्रिन सलाद', price: 40 },
+    { name: 'जैन सलाद', price: 50 },
+  ]},
+  { id: 'dal', label: 'दाल', icon: '🍛', items: [
+    { name: 'दाल फ्राय', price: 100 },
+    { name: 'दाल तडका', price: 145 },
+    { name: 'जिरा दाल', price: 120 },
+    { name: 'बटर दाल फ्राय', price: 145 },
+    { name: 'दाल कोल्हापुरी', price: 145 },
+    { name: 'वऱ्हाडी दाल', price: 150 },
+  ]},
+  { id: 'veg_main', label: 'वेज', icon: '🥬', items: [
+    { name: 'जिरा आलु', price: 90 },
+    { name: 'बैगन भरता', price: 110 },
+    { name: 'बैगन मसाला', price: 110 },
+    { name: 'भेंडी मसाला', price: 150 },
+    { name: 'ग्रिन पिस मसाला', price: 135 },
+    { name: 'चना मसाला', price: 130 },
+    { name: 'आलु मटर', price: 125 },
+    { name: 'दम आलु', price: 130 },
+    { name: 'प्लेन पालक', price: 120 },
+    { name: 'शेव भाजी', price: 125 },
+    { name: 'आलु गोबी मटर', price: 135 },
+    { name: 'आलु गोबी मसाला', price: 130 },
+    { name: 'आलु पालक', price: 120 },
+    { name: 'गोबी मसाला', price: 125 },
+    { name: 'गोबी मटर', price: 130 },
+  ]},
+  { id: 'paneer', label: 'पनीर', icon: '🧀', items: [
+    { name: 'पालक पनिर', price: 150 },
+    { name: 'पनिर मटर', price: 150 },
+    { name: 'पनिर कढई', price: 160 },
+    { name: 'पनिर तवा', price: 170 },
+    { name: 'पनिर हंडी', price: 170 },
+    { name: 'पनिर भुर्जी ड्राय', price: 175 },
+    { name: 'पनिर भुर्जी करी', price: 175 },
+    { name: 'पनिर बटर मसाला', price: 150 },
+    { name: 'पनिर टिक्का मसाला', price: 170 },
+    { name: 'पनिर तुफानी', price: 170 },
+    { name: 'पनिर अंगारा', price: 180 },
+    { name: 'शाही पनिर', price: 150 },
+    { name: 'पनिर कोल्हापुरी', price: 170 },
+    { name: 'पनिर हैद्राबादी', price: 170 },
+    { name: 'पनिर चटपटा', price: 160 },
+    { name: 'पनिर टकाटक', price: 170 },
+    { name: 'पनिर जयपुरी', price: 180 },
+    { name: 'पनिर कोरमा', price: 150 },
+    { name: 'चिज पनिर बटर मसाला', price: 180 },
+    { name: 'लच्छा पनिर', price: 170 },
+    { name: 'पनिर मिली जुली', price: 250 },
+    { name: 'पनिर लाहोरी', price: 250 },
+    { name: 'पनिर अफगानी', price: 250 },
+    { name: 'पनिर पसंदा', price: 250 },
+    { name: 'पनिर तिरंगा', price: 300 },
+    { name: 'पनिर पटियाला', price: 250 },
+    { name: 'काजु पनिर दो प्याजा', price: 250 },
+    { name: 'काजु करी', price: 180 },
+    { name: 'पनिर काजु करी', price: 180 },
+    { name: 'काजु मसाला', price: 180 },
+    { name: 'काजु खोया', price: 170 },
+    { name: 'काजु मावा', price: 180 },
+  ]},
+  { id: 'sabji', label: 'सब्जी', icon: '🍅', items: [
+    { name: 'मिक्स वेज', price: 140 },
+    { name: 'वेज कोल्हापुरी', price: 140 },
+    { name: 'वेज तुफानी', price: 150 },
+    { name: 'वेज हन्डी', price: 150 },
+    { name: 'वेज तवा', price: 150 },
+    { name: 'वेज कढई', price: 150 },
+    { name: 'मेथी मटर', price: 140 },
+    { name: 'मेथी मटर मलाई', price: 170 },
+    { name: 'वेज हैद्राबादी', price: 150 },
+    { name: 'वेज जयपुरी', price: 150 },
+    { name: 'वेज मराठा', price: 150 },
+    { name: 'वेज अंगारा', price: 160 },
+    { name: 'वेज तिरंगा', price: 180 },
+    { name: 'वेज पटियाला', price: 160 },
+    { name: 'पाटोडी', price: 150 },
+    { name: 'वेज मिली जुली', price: 200 },
+  ]},
+  { id: 'mushroom', label: 'मशरूम', icon: '🍄', items: [
+    { name: 'मशरुम मसाला', price: 200 },
+    { name: 'मशरुम करी', price: 180 },
+    { name: 'पनिर मशरुम मसाला', price: 220 },
+    { name: 'मशरुम पनिर कढई', price: 180 },
+  ]},
+  { id: 'kofta', label: 'कोफ़्ता', icon: '🫕', items: [
+    { name: 'वेज कोफ्ता', price: 140 },
+    { name: 'पनिर कोफ्ता', price: 180 },
+    { name: 'मलाई कोफ्ता', price: 140 },
+    { name: 'वेज पंजाबी कोफ्ता', price: 150 },
+    { name: 'वेज पालक कोफ्ता', price: 170 },
+    { name: 'पनिर पंजाबी कोफ्ता', price: 170 },
+    { name: 'पनिर पालक कोफ्ता', price: 180 },
+    { name: 'नरगिस कोफ्ता', price: 250 },
+  ]},
+  { id: 'nasta', label: 'नास्ता', icon: '🥪', items: [
+    { name: 'समोसा', price: 30 },
+    { name: 'कचोरी', price: 30 },
+    { name: 'आलुबोंडा', price: 30 },
+    { name: 'मुंग वडा', price: 30 },
+    { name: 'दही समोसा', price: 35 },
+    { name: 'दही कचोरी', price: 35 },
+    { name: 'सांभार वडी', price: 35 },
+    { name: 'सांभार वडा', price: 35 },
+    { name: 'मिसळ पाव', price: 40 },
+    { name: 'दही मिसळ पाव', price: 50 },
+    { name: 'मिसळ', price: 30 },
+    { name: 'दही मिसळ', price: 40 },
+  ]},
+  { id: 'pav_bhaji', label: 'पाव भाजी', icon: '🍛', items: [
+    { name: 'पाव भाजी', price: 50 },
+    { name: 'बटर पावभाजी', price: 60 },
+  ]},
+  { id: 'chinese', label: 'चायनिज', icon: '🍜', items: [
+    { name: 'नुडल्स', price: 70 },
+    { name: 'नुडल्स मनच्युरियन', price: 85 },
+    { name: 'चिली गार्लिक नुडल्स', price: 80 },
+    { name: 'मनच्युरियन ग्रेवी', price: 70 },
+    { name: 'मनच्युरियन ड्राय', price: 70 },
+    { name: 'पनिर मनच्युरियन ड्राय', price: 120 },
+    { name: 'पनिर मनच्युरियन ग्रेवी', price: 110 },
+    { name: 'गोबी मनच्युरियन', price: 90 },
+    { name: 'फ्राईड राईस', price: 70 },
+    { name: 'मनच्युरियन राईस', price: 80 },
+    { name: 'कॉकटेल राईस', price: 90 },
+    { name: 'सिंगापुरी फ्राईड राईस', price: 75 },
+    { name: 'पनिर फ्राईड राईस', price: 100 },
+    { name: 'चिली गार्लिक राईस', price: 80 },
+    { name: 'चायनिज भेल', price: 80 },
+    { name: 'पनिर चिली ड्रॉय', price: 130 },
+    { name: 'पनिर चिली ग्रेवी', price: 120 },
+  ]},
+  { id: 'south_indian', label: 'साउथ इंडीयन', icon: '🫓', items: [
+    { name: 'इडली', price: 30 },
+    { name: 'मसाला दोसा', price: 45 },
+    { name: 'कटपिस दोसा', price: 50 },
+    { name: 'पेपर साधा दोसा', price: 80 },
+    { name: 'पेपर मसाला दोसा', price: 90 },
+    { name: 'पेपर बटर मसाला दोसा', price: 110 },
+    { name: 'प्लेन बटर दोसा', price: 50 },
+    { name: 'बटर मसाला दोसा', price: 55 },
+    { name: 'मैसुर मसाला दोसा', price: 70 },
+    { name: 'चिज मैसुर दोसा', price: 90 },
+    { name: 'पनिर मैसुर दोसा', price: 95 },
+    { name: 'पनिर चिज मैसुर दोसा', price: 110 },
+    { name: 'हैद्राबादी दोसा', price: 80 },
+    { name: 'स्प्रिंग रोल दोसा', price: 75 },
+    { name: 'पनिर स्प्रिंग रोल दोसा', price: 110 },
+    { name: 'चायनिज दोसा', price: 80 },
+    { name: 'पनिर दोसा प्लेन', price: 90 },
+    { name: 'पनिर मसाला दोसा', price: 100 },
+    { name: 'चिज दोसा प्लेन', price: 70 },
+    { name: 'चिज मसाला दोसा', price: 80 },
+    { name: 'गायत्री स्पेशल दोसा', price: 111 },
+  ]},
+  { id: 'uttapam', label: 'उत्तपम', icon: '🥞', items: [
+    { name: 'ओनियन उत्तपम', price: 70 },
+    { name: 'चिज ओनियन उत्तपम', price: 90 },
+    { name: 'पनिर ओनियन उत्तपम', price: 90 },
+    { name: 'पनिर चिज ओनियन उत्तपम', price: 100 },
+    { name: 'टोमॅटो उत्तपम', price: 70 },
+    { name: 'मसाला उत्तपम', price: 70 },
+    { name: 'टोमॅटो ओनियन उत्तपम', price: 80 },
+    { name: 'उत्तपम मिक्स मसाला', price: 85 },
+    { name: 'चिज मिक्स उत्तपम मसाला', price: 100 },
+    { name: 'पनिर मिक्स उत्तपम मसाला', price: 100 },
+  ]},
+];
+
+    const tabsContainer = document.getElementById('category-tabs');
+    const menuDisplay = document.getElementById('menu-display');
+
+    function renderMenu(categoryId) {
+        const category = MENU.find(c => c.id === categoryId);
+        if (!category) return;
+
+        // Update active tab UI
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.id === categoryId);
+        });
+
+        // Clear and render items
+        menuDisplay.innerHTML = '';
+        category.items.forEach(item => {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'menu-item fade-in';
+            
+            const priceDisplay = item.price 
+                ? `<span class="price-tag">₹${item.price}</span>` 
+                : `<span class="price-null">बाजारभावानुसार</span>`;
+
+            itemEl.innerHTML = `
+                <div class="item-info">
+                    <span class="name">${item.name}</span>
+                </div>
+                <div class="price-box">
+                    ${priceDisplay}
+                </div>
+            `;
+            menuDisplay.appendChild(itemEl);
+        });
+    }
+
+    function init() {
+        // Create Tabs
+        MENU.forEach((cat, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'tab-btn';
+            btn.dataset.id = cat.id;
+            btn.innerHTML = `<span>${cat.icon}</span> ${cat.label}`;
+            btn.onclick = () => renderMenu(cat.id);
+            tabsContainer.appendChild(btn);
+        });
+
+        // Set default active category
+        if (MENU.length > 0) {
+            renderMenu(MENU[0].id);
+        }
+    }
+
+    init();
+</script>
+
+<div class="footer-note">
+  Made with ❤️ for <strong>माँ गायत्री होटल, पुलगाँव</strong><br>
+  🌟 हर दिन नया स्वाद, हर बार नया अनुभव
+</div>
+
+<script>
+
+// Mood → category weights
+const MOOD_WEIGHTS = {
+  very_hungry:    { rice:4, dal:3, paneer:4, sabji:3, roti:3, kofta:2 },
+  light_hungry:   { soup:4, salad:3, dal:2, roti:2, nasta:2, Breaverages:2 },
+  just_snack:     { nasta:5, starter:5, pav_bhaji:4, papad:3, chinese:3 },
+  street_food:    { nasta:5, pav_bhaji:5, chinese:3, south_indian:3 },
+  lazy_day:       { rice:3, dal:3, roti:3, veg_main:3, paneer:2 },
+  productive:     { salad:4, soup:3, dal:3, veg_main:3, roti:2 },
+  celebration:    { paneer:5, kofta:4, rice:4, mushroom:3, starter:4 },
+  family:         { rice:4, paneer:4, dal:3, sabji:3, roti:3, kofta:2 },
+  date:           { paneer:5, mushroom:4, kofta:4, starter:3, rice:3 },
+  friends:        { starter:5, chinese:4, south_indian:3, pav_bhaji:3, nasta:3 },
+  office:         { dal:4, roti:3, veg_main:3, rice:3, soup:2 },
+  sad:            { paneer:4, dal:3, rice:3, kofta:3, Breaverages:3 },
+  happy:          { starter:4, chinese:4, south_indian:3, nasta:3, pav_bhaji:3 },
+  stressed:       { Breaverages:5, paneer:3, rice:3, dal:3 },
+  bored:          { mushroom:4, kofta:4, chinese:4, uttapam:3, south_indian:3 },
+  nostalgic:      { dal:5, roti:5, veg_main:4, rice:3, nasta:3 },
+  adventurous:    { mushroom:5, kofta:5, chinese:4, uttapam:4, paneer:4 },
+  spicy:          { sabji:5, paneer:4, veg_main:4, starter:3, chinese:3, dal:3 },
+  mild:           { dal:4, roti:3, veg_main:3, rice:3, soup:2 },
+  sweet:          { Breaverages:5, paneer:3, kofta:3 },
+  tangy:          { nasta:5, chinese:4, starter:4, pav_bhaji:3, soup:3 },
+  rich_gravy:     { paneer:5, sabji:4, kofta:4, dal:4, mushroom:3 },
+  dry:            { veg_main:4, nasta:3, starter:4, roti:3 },
+  creamy:         { paneer:5, kofta:4, rice:3, roti:3 },
+  full_meal:      { rice:4, dal:4, roti:4, paneer:3, sabji:3, veg_main:3 },
+  quick_bite:     { nasta:5, pav_bhaji:4, papad:3, soup:3, roti:2 },
+  big_feast:      { paneer:5, kofta:5, rice:4, mushroom:4, sabji:4, starter:4 },
+  south_special:  { south_indian:10, uttapam:8 },
+  chinese_mood:   { chinese:10, starter:3 },
+  desi_vibes:     { dal:5, roti:5, veg_main:4, rice:3 },
+  biryani_mood:   { rice:10 },
+};
+
+// Meal time → category filters
+const MEAL_CATS = {
+  breakfast: ['nasta', 'south_indian', 'uttapam', 'pav_bhaji', 'Breaverages', 'papad'],
+  lunch:     ['rice', 'dal', 'roti', 'paneer', 'sabji', 'veg_main', 'mushroom', 'kofta', 'soup', 'salad', 'papad'],
+  dinner:    ['rice', 'dal', 'roti', 'paneer', 'sabji', 'veg_main', 'mushroom', 'kofta', 'soup', 'starter', 'salad'],
+  snack:     ['nasta', 'starter', 'pav_bhaji', 'papad', 'chinese', 'soup', 'Breaverages', 'south_indian', 'uttapam'],
+  anytime:   null,
+};
+
+const MOOD_LABELS = {
+  very_hungry:'😤 बहुत भूख', light_hungry:'🌿 हल्की भूख', just_snack:'🍟 चटपटा', street_food:'🛺 स्ट्रीट फूड',
+  lazy_day:'😴 आलसी दिन', productive:'💪 एनर्जेटिक', celebration:'🥳 जश्न', family:'👨‍👩‍👧 पारिवारिक',
+  date:'💑 स्पेशल डेट', friends:'🎉 दोस्तों के साथ', office:'💼 थका हुआ',
+  sad:'😢 उदास', happy:'😄 खुश', stressed:'😰 टेंशन', bored:'🥱 बोर', nostalgic:'🏡 घर की याद', adventurous:'🌍 एडवेंचर',
+  spicy:'🌶️ तीखा', mild:'😇 हल्का', sweet:'🍬 मीठा', tangy:'🍋 खट्टा', rich_gravy:'🍛 गाढ़ी ग्रेवी', dry:'🥘 सूखा', creamy:'🥛 क्रीमी',
+  full_meal:'🍽 पूरा खाना', quick_bite:'⚡ जल्दी', big_feast:'🤤 दावत', south_special:'🇮🇳 साउथ', chinese_mood:'🍜 चायनीज़', desi_vibes:'🪔 देसी', biryani_mood:'🍚 बिरयानी',
+};
+
+const DISH_DESCS = {
+  paneer: 'माँ गायत्री की स्पेशल पनीर डिश — घर जैसा स्वाद, भरपूर मक्खन और मसाले के साथ! 🧀',
+  rice: 'धीमी आँच पर पकी सुगंधित बिरयानी/राईस — एक बार खाओ, भूल नहीं पाओगे! 🍚',
+  dal: 'माँ के हाथ की दाल — साधी पर बेहद स्वादिष्ट, रोटी के साथ परफेक्ट! 🍛',
+  roti: 'तंदूर की गरम-गरम रोटी — मक्खन लगाकर खाओ, स्वर्ग जैसा लगेगा! 🫓',
+  veg_main: 'ताज़ी सब्जियों से बनी मसालेदार भाजी — देसी स्वाद का जादू! 🥬',
+  sabji: 'मिक्स मसाले और गाढ़ी ग्रेवी के साथ — हर बाइट में नया स्वाद! 🍅',
+  mushroom: 'मशरूम प्रेमियों के लिए स्पेशल — अनोखा स्वाद, यादगार अनुभव! 🍄',
+  kofta: 'नरम-मुलायम कोफ्ते गाढ़ी ग्रेवी में — माँ गायत्री का सिग्नेचर! 🫕',
+  starter: 'कुरकुरा और चटपटा — खाते ही मुँह में पानी आ जाए! 🥢',
+  soup: 'गरमागरम सूप — ठंड हो या दिल थका हो, यह हमेशा सही है! 🍲',
+  chinese: 'Indo-Chinese फ्यूज़न — स्ट्रीट स्टाइल में माँ गायत्री का अंदाज़! 🍜',
+  south_indian: 'कुरकुरा डोसा या फ्लफी इडली — दक्षिण भारत का स्वाद पुलगाँव में! 🫓',
+  uttapam: 'मोटा, नरम और स्वादिष्ट — नाश्ते का बेस्ट ऑप्शन! 🥞',
+  nasta: 'चटपटा और मज़ेदार — पेट भी खुश, मन भी खुश! 🥪',
+  pav_bhaji: 'मुंबई स्टाइल पाव भाजी — बटर की खुशबू से पेट में चूहे दौड़ेंगे! 🍛',
+  Breaverages: 'ताज़गी भरा पेय — खाने के बाद या पहले, हर वक्त परफेक्ट! 🥛',
+  papad: 'कुरकुरा पापड — साथ में हो तो खाना और भी मज़ेदार! 🫓',
+  salad: 'ताज़ा सलाद — हेल्दी रहो, स्वाद के साथ! 🥗',
+};
+
+// Wheel colors
+const WHEEL_COLORS = [
+  '#FF6B00','#C0392B','#F0C040','#E74C3C','#FF8C42',
+  '#D35400','#F39C12','#922B21','#FF5733','#F0A500',
+];
+
+let isSpinning = false;
+let pickedDish = null;
+
+function getFilteredPool(mood, meal, category) {
+  let pool = [];
+  const mealFilter = meal && meal !== '' && MEAL_CATS[meal] ? MEAL_CATS[meal] : null;
+  const catFilter = category && category !== 'all' ? category : null;
+
+  if (catFilter) {
+    // Specific category chosen
+    const cat = MENU.find(c => c.id === catFilter);
+    if (cat) pool = cat.items.filter(i => i.name).map(i => ({ ...i, categoryId: cat.id, categoryLabel: cat.label, categoryIcon: cat.icon }));
+  } else if (mood && MOOD_WEIGHTS[mood]) {
+    // Build weighted pool from mood
+    const weights = MOOD_WEIGHTS[mood];
+    for (const [catId, weight] of Object.entries(weights)) {
+      if (mealFilter && !mealFilter.includes(catId)) continue;
+      const cat = MENU.find(c => c.id === catId);
+      if (!cat) continue;
+      const items = cat.items.filter(i => i.name);
+      for (let w = 0; w < weight; w++) {
+        items.forEach(i => pool.push({ ...i, categoryId: cat.id, categoryLabel: cat.label, categoryIcon: cat.icon }));
+      }
+    }
+  } else {
+    // No mood — all categories (filtered by meal if set)
+    MENU.forEach(cat => {
+      if (mealFilter && !mealFilter.includes(cat.id)) return;
+      cat.items.filter(i => i.name).forEach(i => pool.push({ ...i, categoryId: cat.id, categoryLabel: cat.label, categoryIcon: cat.icon }));
+    });
+  }
+
+  // fallback: if pool empty, use all
+  if (pool.length === 0) {
+    MENU.forEach(cat => {
+      cat.items.filter(i => i.name).forEach(i => pool.push({ ...i, categoryId: cat.id, categoryLabel: cat.label, categoryIcon: cat.icon }));
+    });
+  }
+  return pool;
+}
+
+function drawWheel(segments, angle) {
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const r = cx - 4;
+  const arcSize = (2 * Math.PI) / segments.length;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  segments.forEach((seg, i) => {
+    const startAngle = angle + i * arcSize;
+    const endAngle = startAngle + arcSize;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Text
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(startAngle + arcSize / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'white';
+    ctx.font = `bold ${segments.length > 8 ? 11 : 13}px Poppins, sans-serif`;
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    ctx.shadowBlur = 3;
+    const label = seg.length > 12 ? seg.substring(0, 12) + '…' : seg;
+    ctx.fillText(label, r - 8, 5);
+    ctx.restore();
+  });
+
+  // Outer ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function spinTheWheel() {
+  if (isSpinning) return;
+
+  const mood = document.getElementById('moodSelect').value;
+  const meal = document.getElementById('mealSelect').value;
+  const category = document.getElementById('categorySelect').value;
+
+  const pool = getFilteredPool(mood, meal, category);
+
+  // Pick segments (up to 10 unique dishes for display)
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const segItems = shuffled.slice(0, Math.min(10, shuffled.length));
+  const segments = segItems.map(i => i.name);
+
+  // Pick winner
+  const winnerIdx = Math.floor(Math.random() * segItems.length);
+  pickedDish = segItems[winnerIdx];
+
+  // Show wheel
+  const wheelSection = document.getElementById('wheelSection');
+  wheelSection.style.display = 'flex';
+
+  const btn = document.getElementById('spinBtn');
+  btn.classList.add('spinning');
+  btn.innerHTML = '<span class="spin-btn-icon">🎡</span> घूम रहा है...';
+  isSpinning = true;
+
+  // Hide result
+  document.getElementById('resultCard').classList.remove('visible');
+  document.getElementById('emptyState').style.display = 'none';
+
+  // Animate wheel
+  const arcSize = (2 * Math.PI) / segments.length;
+  const targetAngle = -(winnerIdx * arcSize + arcSize / 2) + Math.PI / 2 - Math.PI;
+  const totalRotation = Math.PI * 2 * (5 + Math.random() * 5) + targetAngle;
+
+  let start = null;
+  const duration = 3500;
+  let currentAngle = 0;
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function animate(ts) {
+    if (!start) start = ts;
+    const elapsed = ts - start;
+    const progress = Math.min(elapsed / duration, 1);
+    currentAngle = easeOut(progress) * totalRotation;
+    drawWheel(segments, currentAngle);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      isSpinning = false;
+      btn.classList.remove('spinning');
+      btn.innerHTML = '<span class="spin-btn-icon">🎡</span> व्हील घुमाओ!';
+      showResult(pickedDish, mood);
+    }
+  }
+
+  drawWheel(segments, 0);
+  requestAnimationFrame(animate);
+}
+
+function showResult(dish, mood) {
+  const card = document.getElementById('resultCard');
+  const cat = MENU.find(c => c.id === dish.categoryId);
+
+  document.getElementById('resultCategory').innerHTML = `${dish.categoryIcon} ${dish.categoryLabel}`;
+  document.getElementById('resultDish').textContent = dish.name;
+  document.getElementById('resultPrice').innerHTML = dish.price
+    ? `₹${dish.price} <span>प्रति सर्विंग</span>`
+    : `<span style="font-size:14px">कीमत के लिए पूछें</span>`;
+
+  const moodLabel = mood && MOOD_LABELS[mood] ? MOOD_LABELS[mood] : '🎲 रैंडम पिक';
+  document.getElementById('resultMoodTag').textContent = moodLabel;
+
+  const descKey = dish.categoryId;
+  document.getElementById('resultDesc').textContent = DISH_DESCS[descKey] || 'माँ गायत्री होटल की तरफ से एक खास चुनाव — ज़रूर ट्राय करें! 🍽';
+
+  card.classList.add('visible');
+
+  // Confetti
+  launchConfetti();
+
+  // Scroll to result
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+}
+
+function spinAgain() {
+  document.getElementById('resultCard').classList.remove('visible');
+  document.getElementById('emptyState').style.display = 'block';
+  document.getElementById('wheelSection').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#FF6B00','#F0C040','#C0392B','#FF5733','#fff','#FFD700'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left: ${Math.random() * 100}%;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      width: ${6 + Math.random() * 10}px;
+      height: ${6 + Math.random() * 10}px;
+      animation-duration: ${1.5 + Math.random() * 2}s;
+      animation-delay: ${Math.random() * 0.5}s;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+    `;
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.innerHTML = '', 4000);
+}
+
+// Init empty state
+document.getElementById('emptyState').style.display = 'block';
+</script>
+</body>
+</html>
