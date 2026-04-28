@@ -894,6 +894,16 @@
   let pendingLogEntry = null;
 
   const MENU_CATEGORIES =  [
+{
+    id: 'container',
+    label: 'कंटेनर',
+    icon: '🧈',
+    items: [
+     { id: 'container', name: 'कंटेनर', price: 10 },
+     { id: 'container5', name: 'कंटेनर', price: 5 }
+      ]
+  },
+   
   {
     id: 'tandoor_chapati',
     label: 'रोटी',
@@ -975,7 +985,51 @@
       { id: 'jain_salad', name: 'जैन सलाद', price: 40 }
     ]
   },
-
+{
+    id: 'dal_ka_kamal',
+    label: 'दाल का कमाल',
+    icon: '🫘',
+    items: [
+      { id: 'jira_dal', name: 'जिरा दाल', price: 100 },
+      { id: 'half_jeera_dal', name: 'हाफ जिरा दाल', price: 55 },
+      { id: 'dal_fry', name: 'दाल फ्राय', price: 110 },
+      { id: 'half_dal_fry', name: 'हाफ दाल फ्राय', price: 60 },
+      { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 120 },
+       { id: 'half_butter_dal_fry', name: 'हाफ बटर दाल फ्राय', price: 80 },
+      { id: 'dal_tadka', name: 'दाल तडका', price: 135 },
+      { id: 'half_dal_tadka', name: 'हाफ दाल तडका', price: 80 },
+      { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 135 },
+      { id: 'half_dal_kolhapuri', name: 'हाफ दाल कोल्हापुरी', price: 75 },
+      { id: 'dal_vachadi', name: 'दाल वच्हाडी', price: 140 },
+      { id: 'half_varhadi_dal', name: 'हाफ वऱ्हाडी दाल', price: 90 },
+      { id: 'dal_mugalai', name: 'दाल मुगलाई', price: 170 }
+    ]
+  },
+  {
+    id: 'rice',
+    label: 'राईस',
+    icon: '🍚',
+    items: [
+      { id: 'plain_rice', name: 'प्लेन राईस', price: 80 },
+      { id: 'half_plain_rice', name: 'हाफ प्लेन राईस', price: 40 },
+      { id: 'jira_rice', name: 'जिरा राईस', price: 90 },
+      { id: 'half_jeera_rice', name: 'हाफ जिरा राईस', price: 50 },
+      { id: 'steam_rice', name: 'स्टीम राईस', price: 100 },
+      { id: 'half_steam_rice', name: 'हाफ स्टीम राईस', price: 50 },
+      { id: 'garlic_rice', name: 'गार्लिक राईस', price: 140 },
+      { id: 'namdeo_rice', name: 'नामदेव राईस', price: 130 },
+      { id: 'masala_rice', name: 'मसाला राईस', price: 120 },
+      { id: 'dal_khichadi', name: 'दाल खिचडी', price: 120 },
+      { id: 'vej_pulav', name: 'वेज पुलाव', price: 120 },
+      { id: 'panir_pulav', name: 'पनिर पुलाव', price: 160 },
+      { id: 'vej_biryani', name: 'वेज बिर्याणी', price: 130 },
+      { id: 'vej_panir_biryani', name: 'वेज पनिर बिर्याणी', price: 160 },
+      { id: 'vej_hydrabadi_biryani', name: 'वेज हैद्राबादी बिर्याणी', price: 160 },
+      { id: 'vej_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 140 },
+      { id: 'panir_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 160 }
+    ]
+  },
+  
 
   {
     id: 'panir_ka_kamal',
@@ -986,6 +1040,7 @@
       { id: 'panir_matar', name: 'पनिर मटर', price: 150 },
       { id: 'panir_kadai', name: 'पनिर कढई', price: 160 },
       { id: 'panir_tawa', name: 'पनिर तवा', price: 170 },
+     { id: 'panir_vanhadi', name: 'पनिर वन्हाडी', price: 150 },
       { id: 'panir_handi', name: 'पनिर हंडी', price: 170 },
       { id: 'panir_bhurji_dry', name: 'पनिर भुर्जी ड्राय', price: 175 },
       { id: 'panir_bhurji_curry', name: 'पनिर भुर्जी करी', price: 170 },
@@ -1004,16 +1059,9 @@
       { id: 'lachha_panir', name: 'लच्छा पनिर', price: 170 },
       { id: 'panir_angara', name: 'पनिर अंगारा', price: 180 },
       { id: 'panir_jayapuri', name: 'पनिर जयपुरी', price: 180 },
-      { id: 'panir_sawji', name: 'पनिर सावजी', price: 150 }
-    ]
-  },
-
-  {
-    id: 'panir_special',
-    label: 'पनिर स्पेशल',
-    icon: '🧈',
-    items: [
-      { id: 'panir_mili_juli', name: 'पनिर मिली जुली', price: 250 },
+      { id: 'panir_sawji', name: 'पनिर सावजी', price: 150 },
+     { id: 'panir_kofta', name: 'पनिर कोफ्ता', price: 180 },
+     { id: 'panir_mili_juli', name: 'पनिर मिली जुली', price: 250 },
       { id: 'panir_lahori', name: 'पनिर लाहोरी', price: 250 },
       { id: 'panir_lara', name: 'पनिर लारा', price: 250 },
       { id: 'panir_afghani', name: 'पनिर अफगानी', price: 250 },
@@ -1022,8 +1070,11 @@
       { id: 'panir_tiranga', name: 'पनिर तिरंगा', price: 300 },
       { id: 'panir_patiyala', name: 'पनिर पटीयाला', price: 250 },
       { id: 'panir_do_pyaja', name: 'पनिर दो प्याजा', price: 250 }
+    
     ]
   },
+
+  
 
 
     {
@@ -1077,50 +1128,6 @@
       { id: 'vej_tiranga', name: 'वेज तिरंगा', price: 200 }
     ]
   },
-  {
-    id: 'dal_ka_kamal',
-    label: 'दाल का कमाल',
-    icon: '🫘',
-    items: [
-      { id: 'jira_dal', name: 'जिरा दाल', price: 100 },
-      { id: 'half_jeera_dal', name: 'हाफ जिरा दाल', price: 55 },
-      { id: 'dal_fry', name: 'दाल फ्राय', price: 110 },
-      { id: 'half_dal_fry', name: 'हाफ दाल फ्राय', price: 60 },
-      { id: 'butter_dal_fry', name: 'बटर दाल फ्राय', price: 120 },
-       { id: 'half_butter_dal_fry', name: 'हाफ बटर दाल फ्राय', price: 80 },
-      { id: 'dal_tadka', name: 'दाल तडका', price: 135 },
-      { id: 'half_dal_tadka', name: 'हाफ दाल तडका', price: 80 },
-      { id: 'dal_kolhapuri', name: 'दाल कोल्हापुरी', price: 135 },
-      { id: 'half_dal_kolhapuri', name: 'हाफ दाल कोल्हापुरी', price: 75 },
-      { id: 'dal_vachadi', name: 'दाल वच्हाडी', price: 140 },
-      { id: 'half_varhadi_dal', name: 'हाफ वऱ्हाडी दाल', price: 90 },
-      { id: 'dal_mugalai', name: 'दाल मुगलाई', price: 170 }
-    ]
-  },
-  {
-    id: 'rice',
-    label: 'राईस',
-    icon: '🍚',
-    items: [
-      { id: 'plain_rice', name: 'प्लेन राईस', price: 80 },
-      { id: 'half_plain_rice', name: 'हाफ प्लेन राईस', price: 40 },
-      { id: 'jira_rice', name: 'जिरा राईस', price: 90 },
-      { id: 'half_jeera_rice', name: 'हाफ जिरा राईस', price: 50 },
-      { id: 'steam_rice', name: 'स्टीम राईस', price: 100 },
-      { id: 'half_steam_rice', name: 'हाफ स्टीम राईस', price: 50 },
-      { id: 'garlic_rice', name: 'गार्लिक राईस', price: 140 },
-      { id: 'namdeo_rice', name: 'नामदेव राईस', price: 130 },
-      { id: 'masala_rice', name: 'मसाला राईस', price: 120 },
-      { id: 'dal_khichadi', name: 'दाल खिचडी', price: 120 },
-      { id: 'vej_pulav', name: 'वेज पुलाव', price: 120 },
-      { id: 'panir_pulav', name: 'पनिर पुलाव', price: 160 },
-      { id: 'vej_biryani', name: 'वेज बिर्याणी', price: 130 },
-      { id: 'vej_panir_biryani', name: 'वेज पनिर बिर्याणी', price: 160 },
-      { id: 'vej_hydrabadi_biryani', name: 'वेज हैद्राबादी बिर्याणी', price: 160 },
-      { id: 'vej_handi_biryani', name: 'वेज हंडी बिर्याणी', price: 140 },
-      { id: 'panir_handi_biryani', name: 'पनिर हंडी बिर्याणी', price: 160 }
-    ]
-  },
   
 
   {
@@ -1167,7 +1174,7 @@
     label: 'वन्हाडी स्पेशल',
     icon: '🥘',
     items: [
-      { id: 'panir_vanhadi', name: 'पनिर वन्हाडी', price: 150 },
+      { id: 'panir_vanhadi1', name: 'पनिर वन्हाडी', price: 150 },
       { id: 'vej_andakari', name: 'वेज अंडाकरी', price: 140 },
       { id: 'patodi', name: 'पाटोडी', price: 150 },
       { id: 'gud_bhaji', name: 'गुड भाजी', price: 150 },
@@ -1329,7 +1336,27 @@
       { id: 'extra_butter_pav', name: 'एक्स्ट्रा बटर पाव', price: 25 },
       { id: 'extra_bhaji', name: 'एक्स्ट्रा भाजी', price: 30 }
     ]
-  }
+  },
+
+{
+    id: 'cake',
+    label: 'केक ',
+    icon: '🧈',
+    items: [
+     { id: 'candle10', name: 'मेणबत्ती', price: 10 },
+     { id: 'cake150', name: 'केक', price: 150 },
+     { id: 'cake200', name: 'केक', price: 200 },
+     { id: 'cake250', name: 'केक', price: 250 },
+     { id: 'cake300', name: 'केक', price: 300 },
+     { id: 'cake350', name: 'केक', price: 350 },
+     { id: 'cake400', name: 'केक', price: 400 },
+     { id: 'cake450', name: 'केक', price: 450 },
+     { id: 'cake500', name: 'केक', price: 500 },
+     { id: 'cake550', name: 'केक', price: 550 },
+     { id: 'cake600', name: 'कंटेनर', price: 600 }
+      ]
+  },
+   
 ];
 
   // Flat MENU for lookups
